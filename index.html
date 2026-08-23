@@ -220,7 +220,7 @@ textarea{min-height:82px;resize:vertical}
 @media(max-width:490px){.difficulty-donut-wrap{grid-template-columns:1fr}.difficulty-donut{width:165px;height:165px}}
 
 .shop{display:grid;grid-template-columns:1fr 1fr;gap:9px}.shop-item{padding:12px;background:#081625;border:1px solid var(--line);border-radius:16px}
-.toast{position:fixed;z-index:100;left:50%;bottom:84px;transform:translateX(-50%);width:min(94%,540px);padding:11px 13px;background:#091b2c;border:1px solid #3d6688;border-radius:14px;text-align:center;font-weight:900;box-shadow:var(--shadow);pointer-events:none}
+.toast{position:fixed;z-index:100;left:50%;bottom:84px;transform:translateX(-50%) translateX(0);width:min(94%,540px);padding:11px 13px;background:#091b2c;border:1px solid #3d6688;border-radius:14px;text-align:center;font-weight:900;box-shadow:var(--shadow);pointer-events:none}
 .modal-bg{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.72);backdrop-filter:blur(10px);display:grid;place-items:center;padding:12px}
 .modal{width:min(690px,100%);max-height:92vh;overflow:auto;background:#091827;border:1px solid #3b6388;border-radius:21px;padding:15px;box-shadow:0 30px 120px rgba(0,0,0,.52)}
 .reveal{animation:reveal 1.1s cubic-bezier(.2,.9,.2,1)}@keyframes reveal{0%{transform:scale(.25) rotate(-15deg);opacity:0}45%{transform:scale(1.16) rotate(5deg);opacity:1}100%{transform:scale(1)}}
@@ -279,7 +279,7 @@ body.theme-cosmos .btn:hover{box-shadow:0 0 18px rgba(217,108,255,.22)}
 body.theme-solar .btn{box-shadow:0 8px 30px rgba(255,177,70,.08)}
 body.theme-glacial .card{border-color:rgba(180,235,255,.3)}
 body.theme-leviatan .btn{animation:leviButtonPulse 3.3s ease-in-out infinite}
-body.theme-leviatan .card{animation:leviCardDrift 4.2s ease-in-out infinite}
+body.theme-leviatan .card{animation:none}
 @keyframes leviButtonPulse{50%{transform:translateY(-1px);filter:saturate(1.08) brightness(1.06)}}
 @keyframes leviCardDrift{50%{transform:translateY(-1px) rotate(.08deg)}}
 /* === Megalodón: boca monstruosa, púas luminosas y ojos pequeños === */
@@ -402,7 +402,7 @@ body.theme-glacial::after{content:"";position:fixed;inset:0;z-index:-1;pointer-e
 .rank-glyph.orca{animation:orcaOcean 2.5s ease-in-out infinite!important}
 @keyframes orcaOcean{0%,100%{transform:translate(0,0) rotate(-4deg) scale(1)}24%{transform:translate(5px,-6px) rotate(5deg) scale(1.05)}48%{transform:translate(1px,3px) rotate(-2deg) scale(.99)}64%{transform:translate(-5px,-2px) rotate(8deg) scale(1.04)}82%{transform:translate(3px,1px) rotate(-4deg) scale(1.02)}}
 .rank-glyph.megalodon{animation:megaBiteGrand 2.9s ease-in-out infinite!important;filter:drop-shadow(0 0 14px rgba(195,240,255,.35))}
-@keyframes megaBiteGrand{0%,100%{transform:scale(1) translateY(0)}24%{transform:scale(1.10) translateY(-4px)}42%{transform:scale(.88,1.22) translateY(5px)}50%{transform:scale(1.20,.82) translateY(0);filter:brightness(1.42)}57%{transform:scale(1.09,1.08) translateY(-2px)}70%{transform:scale(1.02)}}
+@keyframes megaBiteGrand{0%,100%{transform:scale(1) translateY(0)}24%{transform:scale(1.04) translateY(-2px)}42%{transform:scale(.94,1.10) translateY(3px)}50%{transform:scale(1.09,.91) translateY(0);filter:brightness(1.16)}57%{transform:scale(1.05,1.03) translateY(-1px)}70%{transform:scale(1.01)}}
 .rank-glyph.leviatan{width:74px;height:74px;animation:leviatanSpinFinal 2.25s linear infinite!important;filter:drop-shadow(0 0 20px rgba(86,255,229,.44))}
 .leviatan-art{width:74px;height:74px}
 @keyframes leviatanSpinFinal{0%{transform:rotate(0) scale(1)}25%{transform:rotate(90deg) scale(1.04)}50%{transform:rotate(180deg) scale(1.09)}75%{transform:rotate(270deg) scale(1.05)}100%{transform:rotate(360deg) scale(1)}}
@@ -411,6 +411,45 @@ body.theme-glacial::after{content:"";position:fixed;inset:0;z-index:-1;pointer-e
 .rank-glyph.coach::after{width:50px;height:50px;border:2px solid rgba(255,255,255,.72);border-radius:12px;inset:7px;box-shadow:0 0 22px rgba(255,255,255,.35);z-index:3}
 @keyframes coachTextRun{0%{transform:translateX(-18px);filter:brightness(1)}50%{transform:translateX(30px);filter:brightness(1.3)}100%{transform:translateX(-18px);filter:brightness(1)}}
 @keyframes coachGrand{0%,100%{transform:translateY(0) rotate(-2deg) scale(1)}30%{transform:translateY(-3px) rotate(2deg) scale(1.04);filter:brightness(1.12)}58%{transform:translateY(1px) rotate(-1deg) scale(1.02)}78%{transform:translateY(-2px) rotate(1deg) scale(1.06);filter:brightness(1.22)}}
+/* === Última actualización: logros, pera y nuevos temas === */
+body.theme-cianneon{background:radial-gradient(circle at 50% 0,#062e3a 0,#03131b 44%,#02070a 100%)}
+body.theme-cianneon .btn{background:linear-gradient(135deg,#02f5ff,#0070ff);border:1px solid rgba(170,255,255,.8);box-shadow:0 8px 28px rgba(0,224,255,.24)}
+body.theme-cianneon .card{border-color:rgba(61,231,255,.34)}
+body.theme-cianneon .btn.electric-zap{animation:cianZap .34s ease-in-out!important}
+@keyframes cianZap{0%,100%{transform:translate(0,0);filter:brightness(1)}18%{transform:translate(-2px,1px);filter:brightness(1.6)}36%{transform:translate(2px,-1px);filter:brightness(1.35)}54%{transform:translate(-1px,-2px);filter:brightness(1.7)}72%{transform:translate(1px,1px);filter:brightness(1.25)}}
+body.theme-carbon{background:radial-gradient(circle at 50% 0,#35383d 0,#121416 36%,#050607 100%);color:#f1f1ee}
+body.theme-carbon .btn{background:linear-gradient(145deg,#303338,#111214);border:1px solid rgba(255,214,86,.34);box-shadow:inset 0 0 10px rgba(255,255,255,.04),0 10px 28px rgba(0,0,0,.32)}
+body.theme-carbon .btn.primary{background:linear-gradient(135deg,#8b7a28,#4a4117);color:#fffbe8;border-color:#c7ad3f}
+body.theme-carbon .topbar{background:linear-gradient(180deg,rgba(12,13,14,.96),rgba(12,13,14,.82),transparent)}
+body.theme-carbon .nav{background:rgba(8,9,10,.96);border-top-color:rgba(255,214,86,.18)}
+body.theme-eclipse{background:radial-gradient(circle at 50% 8%,#203457 0,#0d1730 34%,#050914 74%,#02040a 100%);color:#f7f3e8}
+body.theme-eclipse .btn{background:linear-gradient(135deg,#1d2e50,#0a1020);border:1px solid rgba(255,142,36,.5);box-shadow:inset 0 0 16px rgba(255,126,20,.06),0 10px 28px rgba(0,0,0,.34)}
+body.theme-eclipse .btn.primary{background:linear-gradient(135deg,#ff9a2d,#b34810);color:#fff8ee;border-color:#ffc06d;box-shadow:0 10px 28px rgba(255,121,18,.18)}
+body.theme-eclipse .topbar{background:linear-gradient(180deg,rgba(6,9,16,.97),rgba(6,9,16,.82),transparent)}
+body.theme-eclipse .nav{background:rgba(3,5,10,.96);border-top-color:rgba(255,149,53,.2)}
+body.theme-esmeralda{background:radial-gradient(circle at 50% 0,#123d22 0,#082312 38%,#04150a 100%);color:#effff1}
+body.theme-esmeralda .topbar{background:linear-gradient(180deg,rgba(4,18,9,.96),rgba(4,18,9,.78),transparent)}
+body.theme-esmeralda .nav{background:rgba(2,12,6,.95);border-top-color:rgba(109,242,171,.2)}
+body.theme-abismo .theme-particle.abyssdrop{font-size:18px;animation:abyssDrop 6.5s linear forwards!important;filter:drop-shadow(0 0 8px rgba(155,89,255,.65))}
+@keyframes abyssDrop{0%{transform:translateY(-10px) rotate(-12deg);opacity:0}12%{opacity:.85}100%{transform:translateY(115vh) rotate(14deg);opacity:.18}}
+body.theme-pera{background:linear-gradient(180deg,#eaffd9 0,#c9f49e 48%,#8fd063 100%);color:#18331a}
+body.theme-pera .topbar{background:linear-gradient(180deg,rgba(239,255,229,.96),rgba(211,249,185,.82),transparent)}
+body.theme-pera .nav{background:rgba(236,255,226,.93);border-top-color:rgba(90,150,62,.32)}
+body.theme-pera .btn{background:linear-gradient(145deg,#ffffff,#eaffdc 52%,#bce69b);color:#315a2a;border:1px solid rgba(255,255,255,.8);box-shadow:0 10px 28px rgba(87,149,45,.16)}
+body.theme-pera .btn:nth-child(3n)::after{content:"🍐";position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:17px;pointer-events:none}
+body.theme-pera .card{border-color:rgba(75,133,56,.28)}
+.theme-particle.electric{width:5px;height:22px;background:linear-gradient(180deg,transparent,#bafaff 30%,#00f0ff 55%,transparent);filter:drop-shadow(0 0 7px #00f0ff);animation:electricFall .45s ease-out forwards!important}
+.theme-particle.eclipseSpark{font-size:15px;color:#ff9a2d;text-shadow:0 0 10px #ff9a2d;animation:eclipseSpark 2.8s ease-out forwards!important}
+@keyframes eclipseSpark{0%{opacity:0;transform:scale(.4) rotate(0)}25%{opacity:1}100%{opacity:0;transform:scale(1.2) rotate(160deg) translateY(-12px)}}
+.theme-particle.pear{font-size:18px;opacity:0;animation:pearFall 6.2s linear forwards!important;filter:drop-shadow(0 0 7px rgba(80,125,45,.34))}
+@keyframes pearFall{0%{opacity:0;transform:translateY(-24px) rotate(-8deg)}15%{opacity:.92}55%{transform:translateY(54vh) rotate(8deg)}100%{opacity:0;transform:translateY(112vh) rotate(-12deg)}}
+@keyframes electricFall{0%{opacity:0;transform:translateY(-20px) scaleY(.7)}20%{opacity:.9}100%{opacity:0;transform:translateY(80px) scaleY(1.3)}}
+.pear-floating-phrase{position:fixed;z-index:36;max-width:170px;padding:7px 10px;border-radius:12px;background:rgba(255,255,255,.96);border:1px solid rgba(90,150,62,.28);color:#315a2a;font-size:11px;font-weight:1000;box-shadow:0 10px 22px rgba(39,90,25,.18);animation:pearPhrasePop 3.2s ease forwards;pointer-events:none}.pear-pet{position:fixed;top:68px;right:10px;z-index:35;width:48px;height:48px;border-radius:50%;display:none;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.8);background:linear-gradient(145deg,#eaffdc,#9bd66a);box-shadow:0 10px 25px rgba(39,90,25,.18),inset 0 0 12px rgba(255,255,255,.55);font-size:26px;cursor:pointer;animation:pearBob 2.6s ease-in-out infinite}
+.pear-pet.visible{display:flex}
+@keyframes pearBob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-4px) rotate(3deg)}}@keyframes pearPhrasePop{0%{opacity:0;transform:translateY(-4px) scale(.94)}10%,80%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(4px) scale(.98)}}
+.achievement-grid{display:grid;gap:8px}.achievement-card{padding:11px;border-radius:15px;background:#081625;border:1px solid var(--line);display:flex;gap:10px;align-items:center}.achievement-card.locked{opacity:.52;filter:saturate(.45)}.achievement-icon{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(145deg,#10253c,#071321);border:1px solid #2d4c6c;font-size:22px;flex:0 0 auto}.achievement-card.unlocked .achievement-icon{box-shadow:0 0 20px rgba(255,214,86,.26);border-color:#a99235}.achievements-summary{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:9px}
+.pear-scene{position:fixed;inset:0;z-index:1000;background:#fff;color:#111;display:flex;align-items:center;justify-content:center;padding:20px}.pear-stage{width:min(760px,100%);min-height:82vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}.pear-emoji{font-size:92px;filter:drop-shadow(0 8px 18px rgba(50,120,35,.16));animation:pearFloatScene 3s ease-in-out infinite}.pear-speaker{font-weight:1000;letter-spacing:.8px;color:#245c2b;margin:10px 0 6px}.pear-text{max-width:760px;font-size:18px;line-height:1.65;min-height:170px;display:flex;align-items:center;justify-content:center}.pear-next{width:min(620px,100%);min-height:54px;font-size:16px;border-radius:18px;background:#2e8b34;color:#fff;font-weight:1000;box-shadow:0 12px 28px rgba(46,139,52,.22)}.pear-next[disabled]{opacity:.35;cursor:default}.pear-close{margin-top:10px;color:#4e6b51;font-size:11px;background:none}.pear-shine{position:absolute;width:170px;height:170px;border-radius:50%;background:radial-gradient(circle,rgba(201,255,175,.55),transparent 70%);filter:blur(6px);pointer-events:none}@keyframes pearFloatScene{50%{transform:translateY(-7px) rotate(2deg) scale(1.03)}}
+
 .roulette-frame{position:relative;width:210px;height:220px;display:grid;place-items:center;margin:8px auto 0}.roulette-pointer{position:absolute;top:0;z-index:4;font-size:24px;text-shadow:0 0 12px rgba(255,255,255,.55)}.roulette-wheel{position:relative;width:190px;height:190px;border-radius:50%;background:conic-gradient(from 0deg,#42ddff,#765cff,#ffd166,#61efaa,#ff6b86,#42ddff);box-shadow:0 0 55px rgba(118,92,255,.22),inset 0 0 36px rgba(255,255,255,.18);animation:rouletteSpin 1.65s cubic-bezier(.2,.8,.2,1)}.roulette-wheel:before{content:"";position:absolute;inset:10px;border-radius:50%;border:2px dashed rgba(255,255,255,.5);animation:spin 3.5s linear infinite}.roulette-wheel:after{content:"";position:absolute;inset:28px;border-radius:50%;background:#081625;border:3px solid rgba(255,255,255,.55);box-shadow:inset 0 0 28px rgba(66,221,255,.2),0 0 24px rgba(255,255,255,.16)}.roulette-text{position:absolute;inset:0;z-index:2;display:grid;place-items:center;font-size:42px;font-weight:1000;text-shadow:0 0 16px rgba(255,255,255,.7);animation:roulettePulse .5s ease-in-out infinite alternate}.roulette-spark{position:absolute;width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 11px #fff;z-index:2}.roulette-spark.s1{top:16px;left:50%}.roulette-spark.s2{right:22px;top:46%}.roulette-spark.s3{bottom:20px;left:49%}.roulette-spark.s4{left:21px;top:48%}@keyframes rouletteSpin{0%{transform:rotate(0) scale(.72)}60%{transform:rotate(900deg) scale(1.04)}100%{transform:rotate(1440deg) scale(1)}}@keyframes roulettePulse{to{transform:scale(1.12);filter:brightness(1.25)}}
 
 .roulette-simple{position:relative;width:122px;height:122px;margin:16px auto;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle,#fff,#ffd7eb 55%,#ff8fbe);box-shadow:0 0 28px rgba(255,143,190,.28);overflow:visible}
@@ -422,11 +461,12 @@ body.theme-glacial::after{content:"";position:fixed;inset:0;z-index:-1;pointer-e
 </head>
 <body>
 <div id="themeParticles" aria-hidden="true"></div>
+<button id="pearPet" class="pear-pet" onclick="openPearScene()" aria-label="Pera">🍐</button>
 <div id="leviathanEvent" aria-hidden="true"><div class="leviathan-event-body"><div class="leviathan-eye-art e1"></div><div class="leviathan-eye-art e2"></div></div></div>
 <div class="app">
   <header class="topbar">
     <div class="brand"><div class="logo">🌊</div><div>SWIM QUEST<div class="sub">Tu natación convertida en videojuego.</div></div></div>
-    <div class="wallet">🪙 <span id="coins">0</span></div>
+    <button class="wallet" onclick="coinShop()" aria-label="Monedas">🪙 <span id="coins">0</span></button>
   </header>
   <main id="screen"></main>
 </div>
@@ -467,7 +507,11 @@ const THEMES={
  Esmeralda:{a:"#6df2ab",b:"#0f9d70",emoji:"💚",desc:"Verde brillante y partículas naturales."},
  Leviatan:{a:"#5ef4ff",b:"#1a6cff",emoji:"🐉",desc:"Energía oceánica, botones arcoíris y una atmósfera mítica."},
  Sangriento:{a:"#ff3b30",b:"#6f0000",emoji:"🩸",desc:"Rojo intenso con gotas y partículas oscuras."},
- Rosadito:{a:"#ffb6d8",b:"#fff4fa",emoji:"🌸",desc:"Tierno, rosado y luminoso, con pequeñas huellas de ternura."}
+ Rosadito:{a:"#ffb6d8",b:"#fff4fa",emoji:"🌸",desc:"Tierno, rosado y luminoso, con pequeñas huellas de ternura."},
+ CianNeon:{a:"#00f0ff",b:"#0077ff",emoji:"⚡",desc:"Cian eléctrico, brillante y energético."},
+ Carbon:{a:"#9a7c24",b:"#141517",emoji:"🖤",desc:"Elegante, oscuro, carbón y metal con destellos dorados."},
+ Eclipse:{a:"#16233e",b:"#050914",emoji:"🌘",desc:"Eclipse legendario: azul negro profundo con detalles naranja brillante."},
+ Pera:{a:"#b8f58a",b:"#6da83e",emoji:"🍐",desc:"Un jardín verde claro con peras cayendo y pequeños detalles de pera."}
 };
 const RANKS=[
  {n:"Bronce",c:"bronce",icon:"",lv:1,m:0,t:0,d:"La primera insignia. El punto donde comienza tu historia."},
@@ -498,7 +542,7 @@ const DEFAULT={
  settings:{music:true,musicTrack:"aqua",sfx:true,musicVol:.90,sfxVol:.95,theme:"Aqua",days:[2,3,5]},
  missions:{week:null,weekKey:null,month:null,monthKey:null},
  claimed:[],reviews:[],purchases:{},lastReviewWeek:null,lastMonth:null,
- tutorialRewardClaimed:false,bonusCoins:0,levelRewardedThrough:1,levelRewardCoins:0,monthlyShieldUntil:"",dailyReward:{date:"",claimed:false,coins:0,xp:0,kind:"coinsxp",themeKey:""},nextTrainingNumber:1
+ tutorialRewardClaimed:false,bonusCoins:0,levelRewardedThrough:1,levelRewardCoins:0,monthlyShieldUntil:"",dailyReward:{date:"",claimed:false,coins:0,xp:0,kind:"coinsxp",themeKey:""},nextTrainingNumber:1,achievements:[]
 };
 const DIFFICULTIES=[
  {key:"facil",name:"Fácil",icon:"🟢",desc:"Entrenamiento ligero y controlado."},
@@ -566,16 +610,20 @@ function spawnThemeParticle(){
    if(Math.random()<0.25){const el=document.createElement('span');el.className='theme-particle weird';el.textContent=Math.random()<.5?'🫧':'〰️';el.style.left=(10+Math.random()*80)+'%';el.style.top=(30+Math.random()*48)+'%';host.appendChild(el);setTimeout(()=>el.remove(),6500);return;}
    const el=document.createElement('span');el.className='theme-particle aqua';el.style.left=(8+Math.random()*84)+'%';el.style.top=(35+Math.random()*50)+'%';el.style.setProperty('--dx',((Math.random()-.5)*80)+'px');el.style.animationDuration=(2.8+Math.random()*2.6)+'s';host.appendChild(el);setTimeout(()=>el.remove(),6000);return;
  }
+ if(theme==="Abismo"){const el=document.createElement("span");el.className="theme-particle abyssdrop";el.textContent="👾";el.style.left=(4+Math.random()*92)+"%";el.style.top="-24px";host.appendChild(el);setTimeout(()=>el.remove(),7000);return;}
  if(theme==="Esmeralda"){const el=document.createElement('span');el.className='theme-particle leaf';el.textContent=Math.random()<.5?"🍃":"🍂";el.style.left=(4+Math.random()*92)+"%";el.style.top="-22px";el.style.setProperty("--drift",((Math.random()-.5)*120)+"px");el.style.animationDuration=(6+Math.random()*3)+"s";host.appendChild(el);setTimeout(()=>el.remove(),10000);return;}
  if(theme==="Rosadito"){const el=document.createElement('span');el.className='theme-particle cat';el.textContent=Math.random()<.5?'🐱':'🐈';el.style.left=(4+Math.random()*92)+'%';el.style.top='-18px';el.style.animationDuration=(5.5+Math.random()*2)+'s';host.appendChild(el);setTimeout(()=>el.remove(),8000);return;}
- const map={Solar:"sun",Esmeralda:"leaf",Abismo:"abyss",Aqua:"aqua",Sangriento:"blood"};
+ if(theme==="Eclipse"){const el=document.createElement("span");el.className="theme-particle eclipseSpark";el.textContent="✦";el.style.left=(5+Math.random()*90)+"%";el.style.top=(18+Math.random()*72)+"%";host.appendChild(el);setTimeout(()=>el.remove(),3500);return;}
+ if(theme==="Pera"){const el=document.createElement('span');el.className='theme-particle pear';el.textContent='🍐';el.style.left=(4+Math.random()*92)+'%';el.style.top='-18px';el.style.animationDuration=(5.5+Math.random()*2)+'s';host.appendChild(el);setTimeout(()=>el.remove(),8000);return;}
+ if(theme==="CianNeon"){if(Math.random()<.45){const btns=[...document.querySelectorAll('body.theme-cianneon .btn')];if(btns.length){const b=btns[Math.floor(Math.random()*btns.length)];b.classList.remove('electric-zap');void b.offsetWidth;b.classList.add('electric-zap');setTimeout(()=>b.classList.remove('electric-zap'),420)}}return;}
+ const map={Solar:"sun",Esmeralda:"leaf",Abismo:"abyss",Aqua:"aqua",Sangriento:"blood",Carbon:"abyss"};
  const el=document.createElement("span");el.className="theme-particle "+(map[theme]||"aqua");
  el.style.left=(8+Math.random()*84)+"%";el.style.top=(38+Math.random()*45)+"%";el.style.setProperty("--dx",((Math.random()-.5)*80)+"px");
  el.style.animationDuration=(2.8+Math.random()*2.6)+"s";host.appendChild(el);setTimeout(()=>el.remove(),6000);
 }
 function restartThemeParticles(){
  if(themeParticleTimer)clearInterval(themeParticleTimer);
- themeParticleTimer=setInterval(()=>{if(document.hidden)return;spawnThemeParticle();},S.settings.theme==="Glacial"?900:S.settings.theme==="Cosmos"?1250:S.settings.theme==="Sangriento"?1000:S.settings.theme==="Solar"?2200:S.settings.theme==="Leviatan"?1700:S.settings.theme==="Rosadito"?1000:S.settings.theme==="Esmeralda"?1250:3000);
+ themeParticleTimer=setInterval(()=>{if(document.hidden)return;spawnThemeParticle();},S.settings.theme==="Glacial"?900:S.settings.theme==="Cosmos"?1250:S.settings.theme==="Sangriento"?1000:S.settings.theme==="Solar"?2200:S.settings.theme==="Leviatan"?1200:S.settings.theme==="Rosadito"?1000:S.settings.theme==="Pera"?1050:S.settings.theme==="CianNeon"?1900:S.settings.theme==="Eclipse"?1600:S.settings.theme==="Esmeralda"?1250:3000);
  restartLeviathanEvent();
 }
 let leviathanEventTimer=null;
@@ -619,20 +667,22 @@ function tone(type="click"){
   (maps[type]||maps.click).forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type=type==="clown"?"square":(type==="rank"||type==="record"?"triangle":"sine");o.frequency.setValueAtTime(f,now+i*.075);if(type==="clown")o.frequency.exponentialRampToValueAtTime(Math.max(70,f*.55),now+i*.075+.12);g.gain.setValueAtTime(.0001,now+i*.075);g.gain.exponentialRampToValueAtTime((type==="clown"?.12:.075)*S.settings.sfxVol,now+i*.075+.015);g.gain.exponentialRampToValueAtTime(.0001,now+i*.075+.16);o.connect(g).connect(ctx.destination);o.start(now+i*.075);o.stop(now+i*.075+.18)});
  }catch(e){}
 }
-let ambientTimer=null,ambientCtx=null,ambientStep=0;
+let ambientTimer=null,ambientCtx=null,ambientStep=0,ambientRestartToken=0;
 const MUSIC_TRACKS={
  aqua:{name:"Aqua",emoji:"🌊",notes:[196,246.94,293.66,369.99,293.66,246.94],bass:[98,123.47,146.83],tempo:690,type:"triangle",accent:5},
- marea:{name:"Marea",emoji:"🎵",notes:[220,246.94,277.18,329.63,369.99,329.63,293.66,277.18,246.94,293.66,329.63,440,392,329.63,293.66,246.94],bass:[110,123.47,146.83,164.81],tempo:520,type:"sine",accent:4},
+ marea:{name:"Marea",emoji:"🎵",notes:[220,246.94,277.18,329.63,369.99,329.63,293.66,277.18,246.94,293.66,329.63,440,392,329.63,293.66,246.94],bass:[110,123.47,146.83,164.81],tempo:500,type:"sine",accent:3},
  cosmos:{name:"Cosmos",emoji:"🎶",notes:[174.61,196,220,261.63,293.66,329.63,392,329.63,293.66,261.63,220,196],bass:[87.31,98,110,130.81],tempo:570,type:"triangle",accent:3},
 pixel:{name:"Salto Pixel",emoji:"🕹️",notes:[261.63,329.63,392,523.25,392,659.25,523.25,392,329.63,440,523.25,659.25,523.25,440,392,329.63],bass:[130.81,164.81,196,220,196,164.81,130.81,110],tempo:250,type:"square",accent:4}
 };
 function ambientStop(){
+ ambientRestartToken++;
  if(ambientTimer){clearInterval(ambientTimer);ambientTimer=null;}
  if(ambientCtx){try{ambientCtx.close();}catch(e){}ambientCtx=null;}
  ambientStep=0;
 }
 function ambientStart(){
  if(!S.settings.music||ambientTimer)return;
+ const token=ambientRestartToken;
  try{
   const track=MUSIC_TRACKS[S.settings.musicTrack]||MUSIC_TRACKS.aqua;
   const AC=window.AudioContext||window.webkitAudioContext; if(!AC)return;
@@ -644,24 +694,28 @@ function ambientStart(){
    const now=ctx.currentTime, step=ambientStep++;
    const lead=ctx.createOscillator(),gain=ctx.createGain();
    lead.type=t.type;lead.frequency.value=t.notes[step%t.notes.length];
-   gain.gain.setValueAtTime(.0001,now);gain.gain.exponentialRampToValueAtTime(Math.max(.0008,.034*S.settings.musicVol),now+.045);gain.gain.exponentialRampToValueAtTime(.0001,now+.46);
+   gain.gain.setValueAtTime(.0001,now);gain.gain.exponentialRampToValueAtTime(Math.max(.0012,(t.name==="Salto Pixel"?.034:.052)*S.settings.musicVol),now+.045);gain.gain.exponentialRampToValueAtTime(.0001,now+.46);
    lead.connect(gain).connect(ctx.destination);lead.start(now);lead.stop(now+.5);
    const bass=ctx.createOscillator(),bg=ctx.createGain();
    bass.type="triangle";bass.frequency.value=t.bass[Math.floor(step/2)%t.bass.length];
-   bg.gain.setValueAtTime(.0001,now);bg.gain.exponentialRampToValueAtTime(Math.max(.00035,.012*S.settings.musicVol),now+.08);bg.gain.exponentialRampToValueAtTime(.0001,now+.62);
+   bg.gain.setValueAtTime(.0001,now);bg.gain.exponentialRampToValueAtTime(Math.max(.0005,(t.name==="Salto Pixel"?.012:.018)*S.settings.musicVol),now+.08);bg.gain.exponentialRampToValueAtTime(.0001,now+.62);
    bass.connect(bg).connect(ctx.destination);bass.start(now);bass.stop(now+.66);
    if(step%t.accent===0){
     const pad=ctx.createOscillator(),pg=ctx.createGain();pad.type="sine";pad.frequency.value=t.notes[(step+3)%t.notes.length]*2;
-    pg.gain.setValueAtTime(.0001,now);pg.gain.exponentialRampToValueAtTime(Math.max(.00025,.008*S.settings.musicVol),now+.1);pg.gain.exponentialRampToValueAtTime(.0001,now+1.1);
+    pg.gain.setValueAtTime(.0001,now);pg.gain.exponentialRampToValueAtTime(Math.max(.00035,(t.name==="Salto Pixel"?.008:.012)*S.settings.musicVol),now+.1);pg.gain.exponentialRampToValueAtTime(.0001,now+1.1);
     pad.connect(pg).connect(ctx.destination);pad.start(now);pad.stop(now+1.15);
    }
   },track.tempo);
  }catch(e){ambientStop();}
 }
-function restartAmbient(){ambientStop();if(S.settings.music)setTimeout(()=>ambientStart(),40);}
+function restartAmbient(){
+ ambientStop();
+ const token=ambientRestartToken;
+ if(S.settings.music)setTimeout(()=>{if(token===ambientRestartToken)ambientStart();},40);
+}
 
-const FISH_MESSAGES=["No necesitas nadar perfecto; necesitas seguir apareciendo.","Cada metro que registras cuenta, incluso los que hoy parecen pequeños.","La constancia vence a la motivación cuando la motivación desaparece.","Tu progreso real está en lo que haces cuando nadie te está mirando.","Hoy no tienes que superar a nadie. Solo deja un pequeño avance.","Un entrenamiento difícil también puede ser un gran entrenamiento.","Tu yo del futuro agradecerá el entrenamiento que no cancelaste.","La piscina no pregunta cuánto tardaste en empezar. Solo importa que empezaste.","Los grandes rangos se construyen con sesiones normales repetidas muchas veces.","No subestimes una práctica tranquila: también suma historia.","Cada récord fue alguna vez un tiempo que parecía imposible.","Respira, nada y deja que el progreso haga su trabajo.","No necesitas una semana perfecta para tener una buena semana.","La mejora suele llegar después de muchas sesiones que parecían iguales.","Tus metros cuentan. Tus descansos también.","La disciplina no siempre se siente emocionante, pero siempre deja huella.","Una pequeña mejora repetida durante meses se convierte en una diferencia enorme.","Cuando una sesión salga mal, no la conviertas en una historia sobre tu capacidad.","Tu récord personal no necesita impresionar a nadie para ser importante.","Cada brazada es una parte diminuta de una historia grande.","No abandones una temporada entera por una mala semana.","Entrenar cuando tienes ganas es fácil. La verdadera constancia aparece los demás días.","Tu progreso no tiene que parecerse al de otro nadador.","Celebra los tiempos, pero también celebra haber cumplido.","A veces mejorar significa aprender a nadar mejor, no solamente más rápido.","Una piscina puede medir 25 metros, pero tu progreso puede ir muchísimo más lejos.","Tu próximo rango no está tan lejos como parece cuando miras todo lo que ya hiciste.","No necesitas ganar hoy. Necesitas seguir construyendo.","El cansancio de una buena sesión pasa; la satisfacción de haberla hecho permanece.","Si hoy solo puedes hacer una parte, haz esa parte bien.","La paciencia también es una habilidad de entrenamiento.","Tus entrenamientos difíciles serán parte de las historias que más orgullo te den después.","Un récord nuevo no borra los antiguos: demuestra cuánto avanzaste.","No midas solamente cuánto te falta. Mira también cuánto ya conquistaste.","La regularidad convierte esfuerzos pequeños en resultados enormes.","La piscina no sabe de excusas ni de perfección: solo sabe de lo que hiciste.","Tu mejor entrenamiento todavía puede estar esperándote.","No tengas miedo de avanzar despacio. Lo peligroso es dejar de avanzar.","Cada estilo tiene algo que enseñarte, incluso el que menos te guste.","Descansar no es rendirse; es parte de entrenar con inteligencia.","Tu historial está construyendo una versión de ti que todavía no conoces.","No necesitas demostrar nada en cada sesión.","El progreso silencioso sigue siendo progreso.","Un día difícil en la piscina no define tu nivel.","La próxima vez que dudes, recuerda cuántos metros ya has conseguido.","Tu rango es una recompensa; tu constancia es el verdadero logro.","Sigue nadando. Las estadísticas se encargan del resto.","No compares tu capítulo dos con el capítulo veinte de otra persona.","La mejor versión de tu natación se construye sesión a sesión.","Hoy también cuenta. Mañana podrás construir sobre lo que hiciste hoy."];
-function fishMotivation(){const msg=FISH_MESSAGES[Math.floor(Math.random()*FISH_MESSAGES.length)];const fish=$("profileFish");if(fish){fish.classList.remove("fishTalk");void fish.offsetWidth;fish.classList.add("fishTalk");}toast(`🐟 ${msg}`,3600);}
+const FISH_MESSAGES=["No necesitas nadar perfecto; necesitas seguir apareciendo.","Cada metro que registras cuenta, incluso los que hoy parecen pequeños.","La constancia vence a la motivación cuando la motivación desaparece.","Tu progreso real está en lo que haces cuando nadie te está mirando.","Hoy no tienes que superar a nadie. Solo deja un pequeño avance.","Un entrenamiento difícil también puede ser un gran entrenamiento.","Tu yo del futuro agradecerá el entrenamiento que no cancelaste.","La piscina no pregunta cuánto tardaste en empezar. Solo importa que empezaste.","Los grandes rangos se construyen con sesiones normales repetidas muchas veces.","No subestimes una práctica tranquila: también suma historia.","Cada récord fue alguna vez un tiempo que parecía imposible.","Respira, nada y deja que el progreso haga su trabajo.","No necesitas una semana perfecta para tener una buena semana.","La mejora suele llegar después de muchas sesiones que parecían iguales.","Tus metros cuentan. Tus descansos también.","La disciplina no siempre se siente emocionante, pero siempre deja huella.","Una pequeña mejora repetida durante meses se convierte en una diferencia enorme.","Cuando una sesión salga mal, no la conviertas en una historia sobre tu capacidad.","Tu récord personal no necesita impresionar a nadie para ser importante.","Cada brazada es una parte diminuta de una historia grande.","No abandones una temporada entera por una mala semana.","Entrenar cuando tienes ganas es fácil. La verdadera constancia aparece los demás días.","Tu progreso no tiene que parecerse al de otro nadador.","Celebra los tiempos, pero también celebra haber cumplido.","A veces mejorar significa aprender a nadar mejor, no solamente más rápido.","Una piscina puede medir 25 metros, pero tu progreso puede ir muchísimo más lejos.","Tu próximo rango no está tan lejos como parece cuando miras todo lo que ya hiciste.","No necesitas ganar hoy. Necesitas seguir construyendo.","El cansancio de una buena sesión pasa; la satisfacción de haberla hecho permanece.","Si hoy solo puedes hacer una parte, haz esa parte bien.","La paciencia también es una habilidad de entrenamiento.","Tus entrenamientos difíciles serán parte de las historias que más orgullo te den después.","Un récord nuevo no borra los antiguos: demuestra cuánto avanzaste.","No midas solamente cuánto te falta. Mira también cuánto ya conquistaste.","La regularidad convierte esfuerzos pequeños en resultados enormes.","La piscina no sabe de excusas ni de perfección: solo sabe de lo que hiciste.","Tu mejor entrenamiento todavía puede estar esperándote.","No tengas miedo de avanzar despacio. Lo peligroso es dejar de avanzar.","Cada estilo tiene algo que enseñarte, incluso el que menos te guste.","Descansar no es rendirse; es parte de entrenar con inteligencia.","Tu historial está construyendo una versión de ti que todavía no conoces.","No necesitas demostrar nada en cada sesión.","El progreso silencioso sigue siendo progreso.","Un día difícil en la piscina no define tu nivel.","La próxima vez que dudes, recuerda cuántos metros ya has conseguido.","Tu rango es una recompensa; tu constancia es el verdadero logro.","Sigue nadando. Las estadísticas se encargan del resto.","No compares tu capítulo dos con el capítulo veinte de otra persona.","La mejor versión de tu natación se construye sesión a sesión.","Hoy también cuenta. Mañana podrás construir sobre lo que hiciste hoy.","67","Que tu coach no te diga qué hacer","Farmea aura como un pez."];
+function fishMotivation(){localStorage.setItem("SWIM_QUEST_FISH_CLICKS",String(Number(localStorage.getItem("SWIM_QUEST_FISH_CLICKS")||0)+1));const msg=FISH_MESSAGES[Math.floor(Math.random()*FISH_MESSAGES.length)];const fish=$("profileFish");if(fish){fish.classList.remove("fishTalk");void fish.offsetWidth;fish.classList.add("fishTalk");}toast(`🐟 ${msg}`,5100);}
 function recordLabel(k){return STYLE[k]?.name||k}
 function updatePersonalRecords(e){const out=[];if(!S.profile?.records)return out;for(const s of e.series){if(s.style==="combinado"||s.distance!==50||s.reps!==1||s.intensity!=="intenso"||!s.time)continue;const t=Number(s.time);if(!Number.isFinite(t)||t<=0)continue;const prev=parseFloat(String(S.profile.records[s.style]||"").replace(",","."));if(!Number.isFinite(prev)||prev<=0||t<prev){S.profile.records[s.style]=String(t);out.push({style:s.style,time:t});}}return out;}
 function showRecordNotices(records){if(!records.length)return;tone("record");let i=0;const next=()=>{if(i>=records.length)return;const r=records[i++];toast(`🏆 ¡Felicidades! Nuevo récord de ${recordLabel(r.style)}: ${Number(r.time).toFixed(2)} s`,2000);if(i<records.length)setTimeout(next,2150)};next();}
@@ -695,7 +749,9 @@ function currentRank(){
 function levelRewardPerLevel(){return 10}
 function gainXP(amount){
  const oldLevel=S.level;
- S.xp+=Math.max(0,Number(amount)||0);
+ const compassBonus=S.purchases?.compassSwimmer?1.10:1;
+ const effectiveAmount=Math.round(Math.max(0,Number(amount)||0)*compassBonus);
+ S.xp+=effectiveAmount;
  S.level=levelFromXP(S.xp);
  const through=Math.max(1,Number(S.levelRewardedThrough)||1);
  const gained=Math.max(0,S.level-through);
@@ -802,10 +858,11 @@ function mainMission(){
 }
 
 function render(){
- applyTheme();$("coins").textContent=fmt(S.coins);
+ applyTheme();updatePearPet();const justUnlocked=achievementCheck();$("coins").textContent=fmt(S.coins);
  document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
  $("screen").innerHTML=S.profile?({home:home,train:train,stats:stats,ranks:ranks,shop:shop,profile:profile}[page]||home)():onboarding();
  bind();
+ if(justUnlocked.length) setTimeout(()=>achievementModal(justUnlocked[0]),220);
 }
 function onboarding(){
  return `<div class="card" style="margin-top:28px">
@@ -840,11 +897,123 @@ function rankArt(c){
  if(c==="orca")return '<div class="orca-art"><span class="orca-fin"></span><span class="orca-eye"></span><span class="orca-splash"></span></div>';
  return "";
 }
+
+function coinShop(){
+ modal(`<div class="kicker">🪙 MONEDAS</div><h2>Paquetes de monedas</h2><div class="grid g2" style="margin-top:10px">
+ <div class="shop-item"><div style="font-size:30px">🪙</div><h3>Paquete pequeño</h3><div class="sub">1.000 monedas</div><button class="btn primary" style="margin-top:8px" onclick="comingSoonPurchases()">Próximamente</button></div>
+ <div class="shop-item"><div style="font-size:30px">💰</div><h3>Paquete mediano</h3><div class="sub">2.500 monedas</div><button class="btn primary" style="margin-top:8px" onclick="comingSoonPurchases()">Próximamente</button></div>
+ <div class="shop-item full"><div style="font-size:30px">🏦</div><h3>Paquete grande</h3><div class="sub">6.000 monedas + bonificación futura</div><button class="btn primary" style="margin-top:8px" onclick="comingSoonPurchases()">Próximamente</button></div></div><button class="btn secondary" style="margin-top:10px" onclick="closeModal()">Cerrar</button>`);
+}
+function comingSoonPurchases(){toast("🚧 Próximamente. Todavía no hay compras reales disponibles.");tone("click")}
+
+const ACHIEVEMENTS=[
+ {id:"first_swim",icon:"🌊",title:"Primer chapuzón",desc:"Completa tu primer entrenamiento.",reward:null,ok:()=>countTrain()>=1},
+ {id:"first_k",icon:"📏",title:"Primer kilómetro",desc:"Acumula 1.000 metros.",reward:null,ok:()=>totalMeters()>=1000},
+ {id:"ten_k",icon:"🌊",title:"Diez mil",desc:"Acumula 10.000 metros.",reward:null,ok:()=>totalMeters()>=10000},
+ {id:"25_train",icon:"🏊",title:"Constancia inicial",desc:"Completa 25 entrenamientos.",reward:null,ok:()=>countTrain()>=25},
+ {id:"50_train",icon:"🔥",title:"Ya es costumbre",desc:"Completa 50 entrenamientos.",reward:null,ok:()=>countTrain()>=50},
+ {id:"100_train",icon:"💯",title:"Centenario",desc:"Completa 100 entrenamientos.",reward:null,ok:()=>countTrain()>=100},
+ {id:"streak7",icon:"🔥",title:"Una semana",desc:"Alcanza una racha de 7 semanas.",reward:null,ok:()=>S.streak>=7},
+ {id:"streak30",icon:"🗓️",title:"Mes de constancia",desc:"Alcanza una racha de 30 semanas.",reward:null,ok:()=>S.streak>=30},
+ {id:"record",icon:"🏆",title:"Primer récord",desc:"Consigue al menos un récord personal de 50 m.",reward:null,ok:()=>Object.values(S.profile?.records||{}).some(v=>parseFloat(String(v||"").replace(",","."))>0)},
+ {id:"100k",icon:"💎",title:"Cien mil",desc:"Acumula 100.000 metros.",reward:{theme:"CianNeon"},ok:()=>totalMeters()>=100000},
+ {id:"demon",icon:"🔴",title:"Demoníaco",desc:"Completa un entrenamiento Demoníaco.",reward:{theme:"Carbon"},ok:()=>S.trainings.some(e=>(e.difficulty||difficultyInfo(e,S.profile?.avgMeters).key)==="demoniaco")},
+ {id:"maso",icon:"⚫",title:"Masoquista",desc:"Completa un entrenamiento de 6.000 m o más.",reward:{coins:999,xp:30000},ok:()=>S.trainings.some(e=>totalMeters([e])>=6000)},
+ {id:"butterfly10",icon:"🦋",title:"Alas de agua",desc:"Nada 10.000 m de mariposa acumulados.",reward:null,ok:()=>missionStats(S.trainings).mariposa>=10000},
+ {id:"all4",icon:"🔄",title:"Cuatro mundos",desc:"Utiliza los cuatro estilos principales al menos una vez.",reward:null,ok:()=>false},
+ {id:"combined",icon:"🔄",title:"Orden completo",desc:"Registra al menos una sesión de Combinado.",reward:null,ok:()=>S.trainings.some(e=>e.series.some(s=>s.style==="combinado"))},
+ {id:"500k",icon:"🌌",title:"Medio millón",desc:"Acumula 500.000 metros.",reward:null,ok:()=>totalMeters()>=500000},
+ {id:"rankPoseidon",icon:"🔱",title:"El océano te reconoce",desc:"Alcanza Poseidón.",reward:null,ok:()=>currentRank().r.c==="poseidon"||RANKS.findIndex(r=>r.c===currentRank().r.c)>=RANKS.findIndex(r=>r.c==="poseidon")},
+ {id:"dailyLucky",icon:"🎰",title:"Golpe de suerte",desc:"Recibe un tema como recompensa diaria.",reward:null,ok:()=>S.dailyReward?.kind==="theme"&&S.dailyReward?.claimed},
+ {id:"pear",icon:"🍐",title:"La Pera",desc:"Compra la Pera en la tienda.",reward:{theme:"Pera"},ok:()=>!!S.purchases.pear},
+ {id:"coach_pool",icon:"🤡",title:"Tira a tu coach dentro de la piscina",desc:"Una curiosidad absurdamente imposible. No tiene recompensa.",reward:null,ok:()=>false,impossible:true},
+ {id:"fish25",icon:"🐟",title:"Amigo del pez",desc:"Haz clic en el Pez Motivador 25 veces.",reward:{coins:80},ok:()=>Number(localStorage.getItem("SWIM_QUEST_FISH_CLICKS")||0)>=25},
+ {id:"pear_days",icon:"🍐",title:"Habitual de la Pera",desc:"Visita la escena de la Pera en 5 días diferentes.",reward:{coins:170},ok:()=>Number(localStorage.getItem("SWIM_QUEST_PEAR_DAYS")||0)>=5},
+ {id:"theme_collector",icon:"🎨",title:"Coleccionista cromático",desc:"Desbloquea 8 temas visuales.",reward:{coins:250},ok:()=>Object.keys(S.purchases).filter(k=>k.startsWith("theme_")&&S.purchases[k]).length>=8},
+ {id:"month12",icon:"📅",title:"Mes imparable",desc:"Completa 12 entrenamientos dentro de un mismo mes calendario.",reward:{coins:500},ok:()=>{const byMonth={};for(const e of (S.trainings||[])){const k=String(e.date||"").slice(0,7);if(k)byMonth[k]=(byMonth[k]||0)+1;}return Object.values(byMonth).some(n=>n>=12);}},
+ {id:"last_threshold",icon:"🌘",title:"El Último Umbral",desc:"Dale nombre a 50 entrenamientos distintos. Un único objetivo, pero uno de los más raros de Swim Quest.",reward:{theme:"Eclipse"},ok:()=>new Set((S.trainings||[]).map(e=>String(e.name||"").trim()).filter(Boolean)).size>=50}
+];
+// Fix the one compact predicate explicitly so old browsers do not choke on shorthand typo.
+ACHIEVEMENTS[13].ok=()=>{
+ const used=new Set();S.trainings.forEach(e=>e.series.forEach(s=>{if(["crol","espalda","pecho","mariposa"].includes(s.style))used.add(s.style)}));
+ return used.size>=4;
+};
+function achievementUnlocked(a){return !!(S.achievements||[]).includes(a.id)}
+function achievementCheck(){
+ if(!S.profile)return [];
+ if(!Array.isArray(S.achievements))S.achievements=[];
+ const unlocked=[];
+ for(const a of ACHIEVEMENTS){
+  if(!achievementUnlocked(a)&&a.ok()){
+   S.achievements.push(a.id);
+   unlocked.push(a);
+   if(a.reward?.theme)S.purchases["theme_"+a.reward.theme]=true;
+   if(a.reward?.coins)S.coins+=Number(a.reward.coins||0);
+   if(a.reward?.xp){S.xp+=Number(a.reward.xp||0);S.level=levelFromXP(S.xp);}
+  }
+ }
+ if(unlocked.length)save();
+ return unlocked;
+}
+function achievementModal(a){
+ const reward=a.reward?.theme?`<div class="pill" style="margin-top:9px">🎨 Recompensa: ${THEMES[a.reward.theme]?.emoji||"✨"} ${a.reward.theme}</div>`:(a.reward?.coins||a.reward?.xp)?`<div class="pill" style="margin-top:9px">${a.reward.coins?`🪙 ${fmt(a.reward.coins)} monedas`:""}${a.reward.coins&&a.reward.xp?" · ":""}${a.reward.xp?`⭐ ${fmt(a.reward.xp)} XP`:""}</div>`:(a.impossible?`<div class="pill" style="margin-top:9px">🤡 Sin recompensa. Este logro es imposible.</div>`:`<div class="pill" style="margin-top:9px">✅ Logro permanente</div>`);
+ modal(`<div class="reveal" style="text-align:center"><div style="font-size:62px">${a.icon}</div><div class="kicker">🏆 LOGRO DESBLOQUEADO</div><h1>${esc(a.title)}</h1><p class="sub">${esc(a.desc)}</p>${reward}<button class="btn primary" style="margin-top:14px" onclick="closeModal()">Continuar</button></div>`);
+}
+function showAchievements(){
+ const unlocked=(S.achievements||[]).length;
+ modal(`<div class="kicker">🏆 LOGROS</div><div class="achievements-summary"><h2 style="margin:0">Colección</h2><span class="pill">${unlocked} / ${ACHIEVEMENTS.length}</span></div><div class="achievement-grid">${ACHIEVEMENTS.map(a=>{const ok=achievementUnlocked(a);const reward=a.reward?.theme?` · 🎨 ${a.reward.theme}`:(a.reward?.coins||a.reward?.xp)?` · ${a.reward.coins?`🪙 ${a.reward.coins}`:""}${a.reward.coins&&a.reward.xp?" · ":""}${a.reward.xp?`⭐ ${a.reward.xp} XP`:""}`:a.impossible?" · Sin recompensa":"";return `<div class="achievement-card ${ok?"unlocked":"locked"}"><div class="achievement-icon">${ok?a.icon:"🔒"}</div><div><b>${esc(a.title)}</b><div class="sub">${esc(a.desc)}${ok?reward:""}</div></div></div>`}).join("")}</div><button class="btn secondary" style="margin-top:10px" onclick="closeModal()">Cerrar</button>`);
+}
+const PEAR_DIALOGUE=[
+ {speaker:"🍐 PERA",text:"Miras este espacio en blanco como si tuvieras todo el tiempo del mundo para decidir qué pintar —dice la Pera, balanceándose apenas un milímetro en el vacío—. No lo tienes."},
+ {speaker:"👤 TÚ",text:"¿Quién... qué eres? ¿Por qué eres una pera?"},
+ {speaker:"🍐 PERA",text:"Eso no importa ahora. Lo que importa es que estás desperdiciando el lienzo. Crees que por estar en blanco es eterno, pero la pintura se está secando en tu paleta sin que hayas dado la primera pincelada."},
+ {speaker:"👤 TÚ",text:"Es que no sé qué pintar aún. Tengo miedo de equivocarme, de arruinarlo. Estoy esperando el momento perfecto, la madurez perfecta."},
+ {speaker:"🍐 PERA",text:"¿Madurez? —La Pera emite un leve destello dorado en su piel—. Déjame hablarte de la madurez. Yo nací de una flor, crecí al sol, pasé de un verde duro a esta carne dulce que ves hoy. ¿Y sabes qué sigue después de esto? La podredumbre. El suelo. Desaparecer."},
+ {speaker:"🍐 PERA",text:"Nada dura para siempre. Mi tiempo es corto, pero el tuyo también lo es. La única diferencia es que yo no paso mis días deseando haber sido una manzana o planeando cómo seré cuando caiga del árbol. Yo solo soy una pera, aquí y ahora."},
+ {speaker:"👤 TÚ",text:"Pero tú no tienes que tomar decisiones complejas, ni lidiar con el miedo a fracasar."},
+ {speaker:"🍐 PERA",text:"No, pero veo cómo tú te paralizas por ellos. Guardas tu vida para un \"después\", como si el tiempo fuera un refrigerador que va a mantener tus días frescos para siempre. No lo hará."},
+ {speaker:"🍐 PERA",text:"Te estás consumiendo en la sala de espera de tu propia existencia. Aprovechar la vida no es hacer cosas extraordinarias; es dejar de tratar el presente como si fuera el ensayo general de otra función que nunca va a empezar."},
+ {speaker:"🍐 PERA",text:"La Pera se queda completamente inmóvil en el aire. La blancura del lienzo parece volverse un poco más brillante, esperando."},
+ {speaker:"🍐 PERA",text:"Acepta que todo se acaba —concluye la Pera—. Y en lugar de temblar por eso, usa ese miedo como el combustible para dar el primer trazo hoy. ¿O vas a esperar a estar podrido para darte cuenta de que estabas listo?"}
+];
+let pearIndex=0,pearReady=false,pearVisitsToday=0,pearLockDate="";
+function pearVisitKey(){return "SWIM_QUEST_PEAR_VISITS";}
+function resetPearDailyVisits(){const d=localDateKey();const raw=localStorage.getItem(pearVisitKey());let x={date:d,count:0};try{if(raw)x=JSON.parse(raw)||x;}catch(e){}if(x.date!==d)x={date:d,count:0};localStorage.setItem(pearVisitKey(),JSON.stringify(x));pearVisitsToday=Number(x.count||0);pearLockDate=x.lockDate||"";return x;}
+function openPearScene(){
+ ambientStop();
+ const x=resetPearDailyVisits();x.count=(x.count||0)+1;
+ const daysKey="SWIM_QUEST_PEAR_DAYS";const seenKey="SWIM_QUEST_PEAR_SEEN";const today=localDateKey();let seen={};try{seen=JSON.parse(localStorage.getItem(seenKey)||"{}")||{};}catch(e){} if(!seen[today]){seen[today]=1;localStorage.setItem(seenKey,JSON.stringify(seen));localStorage.setItem(daysKey,String(Object.keys(seen).length));}pearVisitsToday=x.count;
+ if(x.count>5){x.lockDate=localDateKey();localStorage.setItem(pearVisitKey(),JSON.stringify(x));pearLockDate=x.lockDate;pearIndex=-1;pearReady=false;renderPearScene();return;}
+ localStorage.setItem(pearVisitKey(),JSON.stringify(x));
+ pearIndex=0;pearReady=false;renderPearScene();
+}
+function pearStartMusic(){try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;const c=new AC();const notes=[261.63,329.63,392,523.25,392,329.63,293.66,349.23];let i=0;window.__pearAudioCtx=c;window.__pearAudioTimer=setInterval(()=>{const o=c.createOscillator(),g=c.createGain();o.type="sine";o.frequency.value=notes[i++%notes.length];g.gain.setValueAtTime(.0001,c.currentTime);g.gain.exponentialRampToValueAtTime(.045,c.currentTime+.02);g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+.38);o.connect(g).connect(c.destination);o.start();o.stop(c.currentTime+.4)},480);}catch(e){}}
+function pearStopMusic(){if(window.__pearAudioTimer){clearInterval(window.__pearAudioTimer);window.__pearAudioTimer=null}if(window.__pearAudioCtx){try{window.__pearAudioCtx.close();}catch(e){}window.__pearAudioCtx=null}}
+function renderPearScene(){
+ const old=document.getElementById('pearScene');if(old)old.remove();
+ const locked=pearIndex===-1;
+ const item=locked?{speaker:"🍐 PERA",text:":("}:PEAR_DIALOGUE[pearIndex];
+ const scene=document.createElement('div');scene.id='pearScene';scene.className='pear-scene';scene.innerHTML=`<div class="pear-shine"></div><div class="pear-stage"><div class="pear-emoji">🍐</div><div class="pear-speaker">${esc(item.speaker)}</div><div class="pear-text" id="pearText">${esc(item.text)}</div><button class="pear-next" id="pearNext" ${locked?"":"disabled"}>${locked?"Volver":"Siguiente"}</button><button class="pear-close" onclick="closePearScene()">Salir</button></div>`;
+ document.body.appendChild(scene);
+ pearStopMusic();pearStartMusic();
+ if(locked){const b=document.getElementById('pearNext');if(b)b.onclick=closePearScene;return;}
+ const readMs=Math.max(2200,Math.min(9000,Math.round(item.text.length*24)));setTimeout(()=>{pearReady=true;const b=document.getElementById('pearNext');if(b){b.disabled=false;b.onclick=pearNext;}},readMs);
+}
+function pearNext(){if(!pearReady)return;if(pearIndex<PEAR_DIALOGUE.length-1){pearIndex++;pearReady=false;renderPearScene();}else closePearScene();}
+function closePearScene(){
+ pearStopMusic();
+ document.getElementById('pearScene')?.remove();
+ if(S.settings.music)restartAmbient();
+}
+const PEAR_FLOAT_PHRASES=["Soy una pera","Te comiste a mi hermana","Porque tengo este cuerpo?","Me amas?","XD","OMG","Soy deliciosa, no?","Porque existo?"];
+let pearFloatTimer=null;
+function startPearFloatingPhrases(){if(pearFloatTimer)clearInterval(pearFloatTimer);pearFloatTimer=setInterval(()=>{if(!S.purchases?.pear||document.hidden)return;const p=$("pearPet");if(!p)return;const b=document.createElement("div");b.className="pear-floating-phrase";b.textContent=PEAR_FLOAT_PHRASES[Math.floor(Math.random()*PEAR_FLOAT_PHRASES.length)];p.parentElement?.appendChild(b);const r=p.getBoundingClientRect();b.style.right=(window.innerWidth-r.right+8)+"px";b.style.top=(r.bottom+6)+"px";setTimeout(()=>b.remove(),3600);},12000);}
+function updatePearPet(){const p=$("pearPet");if(p)p.classList.toggle('visible',!!S.purchases?.pear);startPearFloatingPhrases()}
 function localDateKey(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
 function dailyRewardInfo(){
  const today=localDateKey(),d=S.dailyReward||{};
  if(d.date!==today||typeof d.kind!=="string"){
-  const themes=["Cosmos","Abismo","Solar","Glacial","Esmeralda","Leviatan","Sangriento","Rosadito"].filter(k=>!S.purchases["theme_"+k]);
+  const themes=["Cosmos","Abismo","Solar","Glacial","Esmeralda","Leviatan","Sangriento","Rosadito","CianNeon","Carbon","Eclipse"].filter(k=>!S.purchases["theme_"+k]);
   if(themes.length&&Math.random()<.04){const themeKey=themes[Math.floor(Math.random()*themes.length)];S.dailyReward={date:today,claimed:false,coins:0,xp:0,kind:"theme",themeKey};}
   else{S.dailyReward={date:today,claimed:false,coins:20+Math.floor(Math.random()*131),xp:10+Math.floor(Math.random()*91),kind:"coinsxp",themeKey:""};}
   save();
@@ -923,10 +1092,13 @@ function countTrainingsOnDate(date,excludeId=""){return S.trainings.filter(x=>x.
 function suspiciousRecordSeries(series){return (series||[]).some(s=>s.time&&s.distance===50&&s.reps===1&&s.intensity==="intenso"&&Number(s.time)>0&&Number(s.time)<19)}
 function showRecordSanityModal(){tone("clown");modal('<div style="text-align:center"><div style="font-size:62px;line-height:1">🤡</div><h2>¿Seguro que ese es tu récord?</h2><p class="sub">Ese tiempo es extremadamente bajo. Revisa la marca antes de guardar el entrenamiento.</p><button class="btn primary" style="margin-top:12px" onclick="closeModal()">No, revisar mi récord</button></div>')}
 function showDailyLimitModal(){tone("clown");modal('<div style="text-align:center"><div style="font-size:62px;line-height:1">🤡</div><h2>¿Más de 3 entrenamientos?</h2><p class="sub">Swim Quest permite como máximo 3 entrenamientos registrados en el mismo día.</p><button class="btn primary" style="margin-top:12px" onclick="closeModal()">No, revisar</button></div>')}
+function showImpossibleDistanceModal(){tone("clown");modal('<div style="text-align:center"><div style="font-size:62px;line-height:1">🤡</div><h2>¿70.000 m en una práctica?</h2><p class="sub">Eso no parece un entrenamiento normal. Revisa la distancia antes de guardar.</p><button class="btn primary" style="margin-top:12px" onclick="closeModal()">No, revisar</button></div>')}
+
 function saveTraining(){
  syncDraft();if(!draftMeters()){toast("Añade al menos una distancia válida.");return}
  const targetDate=$("tDate").value||today();
  if(countTrainingsOnDate(targetDate)>=3){showDailyLimitModal();return}
+ if(draftMeters()>70000){showImpossibleDistanceModal();return}
  if(suspiciousRecordSeries(draft)){showRecordSanityModal();return}
  const e={id:"e_"+Date.now()+"_"+Math.random().toString(36).slice(2),date:$("tDate").value||today(),durationMin:draftDuration,series:JSON.parse(JSON.stringify(draft))};
  e.number=S.nextTrainingNumber++;e.name=(document.getElementById("tName")?.value||"").trim();
@@ -974,6 +1146,7 @@ function commitEdit(id){
  }).filter(s=>s.distance>0);
  const newDate=$("edDate").value;
  if(countTrainingsOnDate(newDate,id)>=3){showDailyLimitModal();return}
+ if(arr.reduce((a,s)=>a+(+s.distance||0)*(+s.reps||0),0)>70000){showImpossibleDistanceModal();return}
  if(suspiciousRecordSeries(arr)){showRecordSanityModal();return}
  e.date=newDate;e.name=(document.getElementById("edName")?.value||"").trim();e.durationMin=+(document.getElementById("edDur")?.value||0);e.series=arr;e.difficulty=difficultyInfo(e,S?.profile?.avgMeters).key;rebuildProfile();
  const newRecords=updatePersonalRecords(e);save();
@@ -1051,7 +1224,7 @@ const SHOP=[
  {id:"shield",icon:"🛡️",name:"Recuperador de racha",price:120,desc:"Consumible. Protege una ruptura justificada.",buy:()=>S.shield++},
  {id:"xp500",icon:"💠",name:"Cristal XP 500",price:150,desc:"Compra 500 XP con monedas.",buy:()=>gainXP(500)},
  {id:"xp1500",icon:"🔷",name:"Cristal XP 1500",price:380,desc:"Compra 1500 XP con monedas.",buy:()=>gainXP(1500)},
- {id:"xpJuan",icon:"🔮",name:"Cristal de Juan",price:2500,desc:"Cristal único y especial. Otorga 10.000 XP inmediatamente.",buy:()=>gainXP(10000)},
+ {id:"xpJuan",icon:"🔮",name:"Cristal de Ascensión",price:2500,desc:"Cristal único y especial. Otorga 10.000 XP inmediatamente.",buy:()=>gainXP(10000)},
  {id:"theme_Cosmos",icon:"🌌",name:"Tema Cosmos",price:220,desc:"Estrellas, brillo y fondo espacial.",buy:()=>S.purchases["theme_Cosmos"]=true},
  {id:"theme_Abismo",icon:"🌑",name:"Tema Abismo",price:240,desc:"Fondo profundo y movimiento sutil.",buy:()=>S.purchases["theme_Abismo"]=true},
  {id:"theme_Solar",icon:"☀️",name:"Tema Solar",price:240,desc:"Pulsos cálidos y energía.",buy:()=>S.purchases["theme_Solar"]=true},
@@ -1062,18 +1235,20 @@ const SHOP=[
  {id:"theme_Leviatan",icon:"🐉",name:"Tema Leviatán",price:520,desc:"Botones arcoíris animados, partículas oceánicas y una posibilidad de ver al Leviatán cruzar la pantalla.",buy:()=>S.purchases["theme_Leviatan"]=true},
  {id:"theme_Sangriento",icon:"🩸",name:"Tema Sangriento",price:380,desc:"Botones rojo intenso y pequeñas gotas abstractas descendiendo por la interfaz.",buy:()=>S.purchases["theme_Sangriento"]=true},
  {id:"theme_Rosadito",icon:"🌸",name:"Tema Rosadito",price:390,desc:"Estilo cute con botones rosado-blanco, brillo suave y partículas de gatos cayendo.",buy:()=>S.purchases["theme_Rosadito"]=true},
+ {id:"theme_CianNeon",icon:"⚡",name:"Tema Cian Neón",price:340,desc:"Cian eléctrico con descargas ocasionales en los botones.",buy:()=>S.purchases["theme_CianNeon"]=true},
  {id:"music3",icon:"🕹️",name:"Tema musical: Salto Pixel",price:290,desc:"Música chiptune original, rápida y juguetona, inspirada en plataformas clásicas.",buy:()=>S.purchases.music3=true},
  {id:"monthShield",icon:"🛡️",name:"Protector de Racha · 30 días",price:780,desc:"Objeto permanente renovable. Mantiene tu racha protegida durante 30 días.",buy:()=>activateMonthlyShield()},
  {id:"talismanMarea",icon:"🧿",name:"Talismán de la Marea",price:680,desc:"Objeto permanente. Aumenta en un 15% las monedas obtenidas al completar entrenamientos y misiones.",buy:()=>S.purchases.talismanMarea=true},
  {id:"compassSwimmer",icon:"🧭",name:"Brújula del Nadador",price:540,desc:"Objeto permanente. Muestra qué te falta para alcanzar tu siguiente rango.",buy:()=>S.purchases.compassSwimmer=true},
  {id:"trainingJournal",icon:"📓",name:"Diario de Entrenamiento",price:620,desc:"Objeto permanente. Desbloquea las estadísticas destacadas de tus sesiones.",buy:()=>S.purchases.trainingJournal=true},
- {id:"motivationFish",icon:"🐟",name:"Pez Motivador",price:460,desc:"Objeto permanente. Aparece en tu perfil y comparte uno de 50 mensajes motivacionales al tocarlo.",buy:()=>S.purchases.motivationFish=true}
+ {id:"motivationFish",icon:"🐟",name:"Pez Motivador",price:460,desc:"Objeto permanente. Aparece en tu perfil y comparte uno de tus mensajes motivacionales al tocarlo.",buy:()=>S.purchases.motivationFish=true},
+ {id:"pear",icon:"🍐",name:"La Pera",price:700,desc:"Mascota permanente. Desbloquea una escena secreta y el tema exclusivo Pera.",buy:()=>{S.purchases.pear=true;S.purchases.theme_Pera=true}}
 ];
 function shop(){
  return `<div class="card"><div class="row"><div><div class="kicker">🛒 TIENDA</div><h2>Recompensas</h2><div class="sub">La mayoría de compras son permanentes. El recuperador de racha se consume al utilizarlo.</div></div><div class="wallet">🪙 ${fmt(S.coins)}</div></div></div>
  <div class="shop" style="margin-top:10px">${SHOP.map(it=>{
  const isTheme=it.id.startsWith("theme_");
- const permanentOwned=["talismanMarea","compassSwimmer","trainingJournal","motivationFish","music1","music2","music3"].includes(it.id)&&!!S.purchases[it.id];
+ const permanentOwned=["talismanMarea","compassSwimmer","trainingJournal","motivationFish","pear","music1","music2","music3"].includes(it.id)&&!!S.purchases[it.id];
  const owned=isTheme ? !!S.purchases[it.id] : it.id==="monthShield" ? false : permanentOwned;
  const monthShieldLabel=it.id==="monthShield"&&hasMonthlyShield()?`<div class="pill" style="margin-top:7px">🛡️ Activo hasta ${new Intl.DateTimeFormat("es-ES",{day:"numeric",month:"long"}).format(new Date(S.monthlyShieldUntil))}</div>`:"";
  return `<div class="shop-item"><div style="font-size:30px">${it.icon}</div><h3>${it.name}</h3><div class="sub">${it.desc}</div>${monthShieldLabel}${owned?`<div class="pill" style="margin-top:7px">✅ Comprado · permanente</div>`:`<button class="btn primary" style="margin-top:8px" onclick="buy('${it.id}')">🪙 ${it.price}</button>`}</div>`;
@@ -1081,10 +1256,10 @@ function shop(){
 }
 function buy(id){
  const it=SHOP.find(x=>x.id===id);if(!it)return;
- if(["talismanMarea","compassSwimmer","trainingJournal","motivationFish","music1","music2","music3"].includes(it.id)&&S.purchases[it.id]){toast("✅ Ya tienes este objeto permanente.");return}
+ if(["talismanMarea","compassSwimmer","trainingJournal","motivationFish","pear","music1","music2","music3"].includes(it.id)&&S.purchases[it.id]){toast("✅ Ya tienes este objeto permanente.");return}
  if(S.coins<it.price){const faltan=it.price-S.coins;toast(`🪙 No tienes suficiente dinero. Te faltan ${fmt(faltan)} monedas.`);tone("click");return}
  const beforeRank=currentRank().r.c;
- S.coins-=it.price;const levelEvent=it.buy()||null;if(it.id==="monthShield")S.purchases.monthShield=true;if(it.id==="music3")S.purchases.music3=true;save();applyTheme();tone("coin");render();
+ S.coins-=it.price;const levelEvent=it.buy()||null;if(it.id==="monthShield")S.purchases.monthShield=true;if(it.id==="music3")S.purchases.music3=true;save();applyTheme();tone("coin");updatePearPet();render();
  const levelText=levelEvent?.levels?` · ⬆️ LV ${S.level} · +${fmt(levelEvent.coins)} 🪙`:"";
  toast(`🛒 Comprado: ${it.name}${levelText}`);
  if(currentRank().r.c!==beforeRank)setTimeout(()=>rankReveal(currentRank().r),420);
@@ -1098,10 +1273,11 @@ function profile(){
  ${j?`<div class="card" style="margin-top:10px"><div class="sectionTitle">📓 DIARIO DE ENTRENAMIENTO</div><div class="journal-grid" style="margin-top:8px"><div class="stat"><div class="kicker">Más largo</div><div class="v">${fmt(j.longest.durationMin||0)} min</div><div class="sub">${labelDate(j.longest.date)}</div></div><div class="stat"><div class="kicker">Más XP</div><div class="v">${fmt(j.mostXP.xp||0)}</div><div class="sub">${labelDate(j.mostXP.date)}</div></div><div class="stat"><div class="kicker">Más metros</div><div class="v">${fmt(totalMeters([j.mostMeters]))} m</div><div class="sub">${labelDate(j.mostMeters.date)}</div></div><div class="stat"><div class="kicker">Más monedas</div><div class="v">${fmt(j.mostCoins.coins||0)} 🪙</div><div class="sub">${labelDate(j.mostCoins.date)}</div></div></div><div class="list-item row" style="margin-top:8px"><span>🏊 Estilo más utilizado</span><b>${esc(styleName)}</b></div></div>`:""}
  ${S.monthlyShieldUntil?`<div class="list-item" style="margin-top:10px"><b>🛡️ Protector mensual</b><div class="sub">${hasMonthlyShield()?`Activo hasta ${new Intl.DateTimeFormat("es-ES",{day:"numeric",month:"long"}).format(new Date(S.monthlyShieldUntil))}.`:"Ya expiró; puedes renovarlo en la tienda."}</div></div>`:""}
  ${S.purchases.motivationFish?`<div class="profile-fish" id="profileFish" onclick="fishMotivation()" role="button" aria-label="Pez motivador"><div class="fish-art">🐟</div><div><b>🐟 Pez Motivador</b><div class="fish-bubble">Tócame cuando necesites un poco de motivación.</div></div></div>`:""}
- 
- <div class="grid g2" style="margin-top:10px"><button class="btn secondary" onclick="settings()">⚙️ Ajustes</button><button class="btn secondary" onclick="showMonthSummary(true)">🎉 Resumen</button></div><div class="list-item" style="margin-top:10px"><b>📱 Modo app</b><div class="sub">Esta versión está preparada como PWA para instalarse desde un navegador compatible y aparecer como una aplicación en tu celular.</div><button id="installAppBtn" class="btn primary" style="margin-top:9px;display:none" onclick="installApp()">📲 Instalar Swim Quest</button></div>`;
+ <div class="card" style="margin-top:10px"><div class="achievements-summary"><div><div class="sectionTitle">🏆 LOGROS</div><div class="sub">Desbloqueados: ${(S.achievements||[]).length} / ${ACHIEVEMENTS.length}</div></div><button class="btn secondary" style="width:auto;min-width:130px" onclick="showAchievements()">Ver logros</button></div></div>
+ <div class="grid g2" style="margin-top:10px"><button class="btn secondary" onclick="settings()">⚙️ Ajustes</button><button class="btn secondary" onclick="showMonthSummary(true)">🎉 Resumen</button><button class="btn secondary" onclick="comingSoonSocial()">👥 Añadir amigos</button><button class="btn secondary" onclick="comingSoonSocial()">👥 Crear grupo</button></div><div class="list-item" style="margin-top:10px"><b>📱 Modo app</b><div class="sub">Esta versión está preparada como PWA para instalarse desde un navegador compatible y aparecer como una aplicación en tu celular.</div><button id="installAppBtn" class="btn primary" style="margin-top:9px;display:none" onclick="installApp()">📲 Instalar Swim Quest</button></div>`;
 }
 
+function comingSoonSocial(){toast("👥 Próximamente. Las funciones sociales todavía no están disponibles.");tone("click")}
 function settings(){
  modal(`<div class="kicker">⚙️ AJUSTES</div><h2>Personaliza tu experiencia</h2>
  <div class="grid g2"><div class="field"><label>Nombre</label><input id="sName" value="${esc(S.profile.name)}"></div><div class="field"><label>Tema visual equipado</label><select id="sTheme" onchange="equipTheme(this.value)">${Object.entries(THEMES).map(([k,v])=>{
@@ -1110,9 +1286,10 @@ function settings(){
  <div class="sub">Solo puedes equipar estilos que hayas desbloqueado en la tienda. Aqua viene desbloqueado.</div>
  <div class="field"><label>Descripción</label><textarea id="sBio">${esc(S.profile.bio||"")}</textarea></div>
  <label class="checkrow" style="margin:8px 0"><input id="sMusic" type="checkbox" ${S.settings.music?"checked":""}> 🎵 Música</label>
- <div class="field"><label>Música equipada</label><select id="sMusicTrack">${Object.entries(MUSIC_TRACKS).map(([k,v])=>{const owned=k==="aqua"||!!S.purchases[k==="marea"?"music1":k==="cosmos"?"music2":"music3"];return `<option value="${k}" ${S.settings.musicTrack===k?"selected":""} ${owned?"":"disabled"}>${v.emoji} ${v.name}${owned?"":" · 🔒"}</option>`}).join("")}</select><div class="sub" style="margin-top:4px">Compra Marea, Cosmos o Salto Pixel en la tienda para poder equiparlas.</div></div>
+ <div class="field"><label>Música equipada</label><select id="sMusicTrack" onchange="previewMusicTrack(this.value)">${Object.entries(MUSIC_TRACKS).map(([k,v])=>{const owned=k==="aqua"||!!S.purchases[k==="marea"?"music1":k==="cosmos"?"music2":"music3"];return `<option value="${k}" ${S.settings.musicTrack===k?"selected":""} ${owned?"":"disabled"}>${v.emoji} ${v.name}${owned?"":" · 🔒"}</option>`}).join("")}</select><div class="sub" style="margin-top:4px">Solo una música puede sonar a la vez.</div></div>
  <label>Volumen música <input id="sMusicVol" type="range" min="0" max="1" step=".01" value="${S.settings.musicVol}"></label>
  <label class="checkrow" style="margin:8px 0"><input id="sSfx" type="checkbox" ${S.settings.sfx?"checked":""}> 🔊 Efectos</label>
+ <div class="list-item" style="margin-top:9px"><div class="row"><span>🔔 Notificaciones</span><button class="btn secondary" style="width:auto" onclick="requestNotifications()">Activar</button></div><div class="sub">Solo solicita permiso del navegador. El envío automático requiere un servicio push externo.</div></div>
  <label>Volumen efectos <input id="sSfxVol" type="range" min="0" max="1" step=".01" value="${S.settings.sfxVol}"></label>
  <div class="field" style="margin-top:10px"><label>Días habituales de natación</label><div class="row wrap">${[[1,"Lun"],[2,"Mar"],[3,"Mié"],[4,"Jue"],[5,"Vie"],[6,"Sáb"],[0,"Dom"]].map(([v,n])=>`<label class="pill"><input class="day" type="checkbox" value="${v}" ${S.settings.days.includes(v)?"checked":""} style="width:auto">${n}</label>`).join("")}</div></div>
  <div class="grid g2"><button class="btn secondary" onclick="instructions()">📖 Instrucciones</button><button class="btn secondary" onclick="exportData()">💾 Exportar</button><button class="btn secondary" onclick="importData()">📂 Importar</button><button class="btn danger" onclick="resetData()">♻️ Reiniciar</button></div>
@@ -1122,6 +1299,20 @@ function equipTheme(theme){
  if(theme==="Aqua" || S.purchases["theme_"+theme]){S.settings.theme=theme;applyTheme();save();return}
  toast("🔒 Ese estilo todavía no está comprado.");
  render();
+}
+
+const FUN_NOTIFICATIONS=[
+ "👀 Swim Quest: Sabemos que estás ahí.",
+ "📍 Swim Quest: Detectamos una piscina sospechosamente cerca de ti.",
+ "🐟 Swim Quest: El pez dice que te vio.",
+ "🍐 Swim Quest: La Pera cree que sabe dónde estás.",
+ "🏊 Swim Quest: No mires atrás. La piscina está ganando."];
+function sendFunNotification(){try{if(!("Notification" in window)||Notification.permission!=="granted")return;const text=FUN_NOTIFICATIONS[Math.floor(Math.random()*FUN_NOTIFICATIONS.length)];new Notification("Swim Quest",{body:text,icon:"./icons/swim-quest-icon-192.png",badge:"./icons/swim-quest-icon-192.png"});}catch(e){}}
+async function requestNotifications(){try{if(!("Notification" in window)){toast("🔔 Este navegador no admite notificaciones web.");return}const p=await Notification.requestPermission();if(p==="granted")sendFunNotification();toast(p==="granted"?"🔔 Notificaciones activadas.":"🔕 Permiso no concedido.");}catch(e){toast("🔔 No se pudo solicitar el permiso.")}}
+function previewMusicTrack(track){
+ if(!MUSIC_TRACKS[track])return;
+ S.settings.musicTrack=track;
+ if(S.settings.music)restartAmbient();
 }
 function saveSettings(){
  S.profile.name=$("sName").value.trim()||S.profile.name;S.profile.bio=$("sBio").value.trim();S.settings.theme=$("sTheme").value;S.settings.music=$("sMusic").checked;S.settings.musicTrack=$("sMusicTrack").value||"aqua";S.settings.musicVol=+$("sMusicVol").value;S.settings.sfx=$("sSfx").checked;S.settings.sfxVol=+$("sSfxVol").value;S.settings.days=[...document.querySelectorAll(".day:checked")].map(x=>+x.value);save();applyTheme();closeModal();render();tone("save");restartAmbient();toast(`⚙️ Ajustes guardados · ${MUSIC_TRACKS[S.settings.musicTrack]?.name||"Aqua"}`);}
@@ -1212,7 +1403,7 @@ function boot(){
  updateInstallButton();
  document.body.addEventListener("pointerdown",()=>ambientStart(),{once:true});
 }
-window.createProfile=createProfile;window.installApp=installApp;window.go=go;window.settings=settings;window.instructions=instructions;window.closeModal=closeModal;window.saveSettings=saveSettings;window.exportData=exportData;window.importData=importData;window.resetData=resetData;
+window.requestNotifications=requestNotifications;window.openPearScene=openPearScene;window.pearNext=pearNext;window.closePearScene=closePearScene;window.showAchievements=showAchievements;window.coinShop=coinShop;window.comingSoonPurchases=comingSoonPurchases;window.comingSoonSocial=comingSoonSocial;window.createProfile=createProfile;window.installApp=installApp;window.go=go;window.settings=settings;window.instructions=instructions;window.closeModal=closeModal;window.saveSettings=saveSettings;window.exportData=exportData;window.importData=importData;window.resetData=resetData;
 window.fishMotivation=fishMotivation;window.trainingTimer=trainingTimer;window.timerToggle=timerToggle;window.timerReset=timerReset;window.timerClose=timerClose;window.addSeries=addSeries;window.removeSeries=removeSeries;window.saveTraining=saveTraining;window.editTraining=editTraining;window.commitEdit=commitEdit;window.deleteTraining=deleteTraining;window.claimMission=claimMission;window.buy=buy;window.showMonthSummary=showMonthSummary;window.missions=missions;
 boot();
 </script>
@@ -1220,3 +1411,7 @@ boot();
 if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));}
 </script></body>
 </html>
+
+<style>
+.daily-roulette .roulette-wheel{width:150px;height:150px;box-shadow:0 0 24px rgba(66,221,255,.15),inset 0 0 20px rgba(255,255,255,.12);animation:rouletteSpin 1.35s cubic-bezier(.2,.8,.2,1);}.daily-roulette .roulette-wheel:before{inset:8px;animation:none}.daily-roulette .roulette-wheel:after{inset:22px}.daily-roulette .roulette-text{font-size:34px;animation:none}.pear-speaker{font-size:12px;text-transform:uppercase}.pear-sad{font-size:30px;margin-top:6px;color:#6b7d6f}.theme-particle.abyssdrop{position:fixed}.theme-particle.eclipseSpark{position:fixed}
+</style>
