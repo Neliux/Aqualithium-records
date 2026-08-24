@@ -634,7 +634,7 @@ let S=load(), page="home", draft=[], draftDuration=0, currentTrainingName="", st
 
 function clone(o){return JSON.parse(JSON.stringify(o))}
 function merge(a,b){for(const k in b){if(b[k]&&typeof b[k]==="object"&&!Array.isArray(b[k])&&a[k]&&typeof a[k]==="object")a[k]=merge(a[k],b[k]);else a[k]=b[k]}return a}
-function load(){try{const x=localStorage.getItem(SAVE);const raw=x?JSON.parse(x):null;const data=x?merge(clone(DEFAULT),raw):clone(DEFAULT);if(x&&raw&&!Object.prototype.hasOwnProperty.call(raw,"levelRewardedThrough")){data.levelRewardedThrough=Math.max(1,data.level||1);data.levelRewardCoins=0;}if(!Number.isFinite(data.levelRewardedThrough)||data.levelRewardedThrough<1)data.levelRewardedThrough=Math.max(1,data.level||1);if(!Number.isFinite(data.levelRewardCoins))data.levelRewardCoins=0;if(!data.dailyReward||typeof data.dailyReward!=="object")data.dailyReward={date:"",claimed:false,coins:0,xp:0};if(!Number.isFinite(data.dailyReward.coins))data.dailyReward.coins=0;if(!Number.isFinite(data.dailyReward.xp))data.dailyReward.xp=0;if(typeof data.dailyReward.kind!=="string")data.dailyReward.kind="coinsxp";if(typeof data.dailyReward.themeKey!=="string")data.dailyReward.themeKey="";if(typeof data.monthlyShieldUntil!=="string")data.monthlyShieldUntil="";if(!data.settings.musicTrack)data.settings.musicTrack="aqua";if(!data.secret||typeof data.secret!=="object")data.secret=clone(DEFAULT.secret);if(!data.social||typeof data.social!=="object")data.social=clone(DEFAULT.social);if(!Array.isArray(data.social.friends))data.social.friends=[];
+function load(){try{const x=localStorage.getItem(SAVE);const raw=x?JSON.parse(x):null;const data=x?merge(clone(DEFAULT),raw):clone(DEFAULT);if(x&&raw&&!Object.prototype.hasOwnProperty.call(raw,"levelRewardedThrough")){data.levelRewardedThrough=Math.max(1,data.level||1);data.levelRewardCoins=0;}if(!Number.isFinite(data.levelRewardedThrough)||data.levelRewardedThrough<1)data.levelRewardedThrough=Math.max(1,data.level||1);if(!Number.isFinite(data.levelRewardCoins))data.levelRewardCoins=0;if(!data.dailyReward||typeof data.dailyReward!=="object")data.dailyReward={date:"",claimed:false,coins:0,xp:0};if(!Number.isFinite(data.dailyReward.coins))data.dailyReward.coins=0;if(!Number.isFinite(data.dailyReward.xp))data.dailyReward.xp=0;if(typeof data.dailyReward.kind!=="string")data.dailyReward.kind="coinsxp";if(typeof data.dailyReward.themeKey!=="string")data.dailyReward.themeKey="";if(typeof data.monthlyShieldUntil!=="string")data.monthlyShieldUntil="";if(!data.settings.musicTrack)data.settings.musicTrack="aqua";if(!data.secret||typeof data.secret!=="object")data.secret=clone(DEFAULT.secret);if(!Array.isArray(data.secret.hitmanTargets))data.secret.hitmanTargets=[];if(typeof data.secret.firstPearEvent!=="string")data.secret.firstPearEvent="";if(!data.social||typeof data.social!=="object")data.social=clone(DEFAULT.social);if(!Array.isArray(data.social.friends))data.social.friends=[];
 data.trainings=(data.trainings||[]).map((e,i)=>{const ee={...e,number:Number.isFinite(e.number)?e.number:i+1,name:typeof e.name==="string"?e.name:"",series:(e.series||[]).map(ss=>ss)};ee.difficulty=difficultyInfo(ee,data.profile?.avgMeters).key;return ee});
  const maxTrainingNo=data.trainings.reduce((m,e)=>Math.max(m,Number(e.number)||0),0);data.nextTrainingNumber=Math.max(Number(data.nextTrainingNumber)||1,maxTrainingNo+1);if(data.profile){if(!Number.isFinite(data.profile.avgMeters))data.profile.avgMeters=1000;if(!data.profile.records)data.profile.records={crol:"",espalda:"",pecho:"",mariposa:""};if(data.profile.record&&!data.profile.records.crol&&!data.profile.records.espalda&&!data.profile.records.pecho&&!data.profile.records.mariposa){data.profile.records.mariposa=data.profile.record.style==="mariposa"?data.profile.record.time:"";data.profile.records.pecho=data.profile.record.style==="pecho"?data.profile.record.time:"";data.profile.records.espalda=data.profile.record.style==="espalda"?data.profile.record.time:"";data.profile.records.crol=data.profile.record.style==="crol"?data.profile.record.time:"";delete data.profile.record;}}return data;}catch(e){return clone(DEFAULT)}}
 function save(){localStorage.setItem(SAVE,JSON.stringify(S))}
@@ -819,7 +819,32 @@ function openFishShop(){
  const banner=shopAchievement?`<div class="fish-shop-achievement">🏆 <b>CLIENTE PROHIBIDO</b><br><span class="sub">+100 🪙 · +250 XP</span></div>`:"";
  const retireText=retired?`<div class="sub" style="margin-top:10px;text-align:center">Le pagaste tanto dinero al sicario que le dio para ir de vacaciones a Dubai, Qatar y Cabo Verde.</div>`:`<div class="sub" style="margin-top:10px;text-align:center">No preguntes de dónde vienen estas cosas.</div>`;
  const card=(icon,title,desc,id,price,ownedText)=>`<div class="fish-shop-card"><div style="font-size:30px">${icon}</div><h3>${title}</h3><div class="sub">${desc}</div><button class="btn primary" style="margin-top:8px" onclick="buySecret('${id}',${price},'${title}')" ${S.purchases[id]?'disabled':''}>${S.purchases[id]?ownedText:`Comprar · ${price} 🪙`}</button></div>`;
- modal(`<div class="fish-shop-shell"><div class="fish-shop-hero"><div class="row"><div><div class="kicker">🐟 TIENDA PROHIBIDA</div><h2 style="margin:4px 0">La tienda del Pez</h2><div class="sub">"No debería vender nada de esto."</div></div><div class="fish-shop-face">🐟</div></div><div class="fish-shop-vendor"><span style="font-size:24px">🐟</span><div><b>El Pez</b><div><span>Vendedor oficial de cosas que no deberían venderse en una piscina.</span></div></div></div>${banner}</div><div class="fish-shop-grid">${card('🟡','Mostaza','30 🪙 · <b>+5% de monedas</b> en cada entrenamiento.','mustard',30,'✅ Comprada')}${card('🔴','Ketchup','35 🪙 · <b>+10% de XP</b> en cada entrenamiento.','ketchup',35,'✅ Comprado')}${card('🌭','Salchicha','45 🪙 · Compra también Mostaza y Ketchup para desbloquear <b>¡Perro caliente!</b> y su descuento diario.','sausage',45,'✅ Comprada')}${card('🍌','Banana','100 🪙 · Una fruta con dudas existenciales. Después aparecerá junto a la Pera.','banana',100,'✅ Comprada')}${specialCard}</div>${retireText}<button class="btn secondary" style="margin-top:12px" onclick="closeModal()">Cerrar</button></div>`);
+ modal(`<div class="fish-shop-shell"><div class="fish-shop-hero"><div class="row"><div><div class="kicker">🐟 TIENDA PROHIBIDA</div><h2 style="margin:4px 0">La tienda del Pez</h2><div class="sub">"No debería vender nada de esto."</div></div><div class="fish-shop-face">🐟</div></div><div class="fish-shop-vendor" onclick="fishShopFishJoke()" role="button" tabindex="0" title="Hablar con el Pez"><span style="font-size:24px;animation:fishShopBob 2.8s ease-in-out infinite">🐟</span><div><b>El Pez</b><div><span>Vendedor oficial de cosas que no deberían venderse en una piscina.</span></div></div><span style="margin-left:auto;font-size:10px;color:#9defff">💬</span></div><div class="fish-shop-joke" id="fishShopJoke" style="display:none"></div>${banner}</div><div class="fish-shop-grid">${card('🟡','Mostaza','30 🪙 · <b>+5% de monedas</b> en cada entrenamiento.','mustard',30,'✅ Comprada')}${card('🔴','Ketchup','35 🪙 · <b>+10% de XP</b> en cada entrenamiento.','ketchup',35,'✅ Comprado')}${card('🌭','Salchicha','45 🪙 · Compra también Mostaza y Ketchup para desbloquear <b>¡Perro caliente!</b> y su descuento diario.','sausage',45,'✅ Comprada')}${card('🍌','Banana','100 🪙 · Una fruta con dudas existenciales. Después aparecerá junto a la Pera.','banana',100,'✅ Comprada')}${specialCard}</div>${retireText}<button class="btn secondary" style="margin-top:12px" onclick="closeModal()">Cerrar</button></div>`);
+}
+const FISH_SHOP_JOKES=[
+ "En esta piscina hay dos tipos de nadadores: los que cuentan metros y los que dicen que estaban contando metros.",
+ "¿Sabías que los peces nunca olvidan? Yo olvidé qué iba a decirte. Esto es muy preocupante.",
+ "La natación es fácil: entras al agua y descubres inmediatamente que la gravedad tenía razón.",
+ "Un pez y una piscina tienen algo en común: ambos odian que alguien diga 'solo hago una última serie'.",
+ "Dicen que el mar tiene secretos. Yo tengo una tienda. No hagas preguntas.",
+ "Hoy quería hacer 10 x 100. Hice 10 x 100. Luego recordé que era un pez y me sentí orgulloso.",
+ "¿Por qué los peces no usan cronómetro? Porque cuando ven que van lentos dicen que era entrenamiento técnico.",
+ "El océano es enorme. Aun así, alguien consiguió perder un gorro dentro. Increíble.",
+ "No te preocupes por hundirte. Como pez profesional, confirmo que es normal.",
+ "La única distancia que no recomiendo nadar es la que separa una buena idea de una mala decisión.",
+ "Tengo un chiste sobre el crol, pero todavía no puedo terminar de contarlo sin respirar.",
+ "Aquí vendemos cosas prohibidas. También vendo consejos. Los consejos están casi prohibidos.",
+ "No soy vendedor. Soy un pez con inventario y demasiadas responsabilidades.",
+ "Si nadas hasta el otro lado de la piscina y vuelves, técnicamente has negociado con el destino.",
+ "No te voy a decir de dónde sale el Sicario. Pero jamás preguntó si sabía nadar.",
+ "A veces miro el océano y pienso: 'qué bonito'. Otras veces miro mi tienda y pienso: 'qué mal negocio'."
+];
+function fishShopFishJoke(){
+ const el=$("fishShopJoke");if(!el)return;
+ const joke=FISH_SHOP_JOKES[Math.floor(Math.random()*FISH_SHOP_JOKES.length)];
+ el.textContent="🐟 "+joke;el.style.display="block";el.className="fish-shop-joke reveal";
+ tone("click");
+ setTimeout(()=>{if(el)el.style.display="none"},6200);
 }
 function buySecret(id,price,name){
  if(id==="hacker"){
@@ -1249,53 +1274,47 @@ const PEAR_BANANA_DIALOGUE=[
 const PEAR_HITMAN_DIALOGUE=[
  {speaker:"🍐 PERA",text:"Porque?..."},
  {speaker:"👤 TÚ",text:"..."},
- {speaker:"🍐 PERA",text:"No. Eso no es suficiente."},
- {speaker:"🍐 PERA",text:"¿Por qué?"},
+ {speaker:"🍐 PERA",text:"No. Esta vez no quiero que cambies de tema."},
+ {speaker:"🍐 PERA",text:"Quiero saber por qué me elegiste a mí."},
  {speaker:"👤 TÚ",text:"No lo sé."},
- {speaker:"🍐 PERA",text:"Al menos eres honesto."},
- {speaker:"🍐 PERA",text:"No te voy a pedir que me des una explicación perfecta."},
- {speaker:"🍐 PERA",text:"Solo quiero que entiendas algo."},
- {speaker:"🍐 PERA",text:"Yo no estoy aquí porque me hayas comprado."},
- {speaker:"🍐 PERA",text:"Tampoco porque alguien haya decidido que una pera sería divertida."},
- {speaker:"🍐 PERA",text:"Y no estoy aquí para juzgarte."},
- {speaker:"🍐 PERA",text:"Pero una cosa desapareció porque tú decidiste que debía desaparecer."},
+ {speaker:"🍐 PERA",text:"Entonces piénsalo. No tienes que inventar una respuesta bonita."},
+ {speaker:"🍐 PERA",text:"Solo quiero que entiendas lo fácil que es tomar una decisión cuando crees que todo es un juego."},
+ {speaker:"🍐 PERA",text:"Pero la vida no es un juego."},
+ {speaker:"🍐 PERA",text:"No existe un botón de reinicio para las decisiones que tomas porque sí."},
  {speaker:"👤 TÚ",text:"..."},
- {speaker:"🍐 PERA",text:"Eso es lo que más me preocupa."},
- {speaker:"🍐 PERA",text:"A veces los humanos creen que necesitan una razón para odiar."},
- {speaker:"🍐 PERA",text:"Pero no siempre."},
- {speaker:"🍐 PERA",text:"A veces simplemente deciden que algo merece desaparecer."},
- {speaker:"🍐 PERA",text:"Después alguien pregunta qué ocurrió."},
- {speaker:"🍐 PERA",text:"Después alguien intenta encontrar una explicación."},
- {speaker:"🍐 PERA",text:"Y quizá no existe."},
+ {speaker:"🍐 PERA",text:"Tenemos poco tiempo. Más del que creemos cuando somos jóvenes, y menos del que imaginamos cuando empezamos a posponer las cosas."},
+ {speaker:"🍐 PERA",text:"Por eso me preocupa que hayas elegido hacer algo solo porque podías hacerlo."},
+ {speaker:"🍐 PERA",text:"No necesitas una razón enorme para cada cosa que haces. Pero sí deberías preguntarte si tu decisión tiene sentido antes de convertirla en una acción."},
+ {speaker:"🍐 PERA",text:"Porque aprovechar la vida no consiste en hacer absolutamente todo."},
+ {speaker:"🍐 PERA",text:"Consiste en dejar de gastar tus días en cosas que ni siquiera sabes por qué querías hacer."},
  {speaker:"👤 TÚ",text:"Entonces, ¿qué quieres que haga?"},
- {speaker:"🍐 PERA",text:"Nada."},
- {speaker:"🍐 PERA",text:"No puedes devolverla."},
- {speaker:"🍐 PERA",text:"Pero puedes aprender algo antes de volver a hacerlo."},
- {speaker:"🍐 PERA",text:"El odio no siempre empieza con una historia."},
- {speaker:"🍐 PERA",text:"A veces empieza con una decisión."},
- {speaker:"🍐 PERA",text:"Una decisión pequeña."},
- {speaker:"🍐 PERA",text:"Una decisión que parece no importar."},
- {speaker:"🍐 PERA",text:"Y entonces alguien desaparece."},
- {speaker:"🍐 PERA",text:"Si alguna vez tienes poder para hacer desaparecer algo, pregúntate primero por qué quieres hacerlo."},
- {speaker:"🍐 PERA",text:"No después. Antes."},
- {speaker:"🍐 PERA",text:"Porque después de hacerlo... las explicaciones ya no sirven."}
+ {speaker:"🍐 PERA",text:"Nada ahora mismo."},
+ {speaker:"🍐 PERA",text:"Solo quiero que recuerdes esta conversación la próxima vez que quieras hacer algo solamente porque puedes."},
+ {speaker:"🍐 PERA",text:"Pregúntate primero: ¿quiero esto de verdad, o solo quiero comprobar qué pasa?"},
+ {speaker:"🍐 PERA",text:"Tu tiempo vale demasiado como para vivir todas tus decisiones como si fueran pruebas sin consecuencias."},
+ {speaker:"🍐 PERA",text:"Aprovecha el tiempo que tienes. Habla con quien quieras hablar. Haz lo que de verdad quieras hacer. Aprende. Nada. Cambia. Intenta."},
+ {speaker:"🍐 PERA",text:"Pero no conviertas tu vida en una colección de decisiones hechas porque sí."},
+ {speaker:"🍐 PERA",text:"No porque yo sea una pera. No porque esto sea Swim Quest. Porque afuera del juego también hay consecuencias."},
+ {speaker:"🍐 PERA",text:"Y allí no existe un botón para volver al menú."},
+ {speaker:"🍐 PERA",text:"Eso era todo lo que quería decirte."}
 ];
 const PEAR_AFTER_EVENT_GREETINGS=["Ah... eres tú...","Oh, rayos, tú otra vez.","No contrataste un sicario para matarme a mí otra vez, ¿verdad?","¿Por qué no te compras otra banana? Me siento algo solo."];
-const PEAR_BANANA_COMMENTS=["Supongo que ya te divertiste suficiente por hoy.","La verdad... la ausencia de una banana deja bastante silencio por aquí.","No te preocupes, no estoy triste. Bueno... quizá un poco.","A veces todavía pienso que voy a escucharla decir Potaxio.","Puedes hacer todos los chistes que quieras. La verdad es que la echo un poco de menos.","No voy a pedirte explicaciones otra vez. Solo... no lo hagas con otra fruta."];
+const PEAR_BANANA_COMMENTS=["Supongo que ya te divertiste suficiente por hoy.","La verdad... la ausencia de una banana deja bastante silencio por aquí.","No te preocupes, no estoy triste. Bueno... quizá un poco.","A veces todavía pienso que voy a escucharla decir Potaxio.","Puedes hacer todos los chistes que quieras. La verdad es que la echo un poco de menos.","No voy a pedirte explicaciones otra vez. Solo... no lo hagas con otra fruta.","A veces una habitación parece más grande cuando falta alguien.","No te preocupes, puedo seguir hablando contigo. Solo echo de menos que la Banana interrumpiera."];
 function pearAfterEventArray(){
  const greeting=PEAR_AFTER_EVENT_GREETINGS[Math.floor(Math.random()*PEAR_AFTER_EVENT_GREETINGS.length)];
- const comment=Math.random()<0.55?PEAR_BANANA_COMMENTS[Math.floor(Math.random()*PEAR_BANANA_COMMENTS.length)]:null;
- const arr=[{speaker:"🍐 PERA",text:greeting},...PEAR_DIALOGUE];
+ const comment=Math.random()<0.65?PEAR_BANANA_COMMENTS[Math.floor(Math.random()*PEAR_BANANA_COMMENTS.length)]:null;
+ const arr=[{speaker:"🍐 PERA",text:greeting}];
  if(comment)arr.push({speaker:"🍐 PERA",text:comment});
- return arr;
+ return arr.concat(PEAR_DIALOGUE);
 }
 let pearIndex=0,pearReady=false,pearVisitsToday=0,pearLockDate="",pearDialogueType="normal";
 function pearVisitKey(){return "SWIM_QUEST_PEAR_VISITS";}
 function resetPearDailyVisits(){const d=localDateKey();const raw=localStorage.getItem(pearVisitKey());let x={date:d,count:0};try{if(raw)x=JSON.parse(raw)||x;}catch(e){}if(x.date!==d)x={date:d,count:0};localStorage.setItem(pearVisitKey(),JSON.stringify(x));pearVisitsToday=Number(x.count||0);pearLockDate=x.lockDate||"";return x;}
 function pearDialogueArray(){if(pearDialogueType==="banana")return PEAR_BANANA_DIALOGUE;if(pearDialogueType==="pear")return PEAR_HITMAN_DIALOGUE;if(pearDialogueType==="after")return pearAfterEventArray();return PEAR_DIALOGUE;}
 function shouldShowPearSpecial(){
- if(S.secret.firstPearEvent==="banana" && !S.secret.pearBananaSeen && S.secret.bananaRemoved)return "banana";
- if(S.secret.firstPearEvent==="pear" && !S.secret.pearRouteDialogueSeen && S.secret.pearRouteSeen)return "pear";
+ // Cada evento tiene su propia conversación y su propio estado. Nunca se concatenan.
+ if(S.secret.firstPearEvent==="banana" && S.secret.bananaRemoved && !S.secret.pearBananaSeen)return "banana";
+ if(S.secret.pearRouteSeen && !S.secret.pearRouteDialogueSeen)return "pear";
  if(S.secret.bananaRemoved && S.secret.pearBananaSeen)return "after";
  return "normal";
 }
@@ -1324,8 +1343,8 @@ function pearNext(){
  if(!pearReady)return;
  let arr=pearDialogueArray();
  if(pearIndex<arr.length-1){pearIndex++;pearReady=false;renderPearScene();return;}
- if(pearDialogueType==="banana"){S.secret.pearBananaSeen=true;S.secret.pearOpening=true;save();closePearScene();return;}
- if(pearDialogueType==="pear"){S.secret.pearRouteDialogueSeen=true;S.secret.pearOpening=true;save();const a=unlockSecretAchievement("secret_pear");closePearScene();render();if(a)setTimeout(()=>achievementModal(a),450);return;}
+ if(pearDialogueType==="banana"){S.secret.pearBananaSeen=true;S.secret.pearOpening=false;save();closePearScene();render();return;}
+ if(pearDialogueType==="pear"){S.secret.pearRouteDialogueSeen=true;S.secret.pearOpening=false;save();const a=unlockSecretAchievement("secret_pear");closePearScene();render();if(a)setTimeout(()=>achievementModal(a),450);return;}
  if(pearDialogueType==="after"){save();closePearScene();return;}
  closePearScene();
 }
