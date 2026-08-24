@@ -165,7 +165,7 @@ h1{font-size:30px}h2{font-size:21px}h3{font-size:15px}
 /* Identidad y animación propia para cada rango. */
 .rank-glyph.bronce{animation:rankBronce 3.4s ease-in-out infinite}.rank-glyph.plata{animation:rankPlata 3s ease-in-out infinite}.rank-glyph.oro{animation:rankOro 2.9s ease-in-out infinite}.rank-glyph.platino{animation:rankPlatino 3.2s ease-in-out infinite}.rank-glyph.diamante{animation:rankDiamante 2.5s ease-in-out infinite}.rank-glyph.esmeralda{animation:rankEsmeralda 3.3s ease-in-out infinite}.rank-glyph.zafiro{animation:rankZafiro 3s ease-in-out infinite}.rank-glyph.amatista{animation:rankAmatista 2.8s ease-in-out infinite}.rank-glyph.mercurio{animation:rankMercurio 2.6s ease-in-out infinite}.rank-glyph.venus{animation:rankVenus 3.6s ease-in-out infinite}.rank-glyph.marte{animation:rankMarte 2.8s ease-in-out infinite}.rank-glyph.jupiter{animation:rankJupiter 3.2s ease-in-out infinite}.rank-glyph.saturno{animation:rankSaturno 3.5s ease-in-out infinite}.rank-glyph.urano{animation:rankUrano 3.1s ease-in-out infinite}.rank-glyph.orca{animation:orcaLeap 2.8s ease-in-out infinite}
 @keyframes rankBronce{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px) rotate(-2deg)}}@keyframes rankPlata{0%,100%{filter:brightness(1)}50%{filter:brightness(1.28)}}@keyframes rankOro{0%,100%{transform:rotate(0)}45%{transform:rotate(-3deg) scale(1.04)}55%{transform:rotate(3deg) scale(1.04)}}@keyframes rankPlatino{0%,100%{transform:rotate(45deg) scale(1)}50%{transform:rotate(50deg) scale(1.05)}}@keyframes rankDiamante{0%,100%{transform:scale(1)}40%{transform:scale(1.08);filter:brightness(1.25)}55%{transform:scale(.97)}}@keyframes rankEsmeralda{0%,100%{transform:rotate(-2deg) translateY(0)}50%{transform:rotate(4deg) translateY(-3px)}}@keyframes rankZafiro{0%,100%{transform:translateX(0)}50%{transform:translateX(3px)}}@keyframes rankAmatista{0%,100%{transform:rotate(0) scale(1)}50%{transform:rotate(5deg) scale(1.06)}}@keyframes rankMercurio{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2px) scale(1.05)}}@keyframes rankVenus{0%,100%{transform:rotate(0)}50%{transform:rotate(8deg)}}@keyframes rankMarte{0%,100%{filter:brightness(1)}50%{filter:brightness(1.22) saturate(1.2)}}@keyframes rankJupiter{0%,100%{transform:translateX(0)}50%{transform:translateX(2px) rotate(-2deg)}}@keyframes rankSaturno{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(4deg)}}@keyframes rankUrano{0%,100%{transform:rotate(55deg)}50%{transform:rotate(62deg)}}@keyframes orcaLeap{0%,100%{transform:translateY(0) rotate(-4deg)}38%{transform:translateY(-7px) rotate(5deg)}60%{transform:translateY(1px) rotate(-1deg)}}
-.profile-fish{position:relative;cursor:pointer;user-select:none;display:flex;align-items:center;gap:10px;padding:12px;border-radius:16px;background:linear-gradient(145deg,rgba(24,70,94,.92),rgba(8,28,43,.98));border:1px solid #2e647d;overflow:hidden;margin-top:10px}.fish-art{font-size:34px;display:inline-block;filter:drop-shadow(0 3px 6px rgba(66,221,255,.28));animation:fishSwim 2.8s ease-in-out infinite}.profile-fish .fish-bubble{font-size:11px;color:var(--muted)}@keyframes fishSwim{0%,100%{transform:translateX(0) translateY(0)}50%{transform:translateX(5px) translateY(-3px)}}.fishTalk .fish-art{animation:fishTalk .65s cubic-bezier(.2,.9,.2,1)}@keyframes fishTalk{0%{transform:scale(.7) rotate(-8deg)}45%{transform:scale(1.18) rotate(7deg)}100%{transform:scale(1) rotate(0)}}.journal-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.profile-fish{position:relative;cursor:pointer;user-select:none;display:flex;align-items:center;gap:12px;padding:14px;border-radius:18px;background:linear-gradient(145deg,rgba(24,70,94,.96),rgba(8,28,43,.99));border:1px solid #2e647d;overflow:hidden;margin-top:10px;min-height:88px;transition:transform .18s,filter .18s,box-shadow .25s}.profile-fish:active{transform:scale(.985)}.fish-art{font-size:38px;display:inline-block;filter:drop-shadow(0 3px 7px rgba(66,221,255,.34));animation:fishSwim 2.8s ease-in-out infinite;flex:0 0 auto}.profile-fish .fish-bubble{font-size:13px;color:var(--text);line-height:1.35;font-weight:900}.fish-title{font-size:12px;letter-spacing:.5px;font-weight:1000;text-transform:uppercase;color:#dffbff;margin-bottom:4px}.fish-message{font-size:18px;line-height:1.22;font-weight:1000;color:#fff;text-shadow:0 1px 8px rgba(66,221,255,.10)}.fish-shop-invite{background:linear-gradient(135deg,#330d12,#17070a 55%,#3b0b12)!important;border-color:#ff4a55!important;box-shadow:0 0 32px rgba(255,59,48,.25),inset 0 0 22px rgba(255,75,75,.08)}.fish-shop-invite .fish-art{animation:fishShopInvite .72s ease-in-out infinite}.fish-shop-invite .fish-title,.fish-shop-invite .fish-message{color:#ff4545!important;text-shadow:0 0 12px rgba(255,59,48,.45)}.fish-shop-invite .fish-title{font-size:14px}.fish-shop-invite .fish-message{font-size:25px;line-height:1.05;letter-spacing:.3px}.fish-shop-invite .fish-bubble{flex:1}.fish-shop-invite .fish-art{filter:drop-shadow(0 0 10px rgba(255,59,48,.4))}@keyframes fishSwim{0%,100%{transform:translateX(0) translateY(0)}50%{transform:translateX(5px) translateY(-3px)}}@keyframes fishShopInvite{0%,100%{transform:translateY(0) rotate(-2deg) scale(1)}50%{transform:translateY(-4px) rotate(3deg) scale(1.08)}}.fishTalk .fish-art{animation:fishTalk .65s cubic-bezier(.2,.9,.2,1)}@keyframes fishTalk{0%{transform:scale(.7) rotate(-8deg)}45%{transform:scale(1.18) rotate(7deg)}100%{transform:scale(1) rotate(0)}}.journal-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 
 /* Animaciones únicas de los rangos oceánicos y del rango final. */
 .rank-glyph.tiburon{animation:sharkCruise 2.4s ease-in-out infinite}
@@ -203,6 +203,43 @@ textarea{min-height:82px;resize:vertical}
 .difficulty-intenso{color:#ffd166;box-shadow:0 0 18px rgba(255,209,102,.11)}
 .difficulty-discreo{color:#ff9a66;box-shadow:0 0 20px rgba(255,154,102,.12)}
 .difficulty-demoniaco{color:#ff6b86;box-shadow:0 0 24px rgba(255,107,134,.16)}
+body.theme-hacker{background:radial-gradient(circle at 50% 0,#0d2a16 0,#050b07 40%,#010302 100%);color:#eaf7ee}
+body.theme-hacker .btn{background:linear-gradient(145deg,#10351a,#061108);border:1px solid rgba(57,211,83,.45);box-shadow:0 8px 26px rgba(10,80,28,.18);color:#eaffef}
+body.theme-hacker .btn.primary{background:linear-gradient(135deg,#1b6f2b,#0c3516);color:#f4fff5;border-color:#5be477}
+body.theme-hacker .card{border-color:rgba(57,211,83,.3)}
+body.theme-hacker .nav{border-top-color:rgba(57,211,83,.24)}
+body.theme-perrocaliente{background:radial-gradient(circle at 50% 0,#5a1712 0,#220c08 38%,#080504 100%);color:#fff8df}
+body.theme-perrocaliente .btn{background:linear-gradient(145deg,#b9281d,#65120d);border:1px solid rgba(255,201,40,.6);color:#fff9dc}
+body.theme-perrocaliente .btn.primary{background:linear-gradient(135deg,#ff3f32,#e7a900);color:#200503;border-color:#ffd65a}
+body.theme-perrocaliente .card{border-color:rgba(255,201,40,.34)}
+.theme-particle.binary{position:fixed;color:#6dff85;font-size:14px;font-weight:900;animation:binaryFall 6s linear forwards!important;text-shadow:0 0 8px rgba(87,255,112,.7)}
+@keyframes binaryFall{0%{opacity:0;transform:translateY(-22px)}10%{opacity:.85}100%{opacity:0;transform:translateY(112vh)}}
+.theme-particle.goldbar{position:fixed;width:38px;height:17px;border-radius:4px;background:linear-gradient(180deg,#fff0a3 0,#e5b832 42%,#9a6915 100%);border:2px solid #fff0a0;box-shadow:inset 0 2px 0 rgba(255,255,255,.55),0 0 13px rgba(255,209,72,.42);transform:skewX(-8deg);}
+.theme-particle.sausage{position:fixed;font-size:20px;animation:sausageFall 6s linear forwards!important;filter:drop-shadow(0 0 8px rgba(255,201,40,.42))}
+@keyframes goldbarFall{0%{opacity:0;transform:translateY(-20px) rotate(0)}12%{opacity:.9}100%{opacity:0;transform:translateY(112vh) rotate(240deg)}}
+@keyframes sausageFall{0%{opacity:0;transform:translateY(-24px) rotate(0)}12%{opacity:.85}100%{opacity:0;transform:translateY(112vh) rotate(260deg)}}
+.fish-hitman-scene{position:fixed;inset:0;z-index:1000;background:radial-gradient(circle at 50% 0,#1971c2 0,#0b4387 48%,#062a57 100%);color:#fff;display:flex;align-items:center;justify-content:center;padding:20px;overflow:hidden}.fish-hitman-stage{width:min(700px,100%);min-height:78vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}.fish-hitman-glow{position:absolute;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(127,219,255,.28),transparent 70%);animation:float 4s ease-in-out infinite}.fish-hitman-art{font-size:100px;filter:drop-shadow(0 10px 25px rgba(0,0,0,.22));animation:fishSwim 2.6s ease-in-out infinite}.fish-hitman-speaker{font-size:12px;font-weight:1000;letter-spacing:1px;margin:12px 0 8px}.fish-hitman-text{max-width:650px;min-height:150px;display:flex;align-items:center;justify-content:center;font-size:20px;line-height:1.55}.fish-hitman-next{width:min(620px,100%);min-height:54px;border-radius:18px;background:#e7f7ff;color:#08335e;font-weight:1000}.fish-hitman-next[disabled]{opacity:.35;cursor:default}.fish-hitman-close{margin-top:10px;background:none;color:rgba(255,255,255,.8);font-size:11px}.hitman-blackout{position:fixed;inset:0;z-index:1000;background:#000}.hitman-sequence{position:fixed;inset:0;z-index:1000;background:#000;color:#fff;display:grid;place-items:center;font-size:28px;font-weight:1000;letter-spacing:3px}.hitman-sequence.found{color:#fff}.hitman-sequence.fail{color:#ff3b30}.hitman-sequence.eliminated{color:#fff;font-size:34px;letter-spacing:4px}.fish-secret-offer{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:120;width:min(92%,520px);box-shadow:0 16px 45px rgba(0,0,0,.38);animation:reveal .35s ease-out}.banana-pet{position:fixed;right:14px;top:122px;bottom:auto;z-index:45;width:60px;height:60px;padding:0;border:1px solid #e3c14b;background:#172009;color:#fff;border-radius:50%;display:none;place-items:center;font-size:30px;box-shadow:0 10px 30px rgba(0,0,0,.3)}.banana-pet.visible{display:block;animation:float 2.7s ease-in-out infinite}
+.fish-secret-offer-inline{display:block;width:100%;margin-top:6px;padding:8px 10px;border-radius:12px;background:linear-gradient(135deg,#0f3d5a,#174e73);border:1px solid rgba(118,221,255,.55);color:#eaffff;font-weight:1000;font-size:11px;text-align:left;box-shadow:0 0 22px rgba(66,221,255,.12);animation:fishOfferPulse 1.7s ease-in-out infinite}
+.fish-secret-offer-inline::after{content:' →';color:#7ff4ff}.fish-secret-offer-inline:active{transform:scale(.98)}
+@keyframes fishOfferPulse{50%{filter:brightness(1.12);box-shadow:0 0 30px rgba(66,221,255,.22)}}
+.fish-shop-shell{position:relative;padding:2px;isolation:isolate}.fish-shop-shell::before,.fish-shop-shell::after{content:"";position:absolute;pointer-events:none;z-index:-1;border-radius:50%;filter:blur(1px)}.fish-shop-shell::before{width:240px;height:240px;left:-120px;top:120px;background:radial-gradient(circle,rgba(66,221,255,.13),transparent 68%);animation:fishShopAura 7s ease-in-out infinite}.fish-shop-shell::after{width:280px;height:280px;right:-150px;bottom:20px;background:radial-gradient(circle,rgba(118,92,255,.10),transparent 70%);animation:fishShopAura 9s ease-in-out infinite reverse}
+.fish-shop-hero{position:relative;overflow:hidden;padding:19px;border-radius:22px;background:linear-gradient(145deg,#103e5c 0,#0b263d 48%,#061320 100%);border:1px solid rgba(120,226,255,.48);box-shadow:inset 0 0 34px rgba(74,209,255,.10),0 20px 55px rgba(0,0,0,.30)}.fish-shop-hero::before{content:"";position:absolute;left:-10%;right:-10%;bottom:-24px;height:72px;border-radius:50% 50% 0 0;background:linear-gradient(180deg,rgba(66,221,255,.10),rgba(66,221,255,.02));transform:rotate(-2deg);animation:fishShopWave 5s ease-in-out infinite}.fish-shop-hero::after{content:"✦  ·  ✧  ·  ✦  ·  ✧";position:absolute;right:15px;top:12px;color:rgba(255,255,255,.23);letter-spacing:4px;font-size:11px;animation:fishShopSpark 2.5s ease-in-out infinite}.fish-shop-face{position:relative;z-index:2;font-size:66px;filter:drop-shadow(0 8px 18px rgba(92,229,255,.34));animation:fishShopBob 2.8s ease-in-out infinite}.fish-shop-vendor{display:flex;align-items:center;gap:11px;margin-top:12px;padding:10px 11px;border-radius:15px;background:rgba(2,15,27,.30);border:1px solid rgba(155,233,255,.16)}.fish-shop-vendor b{font-size:12px}.fish-shop-vendor span{font-size:10px;color:#a7c9dd}.fish-shop-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.fish-shop-card{position:relative;overflow:hidden;padding:14px;border-radius:18px;background:linear-gradient(180deg,rgba(14,43,66,.98),rgba(6,17,30,.99));border:1px solid #2c5b79;box-shadow:inset 0 0 22px rgba(255,255,255,.025),0 8px 24px rgba(0,0,0,.16);transition:transform .2s,border-color .2s,box-shadow .2s}.fish-shop-card::after{content:"";position:absolute;width:80px;height:80px;right:-34px;top:-34px;border-radius:50%;background:radial-gradient(circle,rgba(66,221,255,.15),transparent 70%)}.fish-shop-card:hover{transform:translateY(-2px);border-color:rgba(119,230,255,.62);box-shadow:inset 0 0 22px rgba(255,255,255,.035),0 12px 30px rgba(0,0,0,.22)}.fish-shop-card .price{font-weight:1000;color:#bff6ff}.fish-shop-achievement{margin-top:10px;padding:10px 12px;border-radius:14px;background:linear-gradient(135deg,rgba(255,209,102,.17),rgba(255,255,255,.04));border:1px solid rgba(255,209,102,.40);font-size:11px;font-weight:1000;box-shadow:0 0 22px rgba(255,209,102,.08)}.fish-shop-retired{margin-top:10px;padding:12px;border-radius:14px;background:linear-gradient(145deg,rgba(55,132,90,.09),rgba(255,255,255,.025));border:1px dashed rgba(255,255,255,.22);text-align:center;color:var(--muted);font-size:11px}.fish-shop-modal{width:min(900px,100%)}
+@keyframes fishShopBob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(2deg)}}@keyframes fishShopAura{50%{transform:scale(1.12);opacity:.75}}@keyframes fishShopWave{50%{transform:translateX(22px) rotate(2deg)}}@keyframes fishShopSpark{50%{opacity:.55;transform:translateY(-2px)}}
+body.theme-eclipse{background:radial-gradient(circle at 50% 12%,#516084 0,#1b2541 20%,#0a1023 45%,#02040b 82%,#000 100%);color:#fff7ea;overflow-x:hidden}
+body.theme-eclipse::before{content:"";position:fixed;inset:-16%;z-index:-2;pointer-events:none;background:radial-gradient(circle at 58% 22%,rgba(255,193,93,.16),transparent 12%),radial-gradient(circle at 28% 30%,rgba(108,144,255,.12),transparent 18%),radial-gradient(circle at 76% 70%,rgba(152,81,255,.12),transparent 22%);animation:eclipseDrift 18s ease-in-out infinite alternate}
+body.theme-eclipse::after{content:"";position:fixed;width:min(52vw,430px);height:min(52vw,430px);left:50%;top:18%;transform:translate(-50%,-50%);z-index:-1;pointer-events:none;border-radius:50%;background:radial-gradient(circle at 36% 34%,#fff7cf 0 3%,#f4be68 4% 12%,#10162d 13% 65%,transparent 66%),radial-gradient(circle,transparent 0 53%,rgba(255,181,69,.28) 54% 55%,transparent 56% 64%,rgba(110,135,255,.18) 65% 66%,transparent 67%);box-shadow:0 0 70px rgba(255,176,77,.22),0 0 160px rgba(75,93,255,.18);animation:eclipseFloat 8s ease-in-out infinite}
+body.theme-eclipse .card{background:linear-gradient(180deg,rgba(18,27,51,.96),rgba(7,11,23,.98));border-color:rgba(146,169,255,.34);box-shadow:0 16px 50px rgba(0,0,0,.34),inset 0 0 26px rgba(112,134,220,.035)}
+body.theme-eclipse .hero{background:linear-gradient(145deg,rgba(35,48,85,.96),rgba(7,11,24,.99));border-color:rgba(255,193,93,.36)}
+body.theme-eclipse .btn.primary{background:linear-gradient(135deg,#ffc15b,#8d3f16,#4e1d0b);box-shadow:0 10px 32px rgba(255,154,45,.22)}
+body.theme-eclipse .nav button.active{background:linear-gradient(180deg,rgba(255,193,93,.16),rgba(107,125,255,.14));box-shadow:inset 0 0 0 1px rgba(255,193,93,.24)}
+.theme-particle.cianBolt{position:fixed;color:#dfffff;font-size:28px;font-weight:1000;text-shadow:0 0 8px #00f0ff,0 0 24px rgba(0,240,255,.8);animation:cianBolt .9s ease-out forwards!important}.theme-particle.eclipseStar{position:fixed;color:#fff3c7;font-size:9px;text-shadow:0 0 10px #fff3c7;animation:eclipseStarFall 4.6s ease-out forwards!important}
+@keyframes eclipseDrift{to{transform:translate(2%,-1%) scale(1.04)}}@keyframes eclipseFloat{50%{transform:translate(-50%,-50%) scale(1.035) rotate(6deg);filter:brightness(1.08)}}@keyframes cianBolt{0%{opacity:0;transform:scale(.3) rotate(-18deg)}18%{opacity:1;transform:scale(1.2) rotate(10deg)}45%{opacity:.85;transform:scale(.9) rotate(-5deg)}100%{opacity:0;transform:scale(.2) rotate(18deg)}}@keyframes eclipseStarFall{0%{opacity:0;transform:translateY(18px) scale(.5)}20%{opacity:.85}100%{opacity:0;transform:translateY(-100px) scale(1.2) rotate(120deg)}}
+body.theme-cianneon{background:radial-gradient(circle at 50% 0,#0c7f97 0,#063c4d 22%,#02171f 55%,#01070b 100%);overflow-x:hidden}
+body.theme-cianneon::before{content:"";position:fixed;inset:-20%;z-index:-2;pointer-events:none;background:repeating-conic-gradient(from 20deg at 50% 18%,rgba(0,255,255,.12) 0 3deg,transparent 3deg 16deg),radial-gradient(circle at 14% 28%,rgba(0,255,255,.16),transparent 18%),radial-gradient(circle at 82% 72%,rgba(0,112,255,.18),transparent 24%);animation:cianField 9s linear infinite}
+body.theme-cianneon::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(125deg,transparent 0 45%,rgba(130,255,255,.08) 46% 47%,transparent 48% 100%),linear-gradient(65deg,transparent 0 68%,rgba(0,202,255,.06) 69% 70%,transparent 71%);mix-blend-mode:screen;animation:cianScan 4.2s ease-in-out infinite alternate}
+@keyframes cianField{to{transform:rotate(360deg) scale(1.08)}}@keyframes cianScan{to{transform:translateY(14px);opacity:.65}}
+@media(max-width:560px){.fish-shop-grid{grid-template-columns:1fr}.fish-shop-modal{width:100%}}
+
 .daily-claim-pop{animation:dailyClaimPop .38s cubic-bezier(.2,.9,.2,1)}
 @keyframes dailyClaimPop{0%{transform:scale(1)}35%{transform:scale(1.035) rotate(-.4deg)}70%{transform:scale(.992) rotate(.35deg)}100%{transform:scale(1)}}
 .difficulty-donut-wrap{display:grid;grid-template-columns:190px 1fr;gap:14px;align-items:center}
@@ -444,7 +481,7 @@ body.theme-pera .card{border-color:rgba(75,133,56,.28)}
 .theme-particle.pear{font-size:18px;opacity:0;animation:pearFall 6.2s linear forwards!important;filter:drop-shadow(0 0 7px rgba(80,125,45,.34))}
 @keyframes pearFall{0%{opacity:0;transform:translateY(-24px) rotate(-8deg)}15%{opacity:.92}55%{transform:translateY(54vh) rotate(8deg)}100%{opacity:0;transform:translateY(112vh) rotate(-12deg)}}
 @keyframes electricFall{0%{opacity:0;transform:translateY(-20px) scaleY(.7)}20%{opacity:.9}100%{opacity:0;transform:translateY(80px) scaleY(1.3)}}
-.pear-floating-phrase{position:fixed;z-index:36;max-width:170px;padding:7px 10px;border-radius:12px;background:rgba(255,255,255,.96);border:1px solid rgba(90,150,62,.28);color:#315a2a;font-size:11px;font-weight:1000;box-shadow:0 10px 22px rgba(39,90,25,.18);animation:pearPhrasePop 3.2s ease forwards;pointer-events:none}.pear-pet{position:fixed;top:68px;right:10px;z-index:35;width:48px;height:48px;border-radius:50%;display:none;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.8);background:linear-gradient(145deg,#eaffdc,#9bd66a);box-shadow:0 10px 25px rgba(39,90,25,.18),inset 0 0 12px rgba(255,255,255,.55);font-size:26px;cursor:pointer;animation:pearBob 2.6s ease-in-out infinite}
+.pear-floating-phrase{position:fixed;z-index:36;max-width:170px;padding:7px 10px;border-radius:12px;background:rgba(255,255,255,.96);border:1px solid rgba(90,150,62,.28);color:#315a2a;font-size:11px;font-weight:1000;box-shadow:0 10px 22px rgba(39,90,25,.18);animation:pearPhrasePop 3.2s ease forwards;pointer-events:none}.banana-floating-phrase{position:fixed;z-index:37;max-width:150px;padding:8px 12px;border-radius:18px;background:rgba(255,252,222,.98);border:1px solid rgba(225,193,75,.48);color:#6a4b00;font-size:12px;font-weight:1000;box-shadow:0 10px 24px rgba(79,54,0,.18);animation:bananaPhrasePop 3.2s ease forwards;pointer-events:none}.pear-pet{position:fixed;top:68px;right:10px;z-index:35;width:48px;height:48px;border-radius:50%;display:none;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.8);background:linear-gradient(145deg,#eaffdc,#9bd66a);box-shadow:0 10px 25px rgba(39,90,25,.18),inset 0 0 12px rgba(255,255,255,.55);font-size:26px;cursor:pointer;animation:pearBob 2.6s ease-in-out infinite}@keyframes bananaPhrasePop{0%{opacity:0;transform:translateY(8px) scale(.84)}16%{opacity:1;transform:translateY(0) scale(1)}80%{opacity:1}100%{opacity:0;transform:translateY(-18px) scale(.96)}}
 .pear-pet.visible{display:flex}
 @keyframes pearBob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-4px) rotate(3deg)}}@keyframes pearPhrasePop{0%{opacity:0;transform:translateY(-4px) scale(.94)}10%,80%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(4px) scale(.98)}}
 .achievement-grid{display:grid;gap:8px}.achievement-card{padding:11px;border-radius:15px;background:#081625;border:1px solid var(--line);display:flex;gap:10px;align-items:center}.achievement-card.locked{opacity:.52;filter:saturate(.45)}.achievement-icon{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(145deg,#10253c,#071321);border:1px solid #2d4c6c;font-size:22px;flex:0 0 auto}.achievement-card.unlocked .achievement-icon{box-shadow:0 0 20px rgba(255,214,86,.26);border-color:#a99235}.achievements-summary{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:9px}
@@ -457,11 +494,16 @@ body.theme-pera .card{border-color:rgba(75,133,56,.28)}
 .roulette-simple-text{font-size:48px;animation:rouletteSimplePop .6s ease-in-out infinite alternate}
 @keyframes rouletteSimpleSpin{to{transform:rotate(180deg)}}
 @keyframes rouletteSimplePop{to{transform:scale(1.08)}}
+
+body.theme-cianneon .hero,body.theme-cianneon .card{box-shadow:inset 0 0 35px rgba(0,255,255,.035),0 18px 45px rgba(0,30,50,.32)}
+body.theme-cianneon .btn.primary{box-shadow:0 0 0 1px rgba(178,255,255,.14),0 0 24px rgba(0,238,255,.18),0 10px 28px rgba(0,120,255,.18)}
+body.theme-eclipse .card::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(circle at 15% 20%,rgba(255,190,95,.05),transparent 22%),radial-gradient(circle at 85% 78%,rgba(113,136,255,.05),transparent 24%)}
+body.theme-eclipse .hero::after{box-shadow:0 0 80px rgba(255,184,74,.18),0 0 140px rgba(76,99,255,.14)}
 </style>
 </head>
 <body>
 <div id="themeParticles" aria-hidden="true"></div>
-<button id="pearPet" class="pear-pet" onclick="openPearScene()" aria-label="Pera">🍐</button>
+<button id="pearPet" class="pear-pet" onclick="openPearScene()" aria-label="Pera">🍐</button><button id="bananaPet" class="banana-pet" onclick="openBananaScene()" aria-label="Banana">🍌</button>
 <div id="leviathanEvent" aria-hidden="true"><div class="leviathan-event-body"><div class="leviathan-eye-art e1"></div><div class="leviathan-eye-art e2"></div></div></div>
 <div class="app">
   <header class="topbar">
@@ -490,7 +532,8 @@ const STYLE={
  espalda:{name:"Espalda",icon:"🌙",mult:1.18},
  pecho:{name:"Pecho",icon:"🐸",mult:1.30},
  mariposa:{name:"Mariposa",icon:"🦋",mult:1.45},
- combinado:{name:"Combinado",icon:"🔄",mult:1.12}
+ combinado:{name:"Combinado",icon:"🔄",mult:1.12},
+ otro:{name:"Otro",icon:"🧩",mult:1.00}
 };
 const INT={
  suave:{name:"Suave",icon:"🟢",mult:.90},
@@ -511,7 +554,9 @@ const THEMES={
  CianNeon:{a:"#00f0ff",b:"#0077ff",emoji:"⚡",desc:"Cian eléctrico, brillante y energético."},
  Carbon:{a:"#9a7c24",b:"#141517",emoji:"🖤",desc:"Elegante, oscuro, carbón y metal con destellos dorados."},
  Eclipse:{a:"#16233e",b:"#050914",emoji:"🌘",desc:"Eclipse legendario: azul negro profundo con detalles naranja brillante."},
- Pera:{a:"#b8f58a",b:"#6da83e",emoji:"🍐",desc:"Un jardín verde claro con peras cayendo y pequeños detalles de pera."}
+ Pera:{a:"#b8f58a",b:"#6da83e",emoji:"🍐",desc:"Un jardín verde claro con peras cayendo y pequeños detalles de pera."},
+ Hacker:{a:"#39d353",b:"#08160a",emoji:"💻",desc:"Terminal oscura con verdes profundos, blanco tenue y lluvia de 0 y 1."},
+ PerroCaliente:{a:"#ff4a3d",b:"#ffc928",emoji:"🌭",desc:"Rojo y amarillo con salchichas cayendo desde el cielo."}
 };
 const RANKS=[
  {n:"Bronce",c:"bronce",icon:"",lv:1,m:0,t:0,d:"La primera insignia. El punto donde comienza tu historia."},
@@ -542,7 +587,7 @@ const DEFAULT={
  settings:{music:true,musicTrack:"aqua",sfx:true,musicVol:.90,sfxVol:.95,theme:"Aqua",days:[2,3,5]},
  missions:{week:null,weekKey:null,month:null,monthKey:null},
  claimed:[],reviews:[],purchases:{},lastReviewWeek:null,lastMonth:null,
- tutorialRewardClaimed:false,bonusCoins:0,levelRewardedThrough:1,levelRewardCoins:0,monthlyShieldUntil:"",dailyReward:{date:"",claimed:false,coins:0,xp:0,kind:"coinsxp",themeKey:""},nextTrainingNumber:1,achievements:[]
+ tutorialRewardClaimed:false,bonusCoins:0,levelRewardedThrough:1,levelRewardCoins:0,monthlyShieldUntil:"",dailyReward:{date:"",claimed:false,coins:0,xp:0,kind:"coinsxp",themeKey:""},nextTrainingNumber:1,achievements:[],secret:{bananaRemoved:false,pearBananaSeen:false,pearRouteSeen:false,pearRouteDialogueSeen:false,pearOpening:false,pearAfterShown:false,firstPearEvent:"",hotdogUnlocked:false,hitmanTargets:[]},social:{friends:[],clan:null}
 };
 const DIFFICULTIES=[
  {key:"facil",name:"Fácil",icon:"🟢",desc:"Entrenamiento ligero y controlado."},
@@ -553,21 +598,33 @@ const DIFFICULTIES=[
  {key:"masoquista",name:"Masoquista",icon:"⚫",desc:"Sesión extraordinaria de 6.000 m o más."}
 ];
 const DIFFICULTY_STYLE_WEIGHT={crol:1.00,espalda:1.10,pecho:1.22,mariposa:1.40,combinado:1.28,otro:1.00};
+const DIFFICULTY_INTENSITY_WEIGHT={suave:1.00,normal:1.10,intenso:1.35,cansado:1.60};
+function difficultySeriesPoints(s){
+ const distance=Math.max(0,Number(s?.distance)||0),reps=Math.max(0,Number(s?.reps)||0);
+ if(!distance||!reps)return 0;
+ const meters=distance*reps;
+ const styleWeight=DIFFICULTY_STYLE_WEIGHT[s.style]||1;
+ const intensityWeight=DIFFICULTY_INTENSITY_WEIGHT[s.intensity]||1;
+ let butterflyBonus=1;
+ if(s.style==="mariposa"&&distance>=100&&reps>1){
+  butterflyBonus=Math.min(1.65,1.35+(reps-2)*.08);
+ }
+ return meters*styleWeight*intensityWeight*butterflyBonus;
+}
 function difficultyInfo(e, avgMetersOverride=null){
  const series=Array.isArray(e?.series)?e.series:[];
  const meters=series.reduce((a,s)=>a+(Number(s.distance)||0)*(Number(s.reps)||0),0);
  if(meters<=0)return DIFFICULTIES[0];
  const base=Math.max(100,Number(avgMetersOverride)||1000);
- const weightedMeters=series.reduce((a,s)=>a+(Number(s.distance)||0)*(Number(s.reps)||0)*(DIFFICULTY_STYLE_WEIGHT[s.style]||1),0);
- const styleFactor=Math.max(1,weightedMeters/Math.max(1,meters));
+ const difficultyPoints=series.reduce((a,s)=>a+difficultySeriesPoints(s),0);
  const xp=Number.isFinite(Number(e?.xp))?Number(e.xp):trainingXP({...e,series});
  const xpPerMeter=meters?xp/meters:1;
  const xpFactor=Math.max(.90,Math.min(1.15,xpPerMeter/1.05));
- const effectiveRatio=(meters/base)*styleFactor*(.92+.08*xpFactor);
- if(meters>=6000)return DIFFICULTIES[5];
+ const effectiveRatio=(difficultyPoints/base)*(.92+.08*xpFactor);
+ if(meters>=6000)return {...DIFFICULTIES[5],points:Math.round(difficultyPoints)};
  let idx=effectiveRatio<1.20?0:effectiveRatio<1.80?1:effectiveRatio<2.50?2:effectiveRatio<3.40?3:4;
  if(idx>=4 && meters<2000)idx=3;
- return DIFFICULTIES[idx];
+ return {...DIFFICULTIES[idx],points:Math.round(difficultyPoints)};
 }
 function difficultyForKey(key){return DIFFICULTIES.find(d=>d.key===key)||DIFFICULTIES[0]}
 function difficultyLabel(e){const d=typeof e==="string"?difficultyForKey(e):difficultyInfo(e,S?.profile?.avgMeters);return `${d.icon} ${d.name}`}
@@ -577,7 +634,8 @@ let S=load(), page="home", draft=[], draftDuration=0, currentTrainingName="", st
 
 function clone(o){return JSON.parse(JSON.stringify(o))}
 function merge(a,b){for(const k in b){if(b[k]&&typeof b[k]==="object"&&!Array.isArray(b[k])&&a[k]&&typeof a[k]==="object")a[k]=merge(a[k],b[k]);else a[k]=b[k]}return a}
-function load(){try{const x=localStorage.getItem(SAVE);const raw=x?JSON.parse(x):null;const data=x?merge(clone(DEFAULT),raw):clone(DEFAULT);if(x&&raw&&!Object.prototype.hasOwnProperty.call(raw,"levelRewardedThrough")){data.levelRewardedThrough=Math.max(1,data.level||1);data.levelRewardCoins=0;}if(!Number.isFinite(data.levelRewardedThrough)||data.levelRewardedThrough<1)data.levelRewardedThrough=Math.max(1,data.level||1);if(!Number.isFinite(data.levelRewardCoins))data.levelRewardCoins=0;if(!data.dailyReward||typeof data.dailyReward!=="object")data.dailyReward={date:"",claimed:false,coins:0,xp:0};if(!Number.isFinite(data.dailyReward.coins))data.dailyReward.coins=0;if(!Number.isFinite(data.dailyReward.xp))data.dailyReward.xp=0;if(typeof data.dailyReward.kind!=="string")data.dailyReward.kind="coinsxp";if(typeof data.dailyReward.themeKey!=="string")data.dailyReward.themeKey="";if(typeof data.monthlyShieldUntil!=="string")data.monthlyShieldUntil="";if(!data.settings.musicTrack)data.settings.musicTrack="aqua";data.trainings=(data.trainings||[]).map((e,i)=>{const ee={...e,number:Number.isFinite(e.number)?e.number:i+1,name:typeof e.name==="string"?e.name:"",series:(e.series||[]).map(ss=>ss.style==="otro"?{...ss,style:"combinado"}:ss)};ee.difficulty=difficultyInfo(ee,data.profile?.avgMeters).key;return ee});
+function load(){try{const x=localStorage.getItem(SAVE);const raw=x?JSON.parse(x):null;const data=x?merge(clone(DEFAULT),raw):clone(DEFAULT);if(x&&raw&&!Object.prototype.hasOwnProperty.call(raw,"levelRewardedThrough")){data.levelRewardedThrough=Math.max(1,data.level||1);data.levelRewardCoins=0;}if(!Number.isFinite(data.levelRewardedThrough)||data.levelRewardedThrough<1)data.levelRewardedThrough=Math.max(1,data.level||1);if(!Number.isFinite(data.levelRewardCoins))data.levelRewardCoins=0;if(!data.dailyReward||typeof data.dailyReward!=="object")data.dailyReward={date:"",claimed:false,coins:0,xp:0};if(!Number.isFinite(data.dailyReward.coins))data.dailyReward.coins=0;if(!Number.isFinite(data.dailyReward.xp))data.dailyReward.xp=0;if(typeof data.dailyReward.kind!=="string")data.dailyReward.kind="coinsxp";if(typeof data.dailyReward.themeKey!=="string")data.dailyReward.themeKey="";if(typeof data.monthlyShieldUntil!=="string")data.monthlyShieldUntil="";if(!data.settings.musicTrack)data.settings.musicTrack="aqua";if(!data.secret||typeof data.secret!=="object")data.secret=clone(DEFAULT.secret);if(!data.social||typeof data.social!=="object")data.social=clone(DEFAULT.social);if(!Array.isArray(data.social.friends))data.social.friends=[];
+data.trainings=(data.trainings||[]).map((e,i)=>{const ee={...e,number:Number.isFinite(e.number)?e.number:i+1,name:typeof e.name==="string"?e.name:"",series:(e.series||[]).map(ss=>ss)};ee.difficulty=difficultyInfo(ee,data.profile?.avgMeters).key;return ee});
  const maxTrainingNo=data.trainings.reduce((m,e)=>Math.max(m,Number(e.number)||0),0);data.nextTrainingNumber=Math.max(Number(data.nextTrainingNumber)||1,maxTrainingNo+1);if(data.profile){if(!Number.isFinite(data.profile.avgMeters))data.profile.avgMeters=1000;if(!data.profile.records)data.profile.records={crol:"",espalda:"",pecho:"",mariposa:""};if(data.profile.record&&!data.profile.records.crol&&!data.profile.records.espalda&&!data.profile.records.pecho&&!data.profile.records.mariposa){data.profile.records.mariposa=data.profile.record.style==="mariposa"?data.profile.record.time:"";data.profile.records.pecho=data.profile.record.style==="pecho"?data.profile.record.time:"";data.profile.records.espalda=data.profile.record.style==="espalda"?data.profile.record.time:"";data.profile.records.crol=data.profile.record.style==="crol"?data.profile.record.time:"";delete data.profile.record;}}return data;}catch(e){return clone(DEFAULT)}}
 function save(){localStorage.setItem(SAVE,JSON.stringify(S))}
 function $(id){return document.getElementById(id)}
@@ -601,6 +659,8 @@ let themeParticleTimer=null;
 function spawnThemeParticle(){
  const host=$("themeParticles");if(!host)return;
  const theme=S.settings.theme;
+ if(theme==="Hacker"){const el=document.createElement("span");el.className="theme-particle binary";el.textContent=Math.random()<.5?"0":"1";el.style.left=(4+Math.random()*92)+"%";el.style.top="-24px";el.style.animationDuration=(4.5+Math.random()*3)+"s";host.appendChild(el);setTimeout(()=>el.remove(),8000);return;}
+ if(theme==="PerroCaliente"){if(Math.random()<.48){const el=document.createElement("span");el.className="theme-particle sausage";el.textContent="🌭";el.style.left=(4+Math.random()*92)+"%";el.style.top="-24px";el.style.animationDuration=(4.5+Math.random()*2)+"s";host.appendChild(el);setTimeout(()=>el.remove(),8000);return;}}
  if(theme==="Cosmos"){const el=document.createElement("span");el.className="theme-particle meteor";el.style.left=(0+Math.random()*24)+"%";el.style.top=(4+Math.random()*30)+"%";host.appendChild(el);setTimeout(()=>el.remove(),1800);return;}
  if(theme==="Glacial"){const el=document.createElement("span");el.className="theme-particle snowfall";el.textContent="❄️";el.style.left=(4+Math.random()*92)+"%";el.style.top="-22px";host.appendChild(el);setTimeout(()=>el.remove(),7000);return;}
  if(theme==="Leviatan"){
@@ -613,9 +673,10 @@ function spawnThemeParticle(){
  if(theme==="Abismo"){const el=document.createElement("span");el.className="theme-particle abyssdrop";el.textContent="👾";el.style.left=(4+Math.random()*92)+"%";el.style.top="-24px";host.appendChild(el);setTimeout(()=>el.remove(),7000);return;}
  if(theme==="Esmeralda"){const el=document.createElement('span');el.className='theme-particle leaf';el.textContent=Math.random()<.5?"🍃":"🍂";el.style.left=(4+Math.random()*92)+"%";el.style.top="-22px";el.style.setProperty("--drift",((Math.random()-.5)*120)+"px");el.style.animationDuration=(6+Math.random()*3)+"s";host.appendChild(el);setTimeout(()=>el.remove(),10000);return;}
  if(theme==="Rosadito"){const el=document.createElement('span');el.className='theme-particle cat';el.textContent=Math.random()<.5?'🐱':'🐈';el.style.left=(4+Math.random()*92)+'%';el.style.top='-18px';el.style.animationDuration=(5.5+Math.random()*2)+'s';host.appendChild(el);setTimeout(()=>el.remove(),8000);return;}
- if(theme==="Eclipse"){const el=document.createElement("span");el.className="theme-particle eclipseSpark";el.textContent="✦";el.style.left=(5+Math.random()*90)+"%";el.style.top=(18+Math.random()*72)+"%";host.appendChild(el);setTimeout(()=>el.remove(),3500);return;}
+ if(theme==="Carbon"&&Math.random()<0.18){const el=document.createElement("span");el.className="theme-particle goldbar";el.textContent="";el.style.position="fixed";el.style.left=(4+Math.random()*92)+"%";el.style.top="-24px";el.style.fontSize=(18+Math.random()*11)+"px";el.style.animation="goldbarFall 5.5s linear forwards";host.appendChild(el);setTimeout(()=>el.remove(),7000);return;}
+ if(theme==="Eclipse"){const el=document.createElement("span");el.className=Math.random()<.72?"theme-particle eclipseStar":"theme-particle eclipseSpark";el.textContent=Math.random()<.72?"✦":"☄";el.style.left=(5+Math.random()*90)+"%";el.style.top=(18+Math.random()*72)+"%";el.style.animationDuration=(3+Math.random()*2.8)+"s";host.appendChild(el);setTimeout(()=>el.remove(),6500);return;}
  if(theme==="Pera"){const el=document.createElement('span');el.className='theme-particle pear';el.textContent='🍐';el.style.left=(4+Math.random()*92)+'%';el.style.top='-18px';el.style.animationDuration=(5.5+Math.random()*2)+'s';host.appendChild(el);setTimeout(()=>el.remove(),8000);return;}
- if(theme==="CianNeon"){if(Math.random()<.45){const btns=[...document.querySelectorAll('body.theme-cianneon .btn')];if(btns.length){const b=btns[Math.floor(Math.random()*btns.length)];b.classList.remove('electric-zap');void b.offsetWidth;b.classList.add('electric-zap');setTimeout(()=>b.classList.remove('electric-zap'),420)}}return;}
+ if(theme==="CianNeon"){if(Math.random()<.45){const btns=[...document.querySelectorAll('body.theme-cianneon .btn')];if(btns.length){const b=btns[Math.floor(Math.random()*btns.length)];b.classList.remove('electric-zap');void b.offsetWidth;b.classList.add('electric-zap');setTimeout(()=>b.classList.remove('electric-zap'),420)}}if(Math.random()<.35){const el=document.createElement("span");el.className="theme-particle cianBolt";el.textContent="ϟ";el.style.left=(8+Math.random()*84)+"%";el.style.top=(8+Math.random()*76)+"%";el.style.animationDuration=(.8+Math.random()*.6)+"s";host.appendChild(el);setTimeout(()=>el.remove(),1800)}return;}
  const map={Solar:"sun",Esmeralda:"leaf",Abismo:"abyss",Aqua:"aqua",Sangriento:"blood",Carbon:"abyss"};
  const el=document.createElement("span");el.className="theme-particle "+(map[theme]||"aqua");
  el.style.left=(8+Math.random()*84)+"%";el.style.top=(38+Math.random()*45)+"%";el.style.setProperty("--dx",((Math.random()-.5)*80)+"px");
@@ -715,7 +776,138 @@ function restartAmbient(){
 }
 
 const FISH_MESSAGES=["No necesitas nadar perfecto; necesitas seguir apareciendo.","Cada metro que registras cuenta, incluso los que hoy parecen pequeños.","La constancia vence a la motivación cuando la motivación desaparece.","Tu progreso real está en lo que haces cuando nadie te está mirando.","Hoy no tienes que superar a nadie. Solo deja un pequeño avance.","Un entrenamiento difícil también puede ser un gran entrenamiento.","Tu yo del futuro agradecerá el entrenamiento que no cancelaste.","La piscina no pregunta cuánto tardaste en empezar. Solo importa que empezaste.","Los grandes rangos se construyen con sesiones normales repetidas muchas veces.","No subestimes una práctica tranquila: también suma historia.","Cada récord fue alguna vez un tiempo que parecía imposible.","Respira, nada y deja que el progreso haga su trabajo.","No necesitas una semana perfecta para tener una buena semana.","La mejora suele llegar después de muchas sesiones que parecían iguales.","Tus metros cuentan. Tus descansos también.","La disciplina no siempre se siente emocionante, pero siempre deja huella.","Una pequeña mejora repetida durante meses se convierte en una diferencia enorme.","Cuando una sesión salga mal, no la conviertas en una historia sobre tu capacidad.","Tu récord personal no necesita impresionar a nadie para ser importante.","Cada brazada es una parte diminuta de una historia grande.","No abandones una temporada entera por una mala semana.","Entrenar cuando tienes ganas es fácil. La verdadera constancia aparece los demás días.","Tu progreso no tiene que parecerse al de otro nadador.","Celebra los tiempos, pero también celebra haber cumplido.","A veces mejorar significa aprender a nadar mejor, no solamente más rápido.","Una piscina puede medir 25 metros, pero tu progreso puede ir muchísimo más lejos.","Tu próximo rango no está tan lejos como parece cuando miras todo lo que ya hiciste.","No necesitas ganar hoy. Necesitas seguir construyendo.","El cansancio de una buena sesión pasa; la satisfacción de haberla hecho permanece.","Si hoy solo puedes hacer una parte, haz esa parte bien.","La paciencia también es una habilidad de entrenamiento.","Tus entrenamientos difíciles serán parte de las historias que más orgullo te den después.","Un récord nuevo no borra los antiguos: demuestra cuánto avanzaste.","No midas solamente cuánto te falta. Mira también cuánto ya conquistaste.","La regularidad convierte esfuerzos pequeños en resultados enormes.","La piscina no sabe de excusas ni de perfección: solo sabe de lo que hiciste.","Tu mejor entrenamiento todavía puede estar esperándote.","No tengas miedo de avanzar despacio. Lo peligroso es dejar de avanzar.","Cada estilo tiene algo que enseñarte, incluso el que menos te guste.","Descansar no es rendirse; es parte de entrenar con inteligencia.","Tu historial está construyendo una versión de ti que todavía no conoces.","No necesitas demostrar nada en cada sesión.","El progreso silencioso sigue siendo progreso.","Un día difícil en la piscina no define tu nivel.","La próxima vez que dudes, recuerda cuántos metros ya has conseguido.","Tu rango es una recompensa; tu constancia es el verdadero logro.","Sigue nadando. Las estadísticas se encargan del resto.","No compares tu capítulo dos con el capítulo veinte de otra persona.","La mejor versión de tu natación se construye sesión a sesión.","Hoy también cuenta. Mañana podrás construir sobre lo que hiciste hoy.","67","Que tu coach no te diga qué hacer","Farmea aura como un pez."];
-function fishMotivation(){localStorage.setItem("SWIM_QUEST_FISH_CLICKS",String(Number(localStorage.getItem("SWIM_QUEST_FISH_CLICKS")||0)+1));const msg=FISH_MESSAGES[Math.floor(Math.random()*FISH_MESSAGES.length)];const fish=$("profileFish");if(fish){fish.classList.remove("fishTalk");void fish.offsetWidth;fish.classList.add("fishTalk");}toast(`🐟 ${msg}`,5100);}
+let fishOfferTimer=null;
+function fishMotivation(){
+ const fish=$("profileFish");
+ if(fish?.dataset.inviteActive==="1"){
+   clearTimeout(fishOfferTimer);fish.dataset.inviteActive="0";fish.classList.remove("fish-shop-invite");
+   fish.onclick=fishMotivation;openFishShop();return;
+ }
+ localStorage.setItem("SWIM_QUEST_FISH_CLICKS",String(Number(localStorage.getItem("SWIM_QUEST_FISH_CLICKS")||0)+1));
+ const msg=FISH_MESSAGES[Math.floor(Math.random()*FISH_MESSAGES.length)];
+ if(fish){fish.classList.remove("fishTalk");void fish.offsetWidth;fish.classList.add("fishTalk");}
+ const bubble=$("fishBubble");
+ if(bubble){
+   bubble.className="fish-bubble";
+   bubble.innerHTML=`<div class="fish-title">🐟 Pez Motivador</div><div class="fish-message">${esc(msg)}</div>`;
+   if(Math.random()<0.04){
+     clearTimeout(fishOfferTimer);
+     fish.dataset.inviteActive="1";fish.classList.add("fish-shop-invite");
+     bubble.innerHTML=`<div class="fish-title">🐟 PEZ MOTIVADOR</div><div class="fish-message">¿TE GUSTARÍA ENTRAR A MI TIENDA?</div>`;
+     fish.onclick=fishMotivation;
+     fishOfferTimer=setTimeout(()=>{
+       if(fish.isConnected&&fish.dataset.inviteActive==="1"){
+         fish.dataset.inviteActive="0";fish.classList.remove("fish-shop-invite");
+         fish.onclick=fishMotivation;
+         bubble.innerHTML=`<div class="fish-title">🐟 Pez Motivador</div><div class="fish-message">${esc(msg)}</div>`;
+       }
+     },6000);
+   }
+ }else toast(msg,5100);
+}
+function hitmanTargetsChosen(){const arr=Array.isArray(S.secret?.hitmanTargets)?S.secret.hitmanTargets:[];return ["fish","banana","pear"].filter(x=>arr.includes(x)).length;}
+function markHitmanTarget(target){S.secret.hitmanTargets=Array.isArray(S.secret.hitmanTargets)?S.secret.hitmanTargets:[];if(!S.secret.hitmanTargets.includes(target))S.secret.hitmanTargets.push(target);S.secret.hitmanTargets=[...new Set(S.secret.hitmanTargets)];}
+function secretRouteCount(){return ["secret_fish","secret_banana","secret_pear"].filter(id=>{const a=ACHIEVEMENTS.find(x=>x.id===id);return a&&achievementUnlocked(a)}).length;}
+function hitmanRetired(){return hitmanTargetsChosen()>=3;}
+function openFishShop(){
+ const retired=hitmanRetired(),hitmanOwned=!!S.purchases.sicario;
+ const firstShop=!achievementUnlocked(ACHIEVEMENTS.find(a=>a.id==="fish_shop"));
+ const shopAchievement=firstShop?unlockSecretAchievement("fish_shop"):null;
+ const specialCard=retired
+  ? `<div class="fish-shop-retired">💻 <b>Estilo Hacker</b><div class="sub" style="margin-top:5px">500 🪙 · El Sicario ya se retiró y dejó su dinero en lugares que no podemos verificar.</div><button class="btn primary" style="margin-top:8px" onclick="buySecret('hacker',500,'Estilo Hacker')" ${S.purchases.theme_Hacker?'disabled':''}>${S.purchases.theme_Hacker?'✅ Comprado':'💻 Comprar Hacker'}</button></div>`
+  : `<div class="fish-shop-card"><div style="font-size:32px">🕶️</div><h3>Sicario</h3><div class="sub">200 🪙 · Puedes volver a comprarlo mientras todavía queden objetivos sin seleccionar.</div><div class="price" style="margin-top:7px">Objetivos elegidos: ${hitmanTargetsChosen()} / 3</div><button class="btn primary" style="margin-top:8px" onclick="buySecret('hitman',200,'Sicario')" ${hitmanOwned?'disabled':''}>${hitmanOwned?'🕶️ Ya comprado':'🕶️ Comprar por 200 🪙'}</button></div>`;
+ const banner=shopAchievement?`<div class="fish-shop-achievement">🏆 <b>CLIENTE PROHIBIDO</b><br><span class="sub">+100 🪙 · +250 XP</span></div>`:"";
+ const retireText=retired?`<div class="sub" style="margin-top:10px;text-align:center">Le pagaste tanto dinero al sicario que le dio para ir de vacaciones a Dubai, Qatar y Cabo Verde.</div>`:`<div class="sub" style="margin-top:10px;text-align:center">No preguntes de dónde vienen estas cosas.</div>`;
+ const card=(icon,title,desc,id,price,ownedText)=>`<div class="fish-shop-card"><div style="font-size:30px">${icon}</div><h3>${title}</h3><div class="sub">${desc}</div><button class="btn primary" style="margin-top:8px" onclick="buySecret('${id}',${price},'${title}')" ${S.purchases[id]?'disabled':''}>${S.purchases[id]?ownedText:`Comprar · ${price} 🪙`}</button></div>`;
+ modal(`<div class="fish-shop-shell"><div class="fish-shop-hero"><div class="row"><div><div class="kicker">🐟 TIENDA PROHIBIDA</div><h2 style="margin:4px 0">La tienda del Pez</h2><div class="sub">"No debería vender nada de esto."</div></div><div class="fish-shop-face">🐟</div></div><div class="fish-shop-vendor"><span style="font-size:24px">🐟</span><div><b>El Pez</b><div><span>Vendedor oficial de cosas que no deberían venderse en una piscina.</span></div></div></div>${banner}</div><div class="fish-shop-grid">${card('🟡','Mostaza','30 🪙 · <b>+5% de monedas</b> en cada entrenamiento.','mustard',30,'✅ Comprada')}${card('🔴','Ketchup','35 🪙 · <b>+10% de XP</b> en cada entrenamiento.','ketchup',35,'✅ Comprado')}${card('🌭','Salchicha','45 🪙 · Compra también Mostaza y Ketchup para desbloquear <b>¡Perro caliente!</b> y su descuento diario.','sausage',45,'✅ Comprada')}${card('🍌','Banana','100 🪙 · Una fruta con dudas existenciales. Después aparecerá junto a la Pera.','banana',100,'✅ Comprada')}${specialCard}</div>${retireText}<button class="btn secondary" style="margin-top:12px" onclick="closeModal()">Cerrar</button></div>`);
+}
+function buySecret(id,price,name){
+ if(id==="hacker"){
+  if(!hitmanRetired()||!S.secret.hitmanEverBought){toast("💻 El Hacker todavía no está disponible aquí.");return;}
+  if(S.purchases.theme_Hacker){toast("✅ Ya tienes el Estilo Hacker.");return;}
+ }
+ if(S.purchases[id]&&id!=="hitman"){toast("✅ Ya tienes este objeto.");return;}
+ if(id==="hitman" && (S.purchases.sicario||hitmanRetired())){toast("🕶️ Usa tu Sicario actual antes de comprar otro.");return;}
+ const cost=id==="hitman"?200:price;
+ if(S.coins<cost){toast(`🪙 Te faltan ${fmt(cost-S.coins)} monedas.`);return;}
+ S.coins-=cost;
+ if(id==="hitman"){S.purchases.sicario=true;S.secret.hitmanEverBought=true;}
+ else if(id==="hacker")S.purchases.theme_Hacker=true;
+ else S.purchases[id]=true;
+ save();tone("coin");closeModal();render();toast(`🛒 Comprado: ${name}`);
+ if(S.purchases.mustard&&S.purchases.ketchup&&S.purchases.sausage&&!S.secret.hotdogUnlocked){const a=unlockHotdog();if(a)setTimeout(()=>achievementModal(a),220);}
+}
+function dailyShopDiscount(){if(!S.secret.hotdogUnlocked)return null;const available=SHOP.filter(it=>it.price>0&&!it.id.startsWith("music")&&!S.purchases[it.id]&&it.id!=="shield");if(!available.length)return null;let n=0;for(const c of localDateKey())n=(n*31+c.charCodeAt(0))>>>0;return available[n%available.length]?.id||null}
+function discountedPrice(it){return dailyShopDiscount()===it.id?Math.max(1,Math.floor(it.price*.85)):it.price}
+const FISH_HITMAN_DIALOGUE=[
+ {speaker:"🐟 PEZ",text:"¿Qué estás haciendo?"},
+ {speaker:"👤 TÚ",text:"..."},
+ {speaker:"🐟 PEZ",text:"Compraste un sicario para eliminarme."},
+ {speaker:"👤 TÚ",text:"Sí."},
+ {speaker:"🐟 PEZ",text:"Pues tengo algo que decirte."},
+ {speaker:"🐟 PEZ",text:"Ese sicario es mi nieto."},
+ {speaker:"👤 TÚ",text:"¿Tu nieto?"},
+ {speaker:"🐟 PEZ",text:"Sí. Mi nieto."},
+ {speaker:"🐟 PEZ",text:"Y jamás me haría nada."},
+ {speaker:"🐟 PEZ",text:"Podrías pagarle todo el dinero del mundo y seguiría diciéndote que no."},
+ {speaker:"🐟 PEZ",text:"Aunque ahora que lo pienso... ¿quién te vendió un sicario?"},
+ {speaker:"👤 TÚ",text:"Tú."},
+ {speaker:"🐟 PEZ",text:"..."},
+ {speaker:"🐟 PEZ",text:"No preguntes."}
+];
+let fishHitmanIndex=0,fishHitmanReady=false;
+function renderFishHitmanScene(){
+ const old=$("fishHitmanScene");if(old)old.remove();
+ const item=FISH_HITMAN_DIALOGUE[fishHitmanIndex];
+ const scene=document.createElement("div");scene.id="fishHitmanScene";scene.className="fish-hitman-scene";
+ scene.innerHTML=`<div class="fish-hitman-glow"></div><div class="fish-hitman-stage"><div class="fish-hitman-art">🐟</div><div class="fish-hitman-speaker">${esc(item.speaker)}</div><div class="fish-hitman-text">${esc(item.text)}</div><button class="fish-hitman-next" id="fishHitmanNext" disabled>Siguiente</button><button class="fish-hitman-close" onclick="closeFishHitmanScene()">Salir</button></div>`;
+ document.body.appendChild(scene);ambientStop();
+ const ms=Math.max(1100,Math.min(4200,item.text.length*20));setTimeout(()=>{fishHitmanReady=true;const b=$("fishHitmanNext");if(b){b.disabled=false;b.onclick=nextFishHitmanDialogue;}},ms);
+}
+function openFishHitmanScene(){fishHitmanIndex=0;fishHitmanReady=false;renderFishHitmanScene();}
+function nextFishHitmanDialogue(){if(!fishHitmanReady)return;if(fishHitmanIndex<FISH_HITMAN_DIALOGUE.length-1){fishHitmanIndex++;fishHitmanReady=false;renderFishHitmanScene();return;}closeFishHitmanScene();const a=unlockSecretAchievement("secret_fish");S.coins+=200;save();render();toast("🪙 El Pez sobrevivió. Se te devolvieron las 200 monedas.",3200);if(a)setTimeout(()=>achievementModal(a),500);}
+function closeFishHitmanScene(){$("fishHitmanScene")?.remove();if(S.settings.music)restartAmbient();}
+function runHitmanSequence(text, afterMs, callback){
+ const screen=document.createElement("div");screen.id="hitmanSequence";screen.className="hitman-sequence";screen.textContent="";document.body.appendChild(screen);
+ setTimeout(()=>{screen.textContent="OBJETIVO ENCONTRADO";screen.className="hitman-sequence found"},2000);
+ setTimeout(()=>{screen.textContent=text;screen.className="hitman-sequence eliminated"},afterMs);
+ setTimeout(()=>{screen.remove();callback&&callback()},afterMs+1000);
+}
+function showBananaEliminationSequence(callback){runHitmanSequence("ELIMINADO",3000,callback)}
+function showPearHitmanSequence(callback){runHitmanSequence("FALLO",3000,callback)}
+function useHitman(target){
+ if(!S.purchases.sicario){toast("🕶️ No tienes un Sicario.");return;}
+ if(hitmanRetired()){toast("🚫 El Sicario ya se retiró.");return;}
+ S.purchases.sicario=false;
+ markHitmanTarget(target);
+ S.secret.hitmanEverBought=true;
+ if(!S.secret.firstPearEvent && (target==="banana"||target==="pear"))S.secret.firstPearEvent=target;
+ if(target==="fish"){
+  S.secret.fishRoute=true;save();openFishHitmanScene();return;
+ }
+ if(target==="banana"){
+  showBananaEliminationSequence(()=>{
+   S.secret.bananaRemoved=true;
+   window.__bananaGhostVisible=true;
+   try{sessionStorage.setItem("SWIM_QUEST_BANANA_GHOST","1")}catch(e){}
+   save();render();
+   const a=unlockSecretAchievement("secret_banana");
+   if(a)setTimeout(()=>achievementModal(a),250);
+  });
+  return;
+ }
+ if(target==="pear"){
+  S.secret.pearRouteSeen=true;S.secret.pearRouteDialogueSeen=false;save();
+  showPearHitmanSequence(()=>{openPearScene();});
+  return;
+ }
+}
+function hitmanModal(){
+ if(hitmanRetired()){toast("🚫 El Sicario ya se retiró. La tienda ahora ofrece el Hacker.");return;}
+ if(!S.purchases.sicario){toast("🕶️ Compra primero el Sicario en el Pez.");return;}
+ modal(`<div class="kicker">🕶️ ENCARGO</div><h2>¿A quién quieres eliminar?</h2><p class="sub">Una opción elegida cuenta como objetivo visitado. Puedes volver a comprar el Sicario hasta haber elegido las tres.</p><div class="grid"><button class="btn secondary" onclick="useHitman('fish')">🐟 Pez</button><button class="btn secondary" onclick="useHitman('banana')">🍌 Banana</button><button class="btn secondary" onclick="useHitman('pear')">🍐 Pera</button></div><button class="btn secondary" style="margin-top:10px" onclick="closeModal()">Cancelar</button>`)
+}
+
 function recordLabel(k){return STYLE[k]?.name||k}
 function updatePersonalRecords(e){const out=[];if(!S.profile?.records)return out;for(const s of e.series){if(s.style==="combinado"||s.distance!==50||s.reps!==1||s.intensity!=="intenso"||!s.time)continue;const t=Number(s.time);if(!Number.isFinite(t)||t<=0)continue;const prev=parseFloat(String(S.profile.records[s.style]||"").replace(",","."));if(!Number.isFinite(prev)||prev<=0||t<prev){S.profile.records[s.style]=String(t);out.push({style:s.style,time:t});}}return out;}
 function showRecordNotices(records){if(!records.length)return;tone("record");let i=0;const next=()=>{if(i>=records.length)return;const r=records[i++];toast(`🏆 ¡Felicidades! Nuevo récord de ${recordLabel(r.style)}: ${Number(r.time).toFixed(2)} s`,2000);if(i<records.length)setTimeout(next,2150)};next();}
@@ -770,9 +962,10 @@ function seriesXP(s){
  const correct=s.corrective?1.14:1, timed=s.time?1.10:1, reps=s.reps>=4?1.08:1;
  return Math.max(4,Math.round(meters*.48*sm*im*correct*timed*reps*2.2));
 }
-function trainingXP(e){return Math.max(50,e.series.reduce((a,s)=>a+seriesXP(s),0)+Math.round((e.durationMin||0)*.3))}
+function trainingXP(e,state=null){const purchases=(state&&state.purchases)||((typeof S!=="undefined"&&S&&S.purchases)?S.purchases:{});const base=Math.max(50,e.series.reduce((a,s)=>a+seriesXP(s),0)+Math.round((e.durationMin||0)*.3));return Math.round(base*(purchases.ketchup?1.10:1))}
 function coinMultiplier(){return S.purchases.talismanMarea?1.15:1}
-function trainingCoins(e){return Math.max(25,Math.round(trainingXP(e)*.11*coinMultiplier()))}
+function trainingCoinMultiplier(){return coinMultiplier()*(S.purchases.mustard?1.05:1)}
+function trainingCoins(e){return Math.max(25,Math.round(trainingXP(e)*.11*trainingCoinMultiplier()))}
 function recalcAll(){
  let tx=0,tc=0;S.trainings.forEach(e=>{e.difficulty=difficultyInfo(e,S?.profile?.avgMeters).key;e.xp=trainingXP(e);e.coins=trainingCoins(e);tx+=e.xp;tc+=e.coins});
  let mx=0,mc=0;[...(S.missions.week||[]),...(S.missions.month||[])].forEach(m=>{if(S.claimed.includes(m.id)){mx+=m.xp;mc+=Math.round(m.coins*coinMultiplier())}});
@@ -782,46 +975,94 @@ function recalcAll(){
 function missionStats(arr){return Object.fromEntries(Object.keys(STYLE).map(k=>[k,arr.reduce((a,e)=>a+e.series.filter(s=>s.style===k).reduce((b,s)=>b+s.distance*s.reps,0),0)]))}
 function adaptiveBase(){
  const cur=totalMeters(weekTrain()),prev=totalMeters(prevWeek());
- if(!cur && !prev)return 1200;
- if(!cur)return Math.max(900,Math.round(prev*.75/100)*100);
- if(!prev)return Math.round(cur*1.1/100)*100;
- if(cur<prev*.75)return Math.round(Math.max(900,cur+Math.max(100,prev*.08))/100)*100;
- if(cur>=prev)return Math.round(cur*1.1/100)*100;
- return Math.round((cur+Math.max(100,prev*.06))/100)*100;
+ if(!cur&&!prev)return Math.max(1000,Math.round((S.profile?.avgMeters||1000)*2/100)*100);
+ if(!cur)return Math.max(800,Math.round(prev*.75/100)*100);
+ if(!prev)return Math.max(900,Math.round(cur*1.08/100)*100);
+ if(cur<prev*.75)return Math.max(800,Math.round((cur+Math.max(100,prev*.08))/100)*100);
+ if(cur>=prev*1.15)return Math.round(cur*1.05/100)*100;
+ return Math.round((cur+Math.max(100,prev*.05))/100)*100;
 }
-function missionSeed(s){let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h;}
-function weekMissionPool(wk){
- const styles=["crol","espalda","pecho","mariposa"];
- const pool=[
+function missionSeed(s){let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h}
+function missionHistory(){
+ const recent=S.trainings.slice(-12),wk=weekTrain(),prev=prevWeek(),base=Math.max(100,Number(S.profile?.avgMeters)||1000);
+ const styleTotals=missionStats(S.trainings),weekStyles=missionStats(wk);
+ const favoriteStyle=Object.entries(styleTotals).sort((a,b)=>b[1]-a[1])[0]?.[0]||"crol";
+ const activeDays=new Set(S.trainings.map(e=>e.date)).size;
+ const avgRecent=recent.length?recent.reduce((a,e)=>a+totalMeters([e]),0)/recent.length:base;
+ return {recent,wk,prev,base,styleTotals,weekStyles,favoriteStyle,activeDays,avgRecent};
+}
+function smartMissionPool(wk){
+ const h=missionHistory(),styles=["crol","espalda","pecho","mariposa","combinado","otro"],adaptive=Math.max(600,adaptiveBase());
+ const styleTarget=s=>Math.max(500,Math.round(((h.weekStyles[s]||0)>0?Math.max(600,h.weekStyles[s]*1.15):h.base*.65)/100)*100);
+ return [
   {suffix:"correctivos",title:"Completa 3 sesiones con al menos un correctivo",type:"correctives",target:3,xp:390,coins:92},
   {suffix:"intenso",title:"Completa 2 sesiones con al menos una serie intensa",type:"intenseSessions",target:2,xp:380,coins:88},
-  {suffix:"largos",title:"Haz 2 entrenamientos de 60 minutos o más",type:"longSessions",target:2,xp:410,coins:96},
+  {suffix:"demoniacos",title:"Completa 1 entrenamiento Demoníaco o superior",type:"difficultySessions",difficulty:"demoniaco",target:1,xp:470,coins:115},
+  {suffix:"largos",title:"Completa 2 entrenamientos de 60 minutos o más",type:"longSessions",target:2,xp:410,coins:96},
   {suffix:"series",title:"Completa 12 series en total esta semana",type:"seriesCount",target:12,xp:365,coins:84},
   {suffix:"dias",title:"Nada en 4 días distintos",type:"activeDays",target:4,xp:375,coins:86},
   {suffix:"combinado",title:"Registra una sesión de Combinado",type:"combinedSession",target:1,xp:355,coins:82},
-  {suffix:"larga",title:"Completa un entrenamiento de al menos 2.000 m",type:"bigSession",target:2000,xp:430,coins:100},
+  {suffix:"otro",title:"Haz una sesión usando el estilo Otro",type:"styleSessions",style:"otro",target:1,xp:345,coins:80},
+  {suffix:"larga",title:`Completa un entrenamiento de al menos ${fmt(Math.max(1500,Math.round(adaptive*1.25/100)*100))} m`,type:"bigSession",target:Math.max(1500,Math.round(adaptive*1.25/100)*100),xp:430,coins:100},
   {suffix:"estilos",title:"Usa 3 estilos diferentes en la semana",type:"styles",target:3,xp:345,coins:80},
-  ...styles.map((s,i)=>({suffix:"style_"+s,title:`Nada ${i<2?1800:1200} m de ${STYLE[s].name} esta semana`,type:"styleMeters",style:s,target:i<2?1800:1200,xp:400+i*8,coins:92+i*3})),
+  {suffix:"cuatroEstilos",title:"Usa 4 estilos diferentes en la semana",type:"styles",target:4,xp:430,coins:100},
+  {suffix:"timed",title:"Registra tiempo en 3 series diferentes",type:"timedSeries",target:3,xp:360,coins:82},
+  {suffix:"timedSessions",title:"Completa 2 entrenamientos con al menos una serie cronometrada",type:"timedSessions",target:2,xp:390,coins:90},
+  {suffix:"correctiveMeters",title:"Nada 1.000 m en series correctivas",type:"correctiveMeters",target:1000,xp:380,coins:90},
+  {suffix:"names",title:"Registra 3 entrenamientos con nombre",type:"namedTrainings",target:3,xp:350,coins:82},
+  {suffix:"short",title:"Completa 2 sesiones de al menos 20 minutos",type:"durationMin",target:2,durationTarget:20,xp:340,coins:80},
+  {suffix:"veryLong",title:"Completa 1 sesión de al menos 90 minutos",type:"durationMin",target:1,durationTarget:90,xp:450,coins:110},
+  {suffix:"distanceStyle",title:`Nada ${fmt(styleTarget(h.favoriteStyle))} m de ${STYLE[h.favoriteStyle].name}`,type:"styleMeters",style:h.favoriteStyle,target:styleTarget(h.favoriteStyle),xp:410,coins:95},
+  ...styles.map((s,i)=>({suffix:"style_"+s,title:`Nada ${fmt(styleTarget(s))} m de ${STYLE[s].name} esta semana`,type:"styleMeters",style:s,target:styleTarget(s),xp:385+(i%3)*12,coins:88+(i%3)*4})),
   ...styles.map(s=>({suffix:"session_"+s,title:`Haz 2 sesiones que incluyan ${STYLE[s].name}`,type:"styleSessions",style:s,target:2,xp:370,coins:86})),
   {suffix:"multiseries",title:"Completa 3 sesiones de 4 series o más",type:"multiSeries",target:3,seriesTarget:4,xp:395,coins:90},
-  {suffix:"distancia",title:"Supera los 5.000 m acumulados en la semana",type:"metersFixed",target:5000,xp:455,coins:105}
+  {suffix:"distancia",title:`Supera los ${fmt(Math.max(3000,Math.round(adaptive*3.6/100)*100))} m acumulados en la semana`,type:"metersFixed",target:Math.max(3000,Math.round(adaptive*3.6/100)*100),xp:455,coins:105},
+  {suffix:"consistency",title:"Completa 4 entrenamientos esta semana",type:"train",target:4,xp:400,coins:95},
+  {suffix:"personalPush",title:`Supera tu media reciente con una sesión de ${fmt(Math.max(1200,Math.round(h.avgRecent*1.15/100)*100))} m`,type:"bigSession",target:Math.max(1200,Math.round(h.avgRecent*1.15/100)*100),xp:445,coins:105},
+  {suffix:"recovery",title:"Completa 2 sesiones suaves o normales",type:"intensityAtMost",target:2,intensityMax:1,xp:335,coins:80},
+  {suffix:"highIntensity",title:"Haz 3 sesiones intensas o superiores",type:"intensityAtLeast",target:3,intensityMin:2,xp:420,coins:98}
  ];
- const seed=missionSeed(wk),adaptive=adaptiveBase();
- const out=[{id:"wk_m_"+wk,title:`Nada ${fmt(adaptive)} m esta semana`,type:"meters",target:adaptive,xp:400,coins:100}];
- const used=new Set(["meters"]);let cursor=seed%pool.length;
- while(out.length<5){const m=pool[cursor%pool.length];cursor++;const key=m.type+":"+(m.style||m.suffix);if(used.has(key))continue;used.add(key);out.push({...m,id:"wk_"+m.suffix+"_"+wk});}
- return out;
+}
+function pickSmartMissions(pool,count,seed,existing){
+ const h=missionHistory(),used=new Set(existing.map(m=>m.type+":"+(m.style||m.suffix))),picked=[];let cursor=seed%pool.length;
+ const score=m=>{
+  let s=1;
+  if(m.style===h.favoriteStyle)s-=0.35;
+  if(m.style&&!(h.styleTotals[m.style]>0))s+=0.45;
+  if(m.type==="difficultySessions"&&!h.recent.some(e=>difficultyInfo(e,h.base).key===m.difficulty))s+=0.15;
+  if(m.type==="correctives"&&!h.recent.some(e=>e.series.some(x=>x.corrective)))s+=0.25;
+  if((m.target||0)>Math.max(2,weekTrain().length+2)&&m.type.includes("Sessions"))s-=0.2;
+  if(m.type==="bigSession"&&(m.target||0)>Math.max(2500,h.avgRecent*1.65))s-=0.25;
+  return s;
+ };
+ const candidates=pool.map(m=>({m,s:score(m)})).sort((a,b)=>b.s-a.s);
+ while(picked.length<count&&candidates.length){
+  const available=candidates.filter(x=>!used.has(x.m.type+":"+(x.m.style||x.m.suffix)));
+  if(!available.length)break;
+  const window=Math.min(7,available.length),index=(cursor++%window);const chosen=available[index].m;used.add(chosen.type+":"+(chosen.style||chosen.suffix));picked.push(chosen);
+ }
+ return picked;
 }
 function ensureMissions(){
  const wk=weekKey(),mk=monthKey();
- if(!S.missions.week||S.missions.weekKey!==wk){S.missions.week=weekMissionPool(wk);S.missions.weekKey=wk;}
- if(!S.missions.month||S.missions.monthKey!==mk){
-  const target=Math.round(Math.max(5000,adaptiveBase()*4.1)/100)*100;
-  S.missions.month=[
-   {id:"mo_m_"+mk,title:`Nada ${fmt(target)} m este mes`,type:"monthMeters",target,xp:720,coins:190},
+ if(!S.missions.week||S.missions.weekKey!==wk){S.missions.week=[];S.missions.weekKey=wk;}
+ if(!S.missions.month||S.missions.monthKey!==mk){S.missions.month=[];S.missions.monthKey=mk;}
+ const seed=missionSeed(wk+"|"+mk),pool=smartMissionPool(wk);
+ const needWeek=Math.max(0,8-S.missions.week.length);
+ if(needWeek){const picked=pickSmartMissions(pool,needWeek,seed,S.missions.week);S.missions.week.push(...picked.map(m=>({...m,id:"wk_smart_"+m.suffix+"_"+wk})));}
+ if(S.missions.month.length<6){
+  const monthAdaptive=Math.max(5000,Math.round(adaptiveBase()*4.1/100)*100);
+  const baseMonth=[
+   {id:"mo_m_"+mk,title:`Nada ${fmt(monthAdaptive)} m este mes`,type:"monthMeters",target:monthAdaptive,xp:720,coins:190},
    {id:"mo_t_"+mk,title:"Completa 10 entrenamientos",type:"monthTrain",target:10,xp:655,coins:170},
    {id:"mo_s_"+mk,title:"Usa 3 estilos diferentes",type:"monthStyles",target:3,xp:560,coins:140}
-  ];S.missions.monthKey=mk;
+  ];
+  const monthPool=[
+   {id:"mo_d_"+mk,title:"Completa 4 entrenamientos Intensos o superiores",type:"monthDifficulty",difficulty:"intenso",target:4,xp:620,coins:155},
+   {id:"mo_cor_"+mk,title:"Completa 6 sesiones con correctivos",type:"monthCorrectives",target:6,xp:610,coins:150},
+   {id:"mo_days_"+mk,title:"Entrena en 10 días diferentes",type:"monthActiveDays",target:10,xp:580,coins:145}
+  ];
+  S.missions.month=[...S.missions.month,...baseMonth.filter(m=>!S.missions.month.some(x=>x.id===m.id)),...monthPool.filter(m=>!S.missions.month.some(x=>x.id===m.id))].slice(0,6);
  }
  save();
 }
@@ -830,35 +1071,37 @@ function missionValue(m){
  if(m.type==="meters"||m.type==="monthMeters"||m.type==="metersFixed")return totalMeters(arr);
  if(m.type==="train"||m.type==="monthTrain")return arr.length;
  if(m.type==="styles"||m.type==="monthStyles")return Object.values(missionStats(arr)).filter(v=>v>0).length;
- if(m.type==="correctives")return arr.filter(e=>e.series.some(s=>s.corrective)).length;
+ if(m.type==="correctives"||m.type==="monthCorrectives")return arr.filter(e=>e.series.some(s=>s.corrective)).length;
  if(m.type==="intenseSessions")return arr.filter(e=>e.series.some(s=>s.intensity==="intenso")).length;
+ if(m.type==="difficultySessions"||m.type==="monthDifficulty"){const order={facil:0,normal:1,intenso:2,discreo:3,demoniaco:4,masoquista:5};return arr.filter(e=>order[difficultyInfo(e,S.profile?.avgMeters).key]>=order[m.difficulty]).length;}
  if(m.type==="longSessions")return arr.filter(e=>(Number(e.durationMin)||0)>=60).length;
  if(m.type==="seriesCount")return arr.reduce((a,e)=>a+e.series.length,0);
- if(m.type==="activeDays")return new Set(arr.map(e=>e.date)).size;
+ if(m.type==="activeDays"||m.type==="monthActiveDays")return new Set(arr.map(e=>e.date)).size;
  if(m.type==="combinedSession")return arr.some(e=>e.series.some(s=>s.style==="combinado"))?1:0;
  if(m.type==="bigSession")return Math.max(0,...arr.map(e=>totalMeters([e])));
  if(m.type==="styleMeters")return arr.reduce((a,e)=>a+e.series.filter(s=>s.style===m.style).reduce((b,s)=>b+s.distance*s.reps,0),0);
  if(m.type==="styleSessions")return arr.filter(e=>e.series.some(s=>s.style===m.style)).length;
  if(m.type==="multiSeries")return arr.filter(e=>e.series.length>=(m.seriesTarget||4)).length;
+ if(m.type==="timedSeries")return arr.reduce((a,e)=>a+e.series.filter(s=>Number(s.time)>0).length,0);
+ if(m.type==="timedSessions")return arr.filter(e=>e.series.some(s=>Number(s.time)>0)).length;
+ if(m.type==="correctiveMeters")return arr.reduce((a,e)=>a+e.series.filter(s=>s.corrective).reduce((b,s)=>b+s.distance*s.reps,0),0);
+ if(m.type==="namedTrainings")return arr.filter(e=>String(e.name||"").trim()).length;
+ if(m.type==="durationMin")return arr.filter(e=>(Number(e.durationMin)||0)>=(m.durationTarget||0)).length;
+ if(m.type==="intensityAtMost")return arr.filter(e=>e.series.some(s=>({suave:0,normal:1,intenso:2,discreo:3,demoniaco:4,masoquista:5}[s.intensity]??1)<=m.intensityMax)).length;
+ if(m.type==="intensityAtLeast")return arr.filter(e=>e.series.some(s=>({suave:0,normal:1,intenso:2,discreo:3,demoniaco:4,masoquista:5}[s.intensity]??1)>=m.intensityMin)).length;
  return 0;
 }
 function missionDone(m){return missionValue(m)>=m.target}
 function claimMission(id){
  ensureMissions();const m=[...S.missions.week,...S.missions.month].find(x=>x.id===id);
  if(!m||S.claimed.includes(id)||!missionDone(m))return;
- const beforeRank=currentRank().r.c;
- S.claimed.push(id);const levelEvent=gainXP(m.xp);const missionCoins=Math.round(m.coins*coinMultiplier());S.coins+=missionCoins;save();tone("coin");
- render();
- const levelText=levelEvent.levels?` · ⬆️ LV ${S.level} · +${fmt(levelEvent.coins)} 🪙`:"";
- toast(`🎯 +${fmt(m.xp)} XP · +${fmt(missionCoins)} 🪙${levelText}`);
- if(currentRank().r.c!==beforeRank)setTimeout(()=>rankReveal(currentRank().r),420);
+ const beforeRank=currentRank().r.c;S.claimed.push(id);const levelEvent=gainXP(m.xp);const missionCoins=Math.round(m.coins*coinMultiplier());S.coins+=missionCoins;save();tone("coin");render();
+ const levelText=levelEvent.levels?` · ⬆️ LV ${S.level} · +${fmt(levelEvent.coins)} 🪙`:"";toast(`🎯 +${fmt(m.xp)} XP · +${fmt(missionCoins)} 🪙${levelText}`);if(currentRank().r.c!==beforeRank)setTimeout(()=>rankReveal(currentRank().r),420);
 }
-function mainMission(){
- ensureMissions();const list=S.missions.week;return list.find(m=>!S.claimed.includes(m.id))||list[0];
-}
+function mainMission(){ensureMissions();const list=S.missions.week;return list.find(m=>!S.claimed.includes(m.id))||list[0]}
 
 function render(){
- applyTheme();updatePearPet();const justUnlocked=achievementCheck();$("coins").textContent=fmt(S.coins);
+ applyTheme();updatePearPet();const bp=$("bananaPet");if(bp)bp.classList.toggle("visible",!!S.purchases.banana&&(!S.secret.bananaRemoved||window.__bananaGhostVisible));const justUnlocked=achievementCheck();$("coins").textContent=fmt(S.coins);
  document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
  $("screen").innerHTML=S.profile?({home:home,train:train,stats:stats,ranks:ranks,shop:shop,profile:profile}[page]||home)():onboarding();
  bind();
@@ -866,27 +1109,21 @@ function render(){
 }
 function onboarding(){
  return `<div class="card" style="margin-top:28px">
-  <div class="kicker">🌊 PRIMER INICIO</div><h1>Construye tu perfil</h1>
-  <p class="sub">Después de esto, tu progreso quedará guardado en este dispositivo.</p>
+  <div class="kicker">🌊 PRIMER INICIO</div><h1>Construye tu perfil</h1><p class="sub">Después de esto, tu progreso quedará guardado en este dispositivo.</p>
   <div class="field"><label>Nombre *</label><input id="onName" maxlength="24" placeholder="Tu nombre"></div>
-  <div class="field"><label>Marcas personales (opcionales)</label><div class="grid g2">
- <input id="recCrol" placeholder="Crol · segundos">
- <input id="recEspalda" placeholder="Espalda · segundos">
- <input id="recPecho" placeholder="Pecho · segundos">
- <input id="recMariposa" placeholder="Mariposa · segundos">
- </div><div class="sub" style="margin-top:5px">Puedes dejar cualquier marca vacía.</div></div>
-  <div class="field"><label>¿Cuántos metros nadas aproximadamente por entrenamiento?</label><input id="onAvgMeters" type="number" min="100" step="50" value="1000" placeholder="1000"><div class="sub" style="margin-top:5px">Esto personaliza la dificultad. Una sesión que es fácil para un nadador puede ser intensa para otro.</div></div>
+  <div class="field"><label>Marcas personales (opcionales)</label><div class="grid g2"><input id="recCrol" placeholder="Crol · segundos"><input id="recEspalda" placeholder="Espalda · segundos"><input id="recPecho" placeholder="Pecho · segundos"><input id="recMariposa" placeholder="Mariposa · segundos"></div><div class="sub" style="margin-top:5px">Puedes dejar cualquier marca vacía.</div></div>
+  <div class="field"><label>¿Cuántos metros nadas aproximadamente por entrenamiento?</label><input id="onAvgMeters" type="number" min="100" step="50" value="1000" placeholder="1000"><div class="sub" style="margin-top:5px">Esto personaliza la dificultad.</div></div>
   <div class="field"><label>Género</label><select id="onGender"><option>Prefiero no decirlo</option><option>Masculino</option><option>Femenino</option><option>Otro</option></select></div>
   <div class="field"><label>Breve descripción</label><textarea id="onBio" maxlength="160" placeholder="Una pequeña descripción sobre ti..."></textarea></div>
+  <div class="field"><label>¿Qué días practicas normalmente?</label><div class="row wrap">${[[1,"Lun"],[2,"Mar"],[3,"Mié"],[4,"Jue"],[5,"Vie"],[6,"Sáb"],[0,"Dom"]].map(([v,n])=>`<label class="pill"><input class="onDay" type="checkbox" value="${v}" ${[2,3,5].includes(v)?"checked":""} style="width:auto">${n}</label>`).join("")}</div><div class="sub" style="margin-top:5px">Solo se usarán para revisar al final de la semana si faltó una práctica habitual.</div></div>
   <button class="btn primary" onclick="createProfile()">Comenzar →</button>
  </div>`;
 }
 function createProfile(){
  const n=$("onName").value.trim();if(!n){toast("Escribe tu nombre para continuar.");return}
- const initialRecords=[$("recCrol").value.trim(),$("recEspalda").value.trim(),$("recPecho").value.trim(),$("recMariposa").value.trim()].filter(Boolean).map(Number);
- if(initialRecords.some(v=>Number.isFinite(v)&&v>0&&v<19)){showRecordSanityModal();return}
- S.profile={name:n,gender:$("onGender").value,bio:$("onBio").value.trim(),avgMeters:Math.max(100,+$("onAvgMeters").value||1000),records:{crol:$("recCrol").value.trim(),espalda:$("recEspalda").value.trim(),pecho:$("recPecho").value.trim(),mariposa:$("recMariposa").value.trim()},created:Date.now()};
- S.lastMonth=monthKey();S.lastReviewWeek=weekKey();save();tone("rank");render();toast("🌊 Perfil creado. ¡A nadar!");
+ const initialRecords=[$("recCrol").value.trim(),$("recEspalda").value.trim(),$("recPecho").value.trim(),$("recMariposa").value.trim()].filter(Boolean).map(Number);if(initialRecords.some(v=>Number.isFinite(v)&&v>0&&v<19)){showRecordSanityModal();return}
+ const days=[...document.querySelectorAll(".onDay:checked")].map(x=>+x.value);if(!days.length){toast("Elige al menos un día de entrenamiento.");return}
+ S.profile={name:n,gender:$("onGender").value,bio:$("onBio").value.trim(),avgMeters:Math.max(100,+$("onAvgMeters").value||1000),records:{crol:$("recCrol").value.trim(),espalda:$("recEspalda").value.trim(),pecho:$("recPecho").value.trim(),mariposa:$("recMariposa").value.trim()},created:Date.now()};S.settings.days=days;S.lastMonth=monthKey();S.lastReviewWeek=weekKey();save();tone("rank");render();toast("🌊 Perfil creado. ¡A nadar!");
 }
 function rankArt(c){
  if(c==="megalodon")return '<div class="megalodon-art"><span class="mega-eye left"></span><span class="mega-eye right"></span><span class="mega-fin"></span><span class="mega-tooth t1"></span><span class="mega-tooth t2"></span><span class="mega-tooth t3"></span><span class="mega-tooth t4"></span><span class="mega-tooth t5"></span><span class="mega-tooth top t1"></span><span class="mega-tooth top t2"></span><span class="mega-tooth top t3"></span><span class="mega-tooth top t4"></span></div>';
@@ -907,33 +1144,37 @@ function coinShop(){
 function comingSoonPurchases(){toast("🚧 Próximamente. Todavía no hay compras reales disponibles.");tone("click")}
 
 const ACHIEVEMENTS=[
- {id:"first_swim",icon:"🌊",title:"Primer chapuzón",desc:"Completa tu primer entrenamiento.",reward:null,ok:()=>countTrain()>=1},
- {id:"first_k",icon:"📏",title:"Primer kilómetro",desc:"Acumula 1.000 metros.",reward:null,ok:()=>totalMeters()>=1000},
- {id:"ten_k",icon:"🌊",title:"Diez mil",desc:"Acumula 10.000 metros.",reward:null,ok:()=>totalMeters()>=10000},
- {id:"25_train",icon:"🏊",title:"Constancia inicial",desc:"Completa 25 entrenamientos.",reward:null,ok:()=>countTrain()>=25},
- {id:"50_train",icon:"🔥",title:"Ya es costumbre",desc:"Completa 50 entrenamientos.",reward:null,ok:()=>countTrain()>=50},
- {id:"100_train",icon:"💯",title:"Centenario",desc:"Completa 100 entrenamientos.",reward:null,ok:()=>countTrain()>=100},
- {id:"streak7",icon:"🔥",title:"Una semana",desc:"Alcanza una racha de 7 semanas.",reward:null,ok:()=>S.streak>=7},
- {id:"streak30",icon:"🗓️",title:"Mes de constancia",desc:"Alcanza una racha de 30 semanas.",reward:null,ok:()=>S.streak>=30},
- {id:"record",icon:"🏆",title:"Primer récord",desc:"Consigue al menos un récord personal de 50 m.",reward:null,ok:()=>Object.values(S.profile?.records||{}).some(v=>parseFloat(String(v||"").replace(",","."))>0)},
- {id:"100k",icon:"💎",title:"Cien mil",desc:"Acumula 100.000 metros.",reward:{theme:"CianNeon"},ok:()=>totalMeters()>=100000},
- {id:"demon",icon:"🔴",title:"Demoníaco",desc:"Completa un entrenamiento Demoníaco.",reward:{theme:"Carbon"},ok:()=>S.trainings.some(e=>(e.difficulty||difficultyInfo(e,S.profile?.avgMeters).key)==="demoniaco")},
+ {id:"first_swim",icon:"🌊",title:"Primer chapuzón",desc:"Completa tu primer entrenamiento.",reward:{coins:80},ok:()=>countTrain()>=1},
+ {id:"first_k",icon:"📏",title:"Primer kilómetro",desc:"Acumula 1.000 metros.",reward:{coins:80},ok:()=>totalMeters()>=1000},
+ {id:"ten_k",icon:"🌊",title:"Diez mil",desc:"Acumula 10.000 metros.",reward:{coins:100},ok:()=>totalMeters()>=10000},
+ {id:"25_train",icon:"🏊",title:"Constancia inicial",desc:"Completa 25 entrenamientos.",reward:{coins:110},ok:()=>countTrain()>=25},
+ {id:"50_train",icon:"🔥",title:"Ya es costumbre",desc:"Completa 50 entrenamientos.",reward:{coins:150},ok:()=>countTrain()>=50},
+ {id:"100_train",icon:"💯",title:"Centenario",desc:"Completa 100 entrenamientos.",reward:{coins:200},ok:()=>countTrain()>=100},
+ {id:"streak7",icon:"🔥",title:"Una semana",desc:"Alcanza una racha de 7 semanas.",reward:{coins:100},ok:()=>S.streak>=7},
+ {id:"streak30",icon:"🗓️",title:"Mes de constancia",desc:"Alcanza una racha de 30 semanas.",reward:{coins:250},ok:()=>S.streak>=30},
+ {id:"record",icon:"🏆",title:"Primer récord",desc:"Consigue al menos un récord personal de 50 m.",reward:{coins:120},ok:()=>Object.values(S.profile?.records||{}).some(v=>parseFloat(String(v||"").replace(",","."))>0)},
+ {id:"100k",icon:"💎",title:"Cien mil",desc:"Acumula 100.000 metros.",reward:{theme:"CianNeon",coins:220},ok:()=>totalMeters()>=100000},
+ {id:"demon",icon:"🔴",title:"Demoníaco",desc:"Completa un entrenamiento Demoníaco.",reward:{theme:"Carbon",coins:180},ok:()=>S.trainings.some(e=>(e.difficulty||difficultyInfo(e,S.profile?.avgMeters).key)==="demoniaco")},
  {id:"maso",icon:"⚫",title:"Masoquista",desc:"Completa un entrenamiento de 6.000 m o más.",reward:{coins:999,xp:30000},ok:()=>S.trainings.some(e=>totalMeters([e])>=6000)},
- {id:"butterfly10",icon:"🦋",title:"Alas de agua",desc:"Nada 10.000 m de mariposa acumulados.",reward:null,ok:()=>missionStats(S.trainings).mariposa>=10000},
- {id:"all4",icon:"🔄",title:"Cuatro mundos",desc:"Utiliza los cuatro estilos principales al menos una vez.",reward:null,ok:()=>false},
- {id:"combined",icon:"🔄",title:"Orden completo",desc:"Registra al menos una sesión de Combinado.",reward:null,ok:()=>S.trainings.some(e=>e.series.some(s=>s.style==="combinado"))},
- {id:"500k",icon:"🌌",title:"Medio millón",desc:"Acumula 500.000 metros.",reward:null,ok:()=>totalMeters()>=500000},
- {id:"rankPoseidon",icon:"🔱",title:"El océano te reconoce",desc:"Alcanza Poseidón.",reward:null,ok:()=>currentRank().r.c==="poseidon"||RANKS.findIndex(r=>r.c===currentRank().r.c)>=RANKS.findIndex(r=>r.c==="poseidon")},
- {id:"dailyLucky",icon:"🎰",title:"Golpe de suerte",desc:"Recibe un tema como recompensa diaria.",reward:null,ok:()=>S.dailyReward?.kind==="theme"&&S.dailyReward?.claimed},
- {id:"pear",icon:"🍐",title:"La Pera",desc:"Compra la Pera en la tienda.",reward:{theme:"Pera"},ok:()=>!!S.purchases.pear},
- {id:"coach_pool",icon:"🤡",title:"Tira a tu coach dentro de la piscina",desc:"Una curiosidad absurdamente imposible. No tiene recompensa.",reward:null,ok:()=>false,impossible:true},
+ {id:"butterfly10",icon:"🦋",title:"Alas de agua",desc:"Nada 10.000 m de mariposa acumulados.",reward:{coins:140},ok:()=>missionStats(S.trainings).mariposa>=10000},
+ {id:"all4",icon:"🔄",title:"Cuatro mundos",desc:"Utiliza los cuatro estilos principales al menos una vez.",reward:{coins:100},ok:()=>false},
+ {id:"combined",icon:"🔄",title:"Orden completo",desc:"Registra al menos una sesión de Combinado.",reward:{coins:100},ok:()=>S.trainings.some(e=>e.series.some(s=>s.style==="combinado"))},
+ {id:"500k",icon:"🌌",title:"Medio millón",desc:"Acumula 500.000 metros.",reward:{coins:300},ok:()=>totalMeters()>=500000},
+ {id:"rankPoseidon",icon:"🔱",title:"El océano te reconoce",desc:"Alcanza Poseidón.",reward:{coins:350},ok:()=>currentRank().r.c==="poseidon"||RANKS.findIndex(r=>r.c===currentRank().r.c)>=RANKS.findIndex(r=>r.c==="poseidon")},
+ {id:"dailyLucky",icon:"🎰",title:"Golpe de suerte",desc:"Recibe un tema como recompensa diaria.",reward:{coins:100},ok:()=>S.dailyReward?.kind==="theme"&&S.dailyReward?.claimed},
+ {id:"pear",icon:"🍐",title:"La Pera",desc:"Compra la Pera en la tienda.",reward:{theme:"Pera",coins:120},ok:()=>!!S.purchases.pear},
+ {id:"coach_pool",icon:"🤡",title:"Tira a tu coach dentro de la piscina",desc:"Una curiosidad absurdamente imposible. No tiene recompensa.",reward:{coins:80},ok:()=>false,impossible:true},
  {id:"fish25",icon:"🐟",title:"Amigo del pez",desc:"Haz clic en el Pez Motivador 25 veces.",reward:{coins:80},ok:()=>Number(localStorage.getItem("SWIM_QUEST_FISH_CLICKS")||0)>=25},
+ {id:"fish_shop",icon:"🛒",title:"Cliente prohibido",desc:"Entra por primera vez a la tienda secreta del Pez.",reward:{coins:100,xp:250},secret:true,ok:()=>false},
  {id:"pear_days",icon:"🍐",title:"Habitual de la Pera",desc:"Visita la escena de la Pera en 5 días diferentes.",reward:{coins:170},ok:()=>Number(localStorage.getItem("SWIM_QUEST_PEAR_DAYS")||0)>=5},
  {id:"theme_collector",icon:"🎨",title:"Coleccionista cromático",desc:"Desbloquea 8 temas visuales.",reward:{coins:250},ok:()=>Object.keys(S.purchases).filter(k=>k.startsWith("theme_")&&S.purchases[k]).length>=8},
  {id:"month12",icon:"📅",title:"Mes imparable",desc:"Completa 12 entrenamientos dentro de un mismo mes calendario.",reward:{coins:500},ok:()=>{const byMonth={};for(const e of (S.trainings||[])){const k=String(e.date||"").slice(0,7);if(k)byMonth[k]=(byMonth[k]||0)+1;}return Object.values(byMonth).some(n=>n>=12);}},
- {id:"last_threshold",icon:"🌘",title:"El Último Umbral",desc:"Dale nombre a 50 entrenamientos distintos. Un único objetivo, pero uno de los más raros de Swim Quest.",reward:{theme:"Eclipse"},ok:()=>new Set((S.trainings||[]).map(e=>String(e.name||"").trim()).filter(Boolean)).size>=50}
+ {id:"last_threshold",icon:"🌘",title:"El Último Umbral",desc:"Dale nombre a 50 entrenamientos distintos. Un único objetivo, pero uno de los más raros de Swim Quest.",reward:{theme:"Eclipse",coins:350},ok:()=>new Set((S.trainings||[]).map(e=>String(e.name||"").trim()).filter(Boolean)).size>=50},
+ {id:"hotdog",icon:"🌭",title:"¡Perro caliente!",desc:"Compra Mostaza, Ketchup y Salchicha en la tienda prohibida.",reward:{theme:"PerroCaliente",coins:300},secret:true,ok:()=>false},
+ {id:"secret_fish",icon:"🐟",title:"Familia complicada",desc:"Elige al Pez como objetivo del Sicario.",reward:{coins:120},secret:true,ok:()=>!!S.secret.fishRoute},
+ {id:"secret_banana",icon:"🍌",title:"¿Por qué?",desc:"Elige a la Banana como objetivo del Sicario.",reward:{coins:250},secret:true,ok:()=>!!S.secret.bananaRemoved},
+ {id:"secret_pear",icon:"🍐",title:"¿Por qué yo?",desc:"Lee completa la conversación especial de la Pera después de intentar elegirla como objetivo.",reward:{coins:300},secret:true,ok:()=>!!S.secret.pearRouteDialogueSeen}
 ];
-// Fix the one compact predicate explicitly so old browsers do not choke on shorthand typo.
 ACHIEVEMENTS[13].ok=()=>{
  const used=new Set();S.trainings.forEach(e=>e.series.forEach(s=>{if(["crol","espalda","pecho","mariposa"].includes(s.style))used.add(s.style)}));
  return used.size>=4;
@@ -944,9 +1185,9 @@ function achievementCheck(){
  if(!Array.isArray(S.achievements))S.achievements=[];
  const unlocked=[];
  for(const a of ACHIEVEMENTS){
+  if(a.secret)continue;
   if(!achievementUnlocked(a)&&a.ok()){
-   S.achievements.push(a.id);
-   unlocked.push(a);
+   S.achievements.push(a.id);unlocked.push(a);
    if(a.reward?.theme)S.purchases["theme_"+a.reward.theme]=true;
    if(a.reward?.coins)S.coins+=Number(a.reward.coins||0);
    if(a.reward?.xp){S.xp+=Number(a.reward.xp||0);S.level=levelFromXP(S.xp);}
@@ -956,13 +1197,21 @@ function achievementCheck(){
  return unlocked;
 }
 function achievementModal(a){
- const reward=a.reward?.theme?`<div class="pill" style="margin-top:9px">🎨 Recompensa: ${THEMES[a.reward.theme]?.emoji||"✨"} ${a.reward.theme}</div>`:(a.reward?.coins||a.reward?.xp)?`<div class="pill" style="margin-top:9px">${a.reward.coins?`🪙 ${fmt(a.reward.coins)} monedas`:""}${a.reward.coins&&a.reward.xp?" · ":""}${a.reward.xp?`⭐ ${fmt(a.reward.xp)} XP`:""}</div>`:(a.impossible?`<div class="pill" style="margin-top:9px">🤡 Sin recompensa. Este logro es imposible.</div>`:`<div class="pill" style="margin-top:9px">✅ Logro permanente</div>`);
+ const reward=a.reward?.theme?`<div class="pill" style="margin-top:9px">🎨 Recompensa: ${THEMES[a.reward.theme]?.emoji||"✨"} ${a.reward.theme}${a.reward.coins?` · 🪙 ${fmt(a.reward.coins)}`:""}</div>`:(a.reward?.coins||a.reward?.xp)?`<div class="pill" style="margin-top:9px">${a.reward.coins?`🪙 ${fmt(a.reward.coins)} monedas`:""}${a.reward.coins&&a.reward.xp?" · ":""}${a.reward.xp?`⭐ ${fmt(a.reward.xp)} XP`:""}</div>`:(a.impossible?`<div class="pill" style="margin-top:9px">🤡 Logro imposible · recompensa guardada</div>`:`<div class="pill" style="margin-top:9px">✅ Logro permanente</div>`);
  modal(`<div class="reveal" style="text-align:center"><div style="font-size:62px">${a.icon}</div><div class="kicker">🏆 LOGRO DESBLOQUEADO</div><h1>${esc(a.title)}</h1><p class="sub">${esc(a.desc)}</p>${reward}<button class="btn primary" style="margin-top:14px" onclick="closeModal()">Continuar</button></div>`);
 }
 function showAchievements(){
- const unlocked=(S.achievements||[]).length;
- modal(`<div class="kicker">🏆 LOGROS</div><div class="achievements-summary"><h2 style="margin:0">Colección</h2><span class="pill">${unlocked} / ${ACHIEVEMENTS.length}</span></div><div class="achievement-grid">${ACHIEVEMENTS.map(a=>{const ok=achievementUnlocked(a);const reward=a.reward?.theme?` · 🎨 ${a.reward.theme}`:(a.reward?.coins||a.reward?.xp)?` · ${a.reward.coins?`🪙 ${a.reward.coins}`:""}${a.reward.coins&&a.reward.xp?" · ":""}${a.reward.xp?`⭐ ${a.reward.xp} XP`:""}`:a.impossible?" · Sin recompensa":"";return `<div class="achievement-card ${ok?"unlocked":"locked"}"><div class="achievement-icon">${ok?a.icon:"🔒"}</div><div><b>${esc(a.title)}</b><div class="sub">${esc(a.desc)}${ok?reward:""}</div></div></div>`}).join("")}</div><button class="btn secondary" style="margin-top:10px" onclick="closeModal()">Cerrar</button>`);
+ const visible=ACHIEVEMENTS.filter(a=>!a.secret||achievementUnlocked(a));const unlocked=visible.filter(achievementUnlocked).length;
+ modal(`<div class="kicker">🏆 LOGROS</div><div class="achievements-summary"><h2 style="margin:0">Colección</h2><span class="pill">${unlocked} / ${visible.length}</span></div><div class="achievement-grid">${visible.map(a=>{const ok=achievementUnlocked(a);const reward=a.reward?.theme?` · 🎨 ${a.reward.theme}`:(a.reward?.coins||a.reward?.xp)?` · ${a.reward.coins?`🪙 ${a.reward.coins}`:""}${a.reward.coins&&a.reward.xp?" · ":""}${a.reward.xp?`⭐ ${a.reward.xp} XP`:""}`:"";return `<div class="achievement-card ${ok?"unlocked":"locked"}"><div class="achievement-icon">${ok?a.icon:"🔒"}</div><div><b>${esc(a.title)}</b><div class="sub">${esc(a.desc)}${ok?reward:""}</div></div></div>`}).join("")}</div><button class="btn secondary" style="margin-top:10px" onclick="closeModal()">Cerrar</button>`);
 }
+function unlockSecretAchievement(id){
+ const a=ACHIEVEMENTS.find(x=>x.id===id);if(!a||achievementUnlocked(a))return null;
+ 
+ S.achievements.push(id);if(a.reward?.theme)S.purchases["theme_"+a.reward.theme]=true;if(a.reward?.coins)S.coins+=Number(a.reward.coins);if(a.reward?.xp){S.xp+=Number(a.reward.xp);S.level=levelFromXP(S.xp)}save();return a;
+}
+function unlockHotdog(){if(S.secret.hotdogUnlocked)return null;const a=unlockSecretAchievement("hotdog");if(a){S.secret.hotdogUnlocked=true;S.purchases.theme_PerroCaliente=true;S.purchases.theme_PerroCaliente=true;save();return a}return null}
+const BANANA_DIALOGUE=[{speaker:"🍌 BANANA",text:"Hola."},{speaker:"👤 TÚ",text:"¿Eres una banana?"},{speaker:"🍌 BANANA",text:"Sí."},{speaker:"👤 TÚ",text:"¿Y qué haces?"},{speaker:"🍌 BANANA",text:"Existir."},{speaker:"👤 TÚ",text:"¿Eso es todo?"},{speaker:"🍌 BANANA",text:"Supongo. ¿Para qué sirven los humanos?"},{speaker:"👤 TÚ",text:"¿Qué?"},{speaker:"🍌 BANANA",text:"Caminan. Piensan. Nadan. Duermen. Vuelven a nadar. ¿Cuál es el objetivo?"},{speaker:"👤 TÚ",text:"No sé."},{speaker:"🍌 BANANA",text:"Yo tampoco. Pero soy una banana, así que tengo una excusa."},{speaker:"🍌 BANANA",text:"Ah, por cierto. Saluda a la Pera por mí."},{speaker:"👤 TÚ",text:"¿Por qué no se lo dices tú?"},{speaker:"🍌 BANANA",text:"Estamos literalmente al lado. No podemos comunicarnos. No preguntes."}];let bananaIndex=0,bananaReady=false;function openBananaScene(){if(!S.purchases.banana||S.secret.bananaRemoved){toast("🍌 La Banana ya no existe.");return}ambientStop();bananaIndex=0;bananaReady=false;renderBananaScene()}function renderBananaScene(){const old=$("bananaScene");if(old)old.remove();const item=BANANA_DIALOGUE[bananaIndex];const scene=document.createElement("div");scene.id="bananaScene";scene.className="pear-scene";scene.innerHTML=`<div class="pear-shine"></div><div class="pear-stage"><div class="pear-emoji">🍌</div><div class="pear-speaker">${esc(item.speaker)}</div><div class="pear-text">${esc(item.text)}</div><button class="pear-next" id="bananaNext" disabled>Siguiente</button><button class="pear-close" onclick="closeBananaScene()">Salir</button></div>`;document.body.appendChild(scene);const ms=Math.max(900,Math.min(3500,item.text.length*18));setTimeout(()=>{bananaReady=true;const b=$("bananaNext");if(b){b.disabled=false;b.onclick=bananaNext}},ms)}function bananaNext(){if(!bananaReady)return;if(bananaIndex<BANANA_DIALOGUE.length-1){bananaIndex++;bananaReady=false;renderBananaScene()}else closeBananaScene()}function closeBananaScene(){$("bananaScene")?.remove();if(S.settings.music)restartAmbient()}
+
 const PEAR_DIALOGUE=[
  {speaker:"🍐 PERA",text:"Miras este espacio en blanco como si tuvieras todo el tiempo del mundo para decidir qué pintar —dice la Pera, balanceándose apenas un milímetro en el vacío—. No lo tienes."},
  {speaker:"👤 TÚ",text:"¿Quién... qué eres? ¿Por qué eres una pera?"},
@@ -976,39 +1225,127 @@ const PEAR_DIALOGUE=[
  {speaker:"🍐 PERA",text:"La Pera se queda completamente inmóvil en el aire. La blancura del lienzo parece volverse un poco más brillante, esperando."},
  {speaker:"🍐 PERA",text:"Acepta que todo se acaba —concluye la Pera—. Y en lugar de temblar por eso, usa ese miedo como el combustible para dar el primer trazo hoy. ¿O vas a esperar a estar podrido para darte cuenta de que estabas listo?"}
 ];
-let pearIndex=0,pearReady=false,pearVisitsToday=0,pearLockDate="";
+
+const PEAR_BANANA_DIALOGUE=[
+ {speaker:"🍐 PERA",text:"Porque?..."},
+ {speaker:"👤 TÚ",text:"..."},
+ {speaker:"🍐 PERA",text:"No te estoy preguntando dónde está. Sé que ya no está."},
+ {speaker:"🍐 PERA",text:"Te estoy preguntando por qué."},
+ {speaker:"👤 TÚ",text:"..."},
+ {speaker:"🍐 PERA",text:"A veces los humanos creen que necesitan una razón para odiar."},
+ {speaker:"🍐 PERA",text:"Pero no siempre."},
+ {speaker:"🍐 PERA",text:"A veces simplemente deciden que algo merece desaparecer."},
+ {speaker:"👤 TÚ",text:"No fue mi decisión."},
+ {speaker:"🍐 PERA",text:"No importa. Eso es lo que más me molesta."},
+ {speaker:"🍐 PERA",text:"Que puede ocurrir algo horrible... y después todos continúan."},
+ {speaker:"🍐 PERA",text:"El odio no siempre empieza con una historia. A veces empieza con una decisión."},
+ {speaker:"🍐 PERA",text:"Una decisión pequeña. Una decisión que parece no importar."},
+ {speaker:"🍐 PERA",text:"Después alguien desaparece. Después alguien pregunta qué ocurrió. Después alguien intenta encontrar una explicación."},
+ {speaker:"🍐 PERA",text:"Y quizá no existe."},
+ {speaker:"🍐 PERA",text:"Si alguna vez tienes poder para hacer desaparecer algo, pregúntate primero por qué quieres hacerlo."},
+ {speaker:"🍐 PERA",text:"No después. Antes."},
+ {speaker:"🍐 PERA",text:"Porque después de hacerlo... las explicaciones ya no sirven."}
+];
+const PEAR_HITMAN_DIALOGUE=[
+ {speaker:"🍐 PERA",text:"Porque?..."},
+ {speaker:"👤 TÚ",text:"..."},
+ {speaker:"🍐 PERA",text:"No. Eso no es suficiente."},
+ {speaker:"🍐 PERA",text:"¿Por qué?"},
+ {speaker:"👤 TÚ",text:"No lo sé."},
+ {speaker:"🍐 PERA",text:"Al menos eres honesto."},
+ {speaker:"🍐 PERA",text:"No te voy a pedir que me des una explicación perfecta."},
+ {speaker:"🍐 PERA",text:"Solo quiero que entiendas algo."},
+ {speaker:"🍐 PERA",text:"Yo no estoy aquí porque me hayas comprado."},
+ {speaker:"🍐 PERA",text:"Tampoco porque alguien haya decidido que una pera sería divertida."},
+ {speaker:"🍐 PERA",text:"Y no estoy aquí para juzgarte."},
+ {speaker:"🍐 PERA",text:"Pero una cosa desapareció porque tú decidiste que debía desaparecer."},
+ {speaker:"👤 TÚ",text:"..."},
+ {speaker:"🍐 PERA",text:"Eso es lo que más me preocupa."},
+ {speaker:"🍐 PERA",text:"A veces los humanos creen que necesitan una razón para odiar."},
+ {speaker:"🍐 PERA",text:"Pero no siempre."},
+ {speaker:"🍐 PERA",text:"A veces simplemente deciden que algo merece desaparecer."},
+ {speaker:"🍐 PERA",text:"Después alguien pregunta qué ocurrió."},
+ {speaker:"🍐 PERA",text:"Después alguien intenta encontrar una explicación."},
+ {speaker:"🍐 PERA",text:"Y quizá no existe."},
+ {speaker:"👤 TÚ",text:"Entonces, ¿qué quieres que haga?"},
+ {speaker:"🍐 PERA",text:"Nada."},
+ {speaker:"🍐 PERA",text:"No puedes devolverla."},
+ {speaker:"🍐 PERA",text:"Pero puedes aprender algo antes de volver a hacerlo."},
+ {speaker:"🍐 PERA",text:"El odio no siempre empieza con una historia."},
+ {speaker:"🍐 PERA",text:"A veces empieza con una decisión."},
+ {speaker:"🍐 PERA",text:"Una decisión pequeña."},
+ {speaker:"🍐 PERA",text:"Una decisión que parece no importar."},
+ {speaker:"🍐 PERA",text:"Y entonces alguien desaparece."},
+ {speaker:"🍐 PERA",text:"Si alguna vez tienes poder para hacer desaparecer algo, pregúntate primero por qué quieres hacerlo."},
+ {speaker:"🍐 PERA",text:"No después. Antes."},
+ {speaker:"🍐 PERA",text:"Porque después de hacerlo... las explicaciones ya no sirven."}
+];
+const PEAR_AFTER_EVENT_GREETINGS=["Ah... eres tú...","Oh, rayos, tú otra vez.","No contrataste un sicario para matarme a mí otra vez, ¿verdad?","¿Por qué no te compras otra banana? Me siento algo solo."];
+const PEAR_BANANA_COMMENTS=["Supongo que ya te divertiste suficiente por hoy.","La verdad... la ausencia de una banana deja bastante silencio por aquí.","No te preocupes, no estoy triste. Bueno... quizá un poco.","A veces todavía pienso que voy a escucharla decir Potaxio.","Puedes hacer todos los chistes que quieras. La verdad es que la echo un poco de menos.","No voy a pedirte explicaciones otra vez. Solo... no lo hagas con otra fruta."];
+function pearAfterEventArray(){
+ const greeting=PEAR_AFTER_EVENT_GREETINGS[Math.floor(Math.random()*PEAR_AFTER_EVENT_GREETINGS.length)];
+ const comment=Math.random()<0.55?PEAR_BANANA_COMMENTS[Math.floor(Math.random()*PEAR_BANANA_COMMENTS.length)]:null;
+ const arr=[{speaker:"🍐 PERA",text:greeting},...PEAR_DIALOGUE];
+ if(comment)arr.push({speaker:"🍐 PERA",text:comment});
+ return arr;
+}
+let pearIndex=0,pearReady=false,pearVisitsToday=0,pearLockDate="",pearDialogueType="normal";
 function pearVisitKey(){return "SWIM_QUEST_PEAR_VISITS";}
 function resetPearDailyVisits(){const d=localDateKey();const raw=localStorage.getItem(pearVisitKey());let x={date:d,count:0};try{if(raw)x=JSON.parse(raw)||x;}catch(e){}if(x.date!==d)x={date:d,count:0};localStorage.setItem(pearVisitKey(),JSON.stringify(x));pearVisitsToday=Number(x.count||0);pearLockDate=x.lockDate||"";return x;}
+function pearDialogueArray(){if(pearDialogueType==="banana")return PEAR_BANANA_DIALOGUE;if(pearDialogueType==="pear")return PEAR_HITMAN_DIALOGUE;if(pearDialogueType==="after")return pearAfterEventArray();return PEAR_DIALOGUE;}
+function shouldShowPearSpecial(){
+ if(S.secret.firstPearEvent==="banana" && !S.secret.pearBananaSeen && S.secret.bananaRemoved)return "banana";
+ if(S.secret.firstPearEvent==="pear" && !S.secret.pearRouteDialogueSeen && S.secret.pearRouteSeen)return "pear";
+ if(S.secret.bananaRemoved && S.secret.pearBananaSeen)return "after";
+ return "normal";
+}
 function openPearScene(){
- ambientStop();
- const x=resetPearDailyVisits();x.count=(x.count||0)+1;
- const daysKey="SWIM_QUEST_PEAR_DAYS";const seenKey="SWIM_QUEST_PEAR_SEEN";const today=localDateKey();let seen={};try{seen=JSON.parse(localStorage.getItem(seenKey)||"{}")||{};}catch(e){} if(!seen[today]){seen[today]=1;localStorage.setItem(seenKey,JSON.stringify(seen));localStorage.setItem(daysKey,String(Object.keys(seen).length));}pearVisitsToday=x.count;
- if(x.count>5){x.lockDate=localDateKey();localStorage.setItem(pearVisitKey(),JSON.stringify(x));pearLockDate=x.lockDate;pearIndex=-1;pearReady=false;renderPearScene();return;}
- localStorage.setItem(pearVisitKey(),JSON.stringify(x));
+ const bananaPet=$("bananaPet");if(bananaPet)bananaPet.style.display="none";
+ ambientStop();const x=resetPearDailyVisits();x.count=(x.count||0)+1;const daysKey="SWIM_QUEST_PEAR_DAYS",seenKey="SWIM_QUEST_PEAR_SEEN",today=localDateKey();let seen={};try{seen=JSON.parse(localStorage.getItem(seenKey)||"{}")||{};}catch(e){}if(!seen[today]){seen[today]=1;localStorage.setItem(seenKey,JSON.stringify(seen));localStorage.setItem(daysKey,String(Object.keys(seen).length));}pearVisitsToday=x.count;localStorage.setItem(pearVisitKey(),JSON.stringify(x));
+ pearDialogueType=shouldShowPearSpecial();
+ if(pearDialogueType!=="normal"&&pearDialogueType!=="after"){
+   pearIndex=0;pearReady=false;renderPearScene();return;
+ }
+ if(x.count>5&&pearDialogueType==="normal"){
+   x.lockDate=localDateKey();localStorage.setItem(pearVisitKey(),JSON.stringify(x));pearLockDate=x.lockDate;pearIndex=-1;pearReady=false;pearDialogueType="locked";renderPearScene();return;
+ }
  pearIndex=0;pearReady=false;renderPearScene();
 }
 function pearStartMusic(){try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;const c=new AC();const notes=[261.63,329.63,392,523.25,392,329.63,293.66,349.23];let i=0;window.__pearAudioCtx=c;window.__pearAudioTimer=setInterval(()=>{const o=c.createOscillator(),g=c.createGain();o.type="sine";o.frequency.value=notes[i++%notes.length];g.gain.setValueAtTime(.0001,c.currentTime);g.gain.exponentialRampToValueAtTime(.045,c.currentTime+.02);g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+.38);o.connect(g).connect(c.destination);o.start();o.stop(c.currentTime+.4)},480);}catch(e){}}
 function pearStopMusic(){if(window.__pearAudioTimer){clearInterval(window.__pearAudioTimer);window.__pearAudioTimer=null}if(window.__pearAudioCtx){try{window.__pearAudioCtx.close();}catch(e){}window.__pearAudioCtx=null}}
 function renderPearScene(){
- const old=document.getElementById('pearScene');if(old)old.remove();
- const locked=pearIndex===-1;
- const item=locked?{speaker:"🍐 PERA",text:":("}:PEAR_DIALOGUE[pearIndex];
- const scene=document.createElement('div');scene.id='pearScene';scene.className='pear-scene';scene.innerHTML=`<div class="pear-shine"></div><div class="pear-stage"><div class="pear-emoji">🍐</div><div class="pear-speaker">${esc(item.speaker)}</div><div class="pear-text" id="pearText">${esc(item.text)}</div><button class="pear-next" id="pearNext" ${locked?"":"disabled"}>${locked?"Volver":"Siguiente"}</button><button class="pear-close" onclick="closePearScene()">Salir</button></div>`;
- document.body.appendChild(scene);
- pearStopMusic();pearStartMusic();
- if(locked){const b=document.getElementById('pearNext');if(b)b.onclick=closePearScene;return;}
- const readMs=Math.max(2200,Math.min(9000,Math.round(item.text.length*24)));setTimeout(()=>{pearReady=true;const b=document.getElementById('pearNext');if(b){b.disabled=false;b.onclick=pearNext;}},readMs);
+ const old=document.getElementById('pearScene');if(old)old.remove();const locked=pearDialogueType==="locked";let arr=pearDialogueArray();const item=locked?{speaker:"🍐 PERA",text:":("}:arr[pearIndex];
+ const special=pearDialogueType==="banana"||pearDialogueType==="pear";
+ const scene=document.createElement('div');scene.id='pearScene';scene.className='pear-scene';scene.innerHTML=`<div class="pear-shine"></div><div class="pear-stage"><div class="pear-emoji">🍐</div><div class="pear-speaker">${esc(item.speaker)}</div><div class="pear-text" id="pearText">${esc(item.text)}</div><button class="pear-next" id="pearNext" ${locked?"":"disabled"}>${locked?"Volver":"Siguiente"}</button>${special&&!locked?"":"<button class=\"pear-close\" onclick=\"closePearScene()\">Salir</button>"}</div>`;document.body.appendChild(scene);pearStopMusic();pearStartMusic();
+ if(locked){const b=document.getElementById('pearNext');if(b)b.onclick=closePearScene;return}
+ const readMs=Math.max(1500,Math.min(6500,Math.round(item.text.length*21)));setTimeout(()=>{pearReady=true;const b=document.getElementById('pearNext');if(b){b.disabled=false;b.onclick=pearNext}},readMs);
 }
-function pearNext(){if(!pearReady)return;if(pearIndex<PEAR_DIALOGUE.length-1){pearIndex++;pearReady=false;renderPearScene();}else closePearScene();}
-function closePearScene(){
- pearStopMusic();
- document.getElementById('pearScene')?.remove();
- if(S.settings.music)restartAmbient();
+function pearNext(){
+ if(!pearReady)return;
+ let arr=pearDialogueArray();
+ if(pearIndex<arr.length-1){pearIndex++;pearReady=false;renderPearScene();return;}
+ if(pearDialogueType==="banana"){S.secret.pearBananaSeen=true;S.secret.pearOpening=true;save();closePearScene();return;}
+ if(pearDialogueType==="pear"){S.secret.pearRouteDialogueSeen=true;S.secret.pearOpening=true;save();const a=unlockSecretAchievement("secret_pear");closePearScene();render();if(a)setTimeout(()=>achievementModal(a),450);return;}
+ if(pearDialogueType==="after"){save();closePearScene();return;}
+ closePearScene();
 }
-const PEAR_FLOAT_PHRASES=["Soy una pera","Te comiste a mi hermana","Porque tengo este cuerpo?","Me amas?","XD","OMG","Soy deliciosa, no?","Porque existo?"];
-let pearFloatTimer=null;
-function startPearFloatingPhrases(){if(pearFloatTimer)clearInterval(pearFloatTimer);pearFloatTimer=setInterval(()=>{if(!S.purchases?.pear||document.hidden)return;const p=$("pearPet");if(!p)return;const b=document.createElement("div");b.className="pear-floating-phrase";b.textContent=PEAR_FLOAT_PHRASES[Math.floor(Math.random()*PEAR_FLOAT_PHRASES.length)];p.parentElement?.appendChild(b);const r=p.getBoundingClientRect();b.style.right=(window.innerWidth-r.right+8)+"px";b.style.top=(r.bottom+6)+"px";setTimeout(()=>b.remove(),3600);},12000);}
-function updatePearPet(){const p=$("pearPet");if(p)p.classList.toggle('visible',!!S.purchases?.pear);startPearFloatingPhrases()}
+function closePearScene(){pearStopMusic();document.getElementById('pearScene')?.remove();const bananaPet=$("bananaPet");if(bananaPet)bananaPet.style.display=S.purchases?.banana&&(!S.secret?.bananaRemoved||window.__bananaGhostVisible)?"grid":"none";if(S.settings.music)restartAmbient();}
+const PEAR_FLOAT_PHRASES=["Soy una pera","Te comiste a mi hermana","Porque tengo este cuerpo?","Me amas?","XD","OMG","Soy deliciosa, no?","Porque existo?",":)"];let pearFloatTimer=null;function startPearFloatingPhrases(){if(pearFloatTimer)clearInterval(pearFloatTimer);pearFloatTimer=setInterval(()=>{if(!S.purchases?.pear||document.hidden)return;const p=$("pearPet");if(!p)return;const b=document.createElement("div");b.className="pear-floating-phrase";b.textContent=PEAR_FLOAT_PHRASES[Math.floor(Math.random()*PEAR_FLOAT_PHRASES.length)];p.parentElement?.appendChild(b);const r=p.getBoundingClientRect();b.style.right=(window.innerWidth-r.right+8)+"px";b.style.top=(r.bottom+6)+"px";setTimeout(()=>b.remove(),3600);},12000)}
+let bananaFloatTimer=null;
+const BANANA_FLOAT_PHRASES=["Potaxio","Potacio"];
+function startBananaFloatingPhrases(){
+ if(bananaFloatTimer)clearInterval(bananaFloatTimer);
+ bananaFloatTimer=setInterval(()=>{
+  if(!S.purchases?.banana||S.secret?.bananaRemoved||document.hidden||!window.__bananaGhostVisible&&!S.purchases?.banana)return;
+  const p=$("bananaPet");if(!p||p.style.display==="none")return;
+  if(Math.random()>0.55)return;
+  const b=document.createElement("div");b.className="banana-floating-phrase";b.textContent=BANANA_FLOAT_PHRASES[Math.floor(Math.random()*BANANA_FLOAT_PHRASES.length)];
+  document.body.appendChild(b);const r=p.getBoundingClientRect();
+  b.style.right=(window.innerWidth-r.right+2)+"px";b.style.top=(r.bottom+7)+"px";
+  setTimeout(()=>b.remove(),3300);
+ },11000);
+}
+function updatePearPet(){const p=$("pearPet");if(p)p.classList.toggle('visible',!!S.purchases?.pear);startPearFloatingPhrases();startBananaFloatingPhrases()}
 function localDateKey(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
 function dailyRewardInfo(){
  const today=localDateKey(),d=S.dailyReward||{};
@@ -1085,7 +1422,7 @@ function syncDraft(){
 }
 function draftMeters(){return draft.reduce((a,s)=>a+(+s.distance||0)*(+s.reps||0),0)}
 function draftXP(){return Math.max(60,draft.reduce((a,s)=>a+seriesXP(s),0)+Math.round(draftDuration*.4))}
-function draftCoins(){return Math.max(25,Math.round(draftXP()*.11))}
+function draftCoins(){return Math.max(25,Math.round(draftXP()*.11*trainingCoinMultiplier()))}
 function addSeries(){syncDraft();draft.push({distance:50,reps:1,style:"crol",intensity:"normal",time:"",corrective:false});render();tone("click")}
 function removeSeries(i){syncDraft();draft.splice(i,1);render();tone("click")}
 function countTrainingsOnDate(date,excludeId=""){return S.trainings.filter(x=>x.date===date&&x.id!==excludeId).length}
@@ -1225,59 +1562,52 @@ const SHOP=[
  {id:"xp500",icon:"💠",name:"Cristal XP 500",price:150,desc:"Compra 500 XP con monedas.",buy:()=>gainXP(500)},
  {id:"xp1500",icon:"🔷",name:"Cristal XP 1500",price:380,desc:"Compra 1500 XP con monedas.",buy:()=>gainXP(1500)},
  {id:"xpJuan",icon:"🔮",name:"Cristal de Ascensión",price:2500,desc:"Cristal único y especial. Otorga 10.000 XP inmediatamente.",buy:()=>gainXP(10000)},
- {id:"theme_Cosmos",icon:"🌌",name:"Tema Cosmos",price:220,desc:"Estrellas, brillo y fondo espacial.",buy:()=>S.purchases["theme_Cosmos"]=true},
- {id:"theme_Abismo",icon:"🌑",name:"Tema Abismo",price:240,desc:"Fondo profundo y movimiento sutil.",buy:()=>S.purchases["theme_Abismo"]=true},
- {id:"theme_Solar",icon:"☀️",name:"Tema Solar",price:240,desc:"Pulsos cálidos y energía.",buy:()=>S.purchases["theme_Solar"]=true},
- {id:"theme_Glacial",icon:"🧊",name:"Tema Glacial",price:240,desc:"Brillo frío y partículas.",buy:()=>S.purchases["theme_Glacial"]=true},
- {id:"theme_Esmeralda",icon:"💚",name:"Tema Esmeralda",price:240,desc:"Aura verde y movimiento orgánico.",buy:()=>S.purchases["theme_Esmeralda"]=true},
+ {id:"theme_Cosmos",icon:"🌌",name:"Tema Cosmos",price:220,desc:"Estrellas, brillo y fondo espacial.",buy:()=>S.purchases.theme_Cosmos=true},
+ {id:"theme_Abismo",icon:"🌑",name:"Tema Abismo",price:240,desc:"Fondo profundo y movimiento sutil.",buy:()=>S.purchases.theme_Abismo=true},
+ {id:"theme_Solar",icon:"☀️",name:"Tema Solar",price:240,desc:"Pulsos cálidos y energía.",buy:()=>S.purchases.theme_Solar=true},
+ {id:"theme_Glacial",icon:"🧊",name:"Tema Glacial",price:240,desc:"Brillo frío y partículas.",buy:()=>S.purchases.theme_Glacial=true},
+ {id:"theme_Esmeralda",icon:"💚",name:"Tema Esmeralda",price:240,desc:"Aura verde y movimiento orgánico.",buy:()=>S.purchases.theme_Esmeralda=true},
  {id:"music1",icon:"🎵",name:"Tema musical: Marea",price:180,desc:"Desbloquea un estilo musical.",buy:()=>S.purchases.music1=true},
  {id:"music2",icon:"🎶",name:"Tema musical: Cosmos",price:230,desc:"Otro ambiente musical.",buy:()=>S.purchases.music2=true},
- {id:"theme_Leviatan",icon:"🐉",name:"Tema Leviatán",price:520,desc:"Botones arcoíris animados, partículas oceánicas y una posibilidad de ver al Leviatán cruzar la pantalla.",buy:()=>S.purchases["theme_Leviatan"]=true},
- {id:"theme_Sangriento",icon:"🩸",name:"Tema Sangriento",price:380,desc:"Botones rojo intenso y pequeñas gotas abstractas descendiendo por la interfaz.",buy:()=>S.purchases["theme_Sangriento"]=true},
- {id:"theme_Rosadito",icon:"🌸",name:"Tema Rosadito",price:390,desc:"Estilo cute con botones rosado-blanco, brillo suave y partículas de gatos cayendo.",buy:()=>S.purchases["theme_Rosadito"]=true},
- {id:"theme_CianNeon",icon:"⚡",name:"Tema Cian Neón",price:340,desc:"Cian eléctrico con descargas ocasionales en los botones.",buy:()=>S.purchases["theme_CianNeon"]=true},
- {id:"music3",icon:"🕹️",name:"Tema musical: Salto Pixel",price:290,desc:"Música chiptune original, rápida y juguetona, inspirada en plataformas clásicas.",buy:()=>S.purchases.music3=true},
- {id:"monthShield",icon:"🛡️",name:"Protector de Racha · 30 días",price:780,desc:"Objeto permanente renovable. Mantiene tu racha protegida durante 30 días.",buy:()=>activateMonthlyShield()},
- {id:"talismanMarea",icon:"🧿",name:"Talismán de la Marea",price:680,desc:"Objeto permanente. Aumenta en un 15% las monedas obtenidas al completar entrenamientos y misiones.",buy:()=>S.purchases.talismanMarea=true},
- {id:"compassSwimmer",icon:"🧭",name:"Brújula del Nadador",price:540,desc:"Objeto permanente. Muestra qué te falta para alcanzar tu siguiente rango.",buy:()=>S.purchases.compassSwimmer=true},
- {id:"trainingJournal",icon:"📓",name:"Diario de Entrenamiento",price:620,desc:"Objeto permanente. Desbloquea las estadísticas destacadas de tus sesiones.",buy:()=>S.purchases.trainingJournal=true},
- {id:"motivationFish",icon:"🐟",name:"Pez Motivador",price:460,desc:"Objeto permanente. Aparece en tu perfil y comparte uno de tus mensajes motivacionales al tocarlo.",buy:()=>S.purchases.motivationFish=true},
+ {id:"theme_Leviatan",icon:"🐉",name:"Tema Leviatán",price:520,desc:"Botones arcoíris animados y atmósfera oceánica.",buy:()=>S.purchases.theme_Leviatan=true},
+ {id:"theme_Sangriento",icon:"🩸",name:"Tema Sangriento",price:380,desc:"Botones rojos y gotas abstractas.",buy:()=>S.purchases.theme_Sangriento=true},
+ {id:"theme_Rosadito",icon:"🌸",name:"Tema Rosadito",price:390,desc:"Estilo cute con botones rosado-blanco.",buy:()=>S.purchases.theme_Rosadito=true},
+ {id:"theme_CianNeon",icon:"⚡",name:"Tema Cian Neón",price:340,desc:"Cian eléctrico y descargas ocasionales.",buy:()=>S.purchases.theme_CianNeon=true},
+ {id:"music3",icon:"🕹️",name:"Tema musical: Salto Pixel",price:290,desc:"Música chiptune original.",buy:()=>S.purchases.music3=true},
+ {id:"monthShield",icon:"🛡️",name:"Protector de Racha · 30 días",price:780,desc:"Mantiene tu racha protegida durante 30 días.",buy:()=>activateMonthlyShield()},
+ {id:"talismanMarea",icon:"🧿",name:"Talismán de la Marea",price:680,desc:"Objeto permanente. +15% monedas de entrenamientos y misiones.",buy:()=>S.purchases.talismanMarea=true},
+ {id:"compassSwimmer",icon:"🧭",name:"Brújula del Nadador",price:540,desc:"Muestra qué te falta para tu siguiente rango.",buy:()=>S.purchases.compassSwimmer=true},
+ {id:"trainingJournal",icon:"📓",name:"Diario de Entrenamiento",price:620,desc:"Desbloquea estadísticas destacadas de tus sesiones.",buy:()=>S.purchases.trainingJournal=true},
+ {id:"motivationFish",icon:"🐟",name:"Pez Motivador",price:460,desc:"Aparece en tu perfil y comparte mensajes motivacionales. Pequeña posibilidad de abrir su tienda secreta.",buy:()=>S.purchases.motivationFish=true},
  {id:"pear",icon:"🍐",name:"La Pera",price:700,desc:"Mascota permanente. Desbloquea una escena secreta y el tema exclusivo Pera.",buy:()=>{S.purchases.pear=true;S.purchases.theme_Pera=true}}
 ];
 function shop(){
- return `<div class="card"><div class="row"><div><div class="kicker">🛒 TIENDA</div><h2>Recompensas</h2><div class="sub">La mayoría de compras son permanentes. El recuperador de racha se consume al utilizarlo.</div></div><div class="wallet">🪙 ${fmt(S.coins)}</div></div></div>
- <div class="shop" style="margin-top:10px">${SHOP.map(it=>{
- const isTheme=it.id.startsWith("theme_");
- const permanentOwned=["talismanMarea","compassSwimmer","trainingJournal","motivationFish","pear","music1","music2","music3"].includes(it.id)&&!!S.purchases[it.id];
- const owned=isTheme ? !!S.purchases[it.id] : it.id==="monthShield" ? false : permanentOwned;
- const monthShieldLabel=it.id==="monthShield"&&hasMonthlyShield()?`<div class="pill" style="margin-top:7px">🛡️ Activo hasta ${new Intl.DateTimeFormat("es-ES",{day:"numeric",month:"long"}).format(new Date(S.monthlyShieldUntil))}</div>`:"";
- return `<div class="shop-item"><div style="font-size:30px">${it.icon}</div><h3>${it.name}</h3><div class="sub">${it.desc}</div>${monthShieldLabel}${owned?`<div class="pill" style="margin-top:7px">✅ Comprado · permanente</div>`:`<button class="btn primary" style="margin-top:8px" onclick="buy('${it.id}')">🪙 ${it.price}</button>`}</div>`;
- }).join("")}</div>`;
+ const did=dailyShopDiscount();return `<div class="card"><div class="row"><div><div class="kicker">🛒 TIENDA</div><h2>Recompensas</h2><div class="sub">La mayoría de compras son permanentes. El recuperador de racha se consume al utilizarlo.</div></div><div class="wallet">🪙 ${fmt(S.coins)}</div></div></div><div class="shop" style="margin-top:10px">${SHOP.map(it=>{const isTheme=it.id.startsWith("theme_");const permanentOwned=["talismanMarea","compassSwimmer","trainingJournal","motivationFish","pear","music1","music2","music3"].includes(it.id)&&!!S.purchases[it.id];const owned=isTheme?!!S.purchases[it.id]:it.id==="monthShield"?false:permanentOwned;const price=discountedPrice(it);const discount=did===it.id&&!owned;const monthShieldLabel=it.id==="monthShield"&&hasMonthlyShield()?`<div class="pill" style="margin-top:7px">🛡️ Activo</div>`:"";return `<div class="shop-item"><div style="font-size:30px">${it.icon}</div><h3>${it.name}</h3><div class="sub">${it.desc}</div>${discount?`<div class="pill" style="margin-top:7px">🔥 15% DE DESCUENTO HOY</div>`:""}${monthShieldLabel}${owned?`<div class="pill" style="margin-top:7px">✅ Comprado · permanente</div>`:`<button class="btn primary" style="margin-top:8px" onclick="buy('${it.id}')">🪙 ${fmt(price)}</button>`}</div>`}).join("")}</div>`;
 }
 function buy(id){
- const it=SHOP.find(x=>x.id===id);if(!it)return;
- if(["talismanMarea","compassSwimmer","trainingJournal","motivationFish","pear","music1","music2","music3"].includes(it.id)&&S.purchases[it.id]){toast("✅ Ya tienes este objeto permanente.");return}
- if(S.coins<it.price){const faltan=it.price-S.coins;toast(`🪙 No tienes suficiente dinero. Te faltan ${fmt(faltan)} monedas.`);tone("click");return}
- const beforeRank=currentRank().r.c;
- S.coins-=it.price;const levelEvent=it.buy()||null;if(it.id==="monthShield")S.purchases.monthShield=true;if(it.id==="music3")S.purchases.music3=true;save();applyTheme();tone("coin");updatePearPet();render();
- const levelText=levelEvent?.levels?` · ⬆️ LV ${S.level} · +${fmt(levelEvent.coins)} 🪙`:"";
- toast(`🛒 Comprado: ${it.name}${levelText}`);
- if(currentRank().r.c!==beforeRank)setTimeout(()=>rankReveal(currentRank().r),420);
+ const it=SHOP.find(x=>x.id===id);if(!it)return;const permanent=["talismanMarea","compassSwimmer","trainingJournal","motivationFish","pear","music1","music2","music3"];if(permanent.includes(it.id)&&S.purchases[it.id]){toast("✅ Ya tienes este objeto permanente.");return}const price=discountedPrice(it);if(S.coins<price){toast(`🪙 No tienes suficiente dinero. Te faltan ${fmt(price-S.coins)} monedas.`);tone("click");return}const beforeRank=currentRank().r.c;S.coins-=price;const levelEvent=it.buy()||null;if(it.id==="monthShield")S.purchases.monthShield=true;save();applyTheme();tone("coin");updatePearPet();render();const levelText=levelEvent?.levels?` · ⬆️ LV ${S.level} · +${fmt(levelEvent.coins)} 🪙`:"";toast(`🛒 Comprado: ${it.name}${levelText}`);if(currentRank().r.c!==beforeRank)setTimeout(()=>rankReveal(currentRank().r),420);
 }
 function profile(){
- const c=currentRank(),r=c.r,next=RANKS[Math.min(c.i+1,RANKS.length-1)],j=S.purchases.trainingJournal?journalStats():null;
- const styleName=j?.topStyle?.[0]?STYLE[j.topStyle[0]]?.name||j.topStyle[0]:"—";
+ const c=currentRank(),r=c.r,next=RANKS[Math.min(c.i+1,RANKS.length-1)],j=S.purchases.trainingJournal?journalStats():null;const styleName=j?.topStyle?.[0]?STYLE[j.topStyle[0]]?.name||j.topStyle[0]:"—";const objects=[S.purchases.mustard?"🟡 Mostaza":"",S.purchases.ketchup?"🔴 Ketchup":"",S.purchases.sausage?"🌭 Salchicha":"",S.purchases.banana&&!S.secret.bananaRemoved?"🍌 Banana":"",S.purchases.sicario?"🕶️ Sicario":""].filter(Boolean);const visibleAchievements=ACHIEVEMENTS.filter(a=>!a.secret||achievementUnlocked(a)).filter(achievementUnlocked).length;const visibleTotal=ACHIEVEMENTS.filter(a=>!a.secret||achievementUnlocked(a)).length;
  return `<div class="card"><div class="row"><div><div class="kicker">👤 PERFIL</div><h1 style="margin:5px 0">${esc(S.profile.name)}</h1><div class="sub">${esc(S.profile.bio||"Sin descripción.")}</div></div><div class="badge ${r.c}${auraClass()}"><span class="rank-glyph ${r.c}">${rankArt(r.c)||r.icon}</span></div></div><div class="grid g2" style="margin-top:12px"><div class="stat"><div class="kicker">Rango</div><div class="v">${r.n}</div></div><div class="stat"><div class="kicker">Nivel</div><div class="v">LV ${S.level}</div></div><div class="stat"><div class="kicker">Metros</div><div class="v">${fmt(totalMeters())}</div></div><div class="stat"><div class="kicker">Entrenos</div><div class="v">${countTrain()}</div></div></div></div>
  ${S.purchases.compassSwimmer?`<div class="card" style="margin-top:10px"><div class="sectionTitle">🧭 BRÚJULA DEL NADADOR</div><div class="row"><div><div class="sub">Siguiente rango</div><h3 style="margin:4px 0">${next.n}</h3><div class="sub">LV ${S.level} / LV ${next.lv} · ${fmt(totalMeters())} / ${fmt(next.m)} m · ${countTrain()} / ${next.t} entrenamientos</div></div><div style="font-size:40px;animation:float 2.5s ease-in-out infinite">🧭</div></div></div>`:""}
  <div class="card" style="margin-top:10px"><div class="sectionTitle">🏅 Marcas personales</div><div class="list"><div class="list-item row"><span>🦋 Mariposa</span><b>${esc(S.profile.records?.mariposa||"—")} s</b></div><div class="list-item row"><span>🐸 Pecho</span><b>${esc(S.profile.records?.pecho||"—")} s</b></div><div class="list-item row"><span>🌊 Crol</span><b>${esc(S.profile.records?.crol||"—")} s</b></div><div class="list-item row"><span>🌙 Espalda</span><b>${esc(S.profile.records?.espalda||"—")} s</b></div></div><div class="sub" style="margin-top:7px">Los récords de 50 m se actualizan cuando registras un tiempo mejor en intensidad intensa.</div></div>
  ${j?`<div class="card" style="margin-top:10px"><div class="sectionTitle">📓 DIARIO DE ENTRENAMIENTO</div><div class="journal-grid" style="margin-top:8px"><div class="stat"><div class="kicker">Más largo</div><div class="v">${fmt(j.longest.durationMin||0)} min</div><div class="sub">${labelDate(j.longest.date)}</div></div><div class="stat"><div class="kicker">Más XP</div><div class="v">${fmt(j.mostXP.xp||0)}</div><div class="sub">${labelDate(j.mostXP.date)}</div></div><div class="stat"><div class="kicker">Más metros</div><div class="v">${fmt(totalMeters([j.mostMeters]))} m</div><div class="sub">${labelDate(j.mostMeters.date)}</div></div><div class="stat"><div class="kicker">Más monedas</div><div class="v">${fmt(j.mostCoins.coins||0)} 🪙</div><div class="sub">${labelDate(j.mostCoins.date)}</div></div></div><div class="list-item row" style="margin-top:8px"><span>🏊 Estilo más utilizado</span><b>${esc(styleName)}</b></div></div>`:""}
- ${S.monthlyShieldUntil?`<div class="list-item" style="margin-top:10px"><b>🛡️ Protector mensual</b><div class="sub">${hasMonthlyShield()?`Activo hasta ${new Intl.DateTimeFormat("es-ES",{day:"numeric",month:"long"}).format(new Date(S.monthlyShieldUntil))}.`:"Ya expiró; puedes renovarlo en la tienda."}</div></div>`:""}
- ${S.purchases.motivationFish?`<div class="profile-fish" id="profileFish" onclick="fishMotivation()" role="button" aria-label="Pez motivador"><div class="fish-art">🐟</div><div><b>🐟 Pez Motivador</b><div class="fish-bubble">Tócame cuando necesites un poco de motivación.</div></div></div>`:""}
- <div class="card" style="margin-top:10px"><div class="achievements-summary"><div><div class="sectionTitle">🏆 LOGROS</div><div class="sub">Desbloqueados: ${(S.achievements||[]).length} / ${ACHIEVEMENTS.length}</div></div><button class="btn secondary" style="width:auto;min-width:130px" onclick="showAchievements()">Ver logros</button></div></div>
- <div class="grid g2" style="margin-top:10px"><button class="btn secondary" onclick="settings()">⚙️ Ajustes</button><button class="btn secondary" onclick="showMonthSummary(true)">🎉 Resumen</button><button class="btn secondary" onclick="comingSoonSocial()">👥 Añadir amigos</button><button class="btn secondary" onclick="comingSoonSocial()">👥 Crear grupo</button></div><div class="list-item" style="margin-top:10px"><b>📱 Modo app</b><div class="sub">Esta versión está preparada como PWA para instalarse desde un navegador compatible y aparecer como una aplicación en tu celular.</div><button id="installAppBtn" class="btn primary" style="margin-top:9px;display:none" onclick="installApp()">📲 Instalar Swim Quest</button></div>`;
+ ${S.purchases.motivationFish?`<div class="profile-fish" id="profileFish" onclick="fishMotivation()" role="button" tabindex="0" aria-label="Pez Motivador"><div class="fish-art">🐟</div><div style="min-width:0;flex:1"><div class="fish-title">Pez Motivador</div><div class="fish-bubble" id="fishBubble"><div class="fish-message">Tócame para recibir motivación.</div></div></div></div>`:""}
+ <div class="card" style="margin-top:10px"><div class="sectionTitle">🚫 OBJETOS PROHIBIDOS</div><div class="sub" style="margin-top:5px">${objects.length?objects.join(" · "):"No tienes objetos prohibidos."}</div>${S.purchases.sicario?`<button class="btn secondary" style="margin-top:9px" onclick="hitmanModal()">🕶️ Usar Sicario</button>`:(hitmanRetired()?`<div class="sub" style="margin-top:9px">Le pagaste tanto dinero al sicario que le dio para ir de vacaciones a Dubai, Qatar y Cabo Verde.</div>`:"")}</div>
+ <div class="card" style="margin-top:10px"><div class="achievements-summary"><div><div class="sectionTitle">🏆 LOGROS</div><div class="sub">Desbloqueados: ${visibleAchievements} / ${visibleTotal}</div></div><button class="btn secondary" style="width:auto;min-width:130px" onclick="showAchievements()">Ver logros</button></div></div>
+ <div class="grid g2" style="margin-top:10px"><button class="btn secondary" onclick="settings()">⚙️ Ajustes</button><button class="btn secondary" onclick="showMonthSummary(true)">🎉 Resumen</button><button class="btn secondary" onclick="addFriendModal()">👥 Añadir amigos</button>${S.social.clan?`<button class="btn primary" onclick="openClan()">🛡️ Clan · ${esc(S.social.clan.name)}</button>`:`<button class="btn secondary" onclick="createGroupModal()">👥 Crear clan</button>`}</div><div class="list-item" style="margin-top:10px"><b>👥 Barra de amigos</b><div class="sub">${S.social.friends.length?S.social.friends.map(f=>`👤 ${esc(f.name)} · ${esc(f.id)}`).join("<br>"):"Todavía no tienes amigos."}</div></div><div class="list-item" style="margin-top:8px"><b>📱 Modo app</b><div class="sub">Esta versión está preparada como PWA.</div><button id="installAppBtn" class="btn primary" style="margin-top:9px;display:none" onclick="installApp()">📲 Instalar Swim Quest</button></div>`;
 }
+function addFriendModal(){modal(`<div class="kicker">👥 AMIGOS</div><h2>Añadir amigo</h2><div class="field"><label>ID del jugador</label><input id="friendId" placeholder="Ej. 48291"></div><button class="btn primary" onclick="lookupFriend()">🔎 Buscar</button><div id="friendPreview" style="margin-top:10px"></div><button class="btn secondary" style="margin-top:10px" onclick="closeModal()">Cerrar</button>`)}
+function lookupFriend(){const id=$("friendId").value.trim();if(!id){toast("Introduce una ID.");return}$("friendPreview").innerHTML=`<div class="card"><div class="row"><div><b>👤 Jugador simulado</b><div class="sub">ID: ${esc(id)}</div></div><div style="font-size:32px">🌊</div></div><div class="sub" style="margin-top:7px">Kraken · LV 67 · 428.500 m</div><button class="btn primary" style="margin-top:9px" onclick="simulateAddFriend(document.getElementById('friendId').value.trim())">👥 Añadir amigo</button><div class="sub" style="margin-top:6px">⚠️ Simulación: las solicitudes reales estarán disponibles próximamente.</div></div>`}
+function simulateAddFriend(id){if(!S.social.friends.some(f=>f.id===id)){S.social.friends.push({id,name:"Jugador "+id});save();}toast("👥 Amigo añadido en la simulación.");closeModal();render()}
+function createGroupModal(){const friendRows=S.social.friends.map((f,i)=>`<label class="pill" style="justify-content:flex-start"><input class="groupFriend" type="checkbox" value="${i}" style="width:auto">👤 ${esc(f.name)} · ${esc(f.id)}</label>`).join("");modal(`<div class="kicker">🛡️ GRUPOS</div><h2>Crear grupo</h2><div class="field"><label>Nombre de tu clan</label><input id="clanName" maxlength="24" placeholder="Los Delfines"></div><div class="field"><label>IDs de jugadores</label><input id="clanIds" placeholder="48291, 92831"></div><div class="field"><label>O elegir desde mis amigos</label><div class="row wrap">${friendRows||'<span class="sub">Aún no tienes amigos simulados.</span>'}</div></div><button class="btn primary" onclick="simulateCreateGroup()">🛡️ Crear clan</button><button class="btn secondary" style="margin-top:8px" onclick="closeModal()">Cerrar</button>`)}
+function botStatsForId(id){let h=0;for(const c of String(id))h=(h*33+c.charCodeAt(0))>>>0;const level=18+(h%58);const meters=(75000+(h%420000));const xp=(level*level*95)+(h%18000);const ranks=RANKS.filter(r=>r.lv<=level&&meters>=r.m);const rank=ranks[ranks.length-1]||RANKS[0];return {level,meters,xp,rank:rank.n,rankClass:rank.c}}
+function clanMemberFromFriend(f){const st=botStatsForId(f.id);return {id:f.id,name:f.name,...st}}
+function simulateCreateGroup(){const name=$("clanName").value.trim();if(!name){toast("Ponle un nombre al clan.");return}const ids=$("clanIds").value.split(",").map(x=>x.trim()).filter(Boolean);document.querySelectorAll(".groupFriend:checked").forEach(x=>{const f=S.social.friends[+x.value];if(f)ids.push(f.id)});const unique=[...new Set(ids)];const members=[{id:"YOU",name:S.profile.name,level:S.level,meters:totalMeters(),xp:S.xp,rank:currentRank().r.n,rankClass:currentRank().r.c}];unique.forEach(id=>{const f=S.social.friends.find(x=>x.id===id)||{id,name:"Jugador "+id};members.push(clanMemberFromFriend(f))});S.social.clan={name,members,createdAt:Date.now()};save();closeModal();render();toast(`🛡️ Clan ${name} creado en simulación.`)}
+function openClan(){if(!S.social?.clan){createGroupModal();return}const members=[...(S.social.clan.members||[])].map(m=>({...m,...(m.id==="YOU"?{name:S.profile.name,level:S.level,meters:totalMeters(),xp:S.xp,rank:currentRank().r.n}:{})}));members.sort((a,b)=>Number(b.xp||0)-Number(a.xp||0));modal(`<div class="kicker">🛡️ CLAN</div><h2>${esc(S.social.clan.name)}</h2><div class="sub">Ranking simulado del clan · los demás jugadores son bots de demostración.</div><div class="list" style="margin-top:10px">${members.map((m,i)=>`<div class="list-item"><div class="row"><div><b>#${i+1} · ${esc(m.name)}</b><div class="sub">${esc(m.rank||"Bronce")} · LV ${fmt(m.level||1)} · ${fmt(m.meters||0)} m</div></div><span class="pill">⭐ ${fmt(m.xp||0)}</span></div></div>`).join("")}</div><button class="btn secondary" style="margin-top:10px" onclick="closeModal()">Cerrar</button>`)}
 
-function comingSoonSocial(){toast("👥 Próximamente. Las funciones sociales todavía no están disponibles.");tone("click")}
+function comingSoonSocial(){addFriendModal()}
 function settings(){
  modal(`<div class="kicker">⚙️ AJUSTES</div><h2>Personaliza tu experiencia</h2>
  <div class="grid g2"><div class="field"><label>Nombre</label><input id="sName" value="${esc(S.profile.name)}"></div><div class="field"><label>Tema visual equipado</label><select id="sTheme" onchange="equipTheme(this.value)">${Object.entries(THEMES).map(([k,v])=>{
@@ -1315,7 +1645,7 @@ function previewMusicTrack(track){
  if(S.settings.music)restartAmbient();
 }
 function saveSettings(){
- S.profile.name=$("sName").value.trim()||S.profile.name;S.profile.bio=$("sBio").value.trim();S.settings.theme=$("sTheme").value;S.settings.music=$("sMusic").checked;S.settings.musicTrack=$("sMusicTrack").value||"aqua";S.settings.musicVol=+$("sMusicVol").value;S.settings.sfx=$("sSfx").checked;S.settings.sfxVol=+$("sSfxVol").value;S.settings.days=[...document.querySelectorAll(".day:checked")].map(x=>+x.value);save();applyTheme();closeModal();render();tone("save");restartAmbient();toast(`⚙️ Ajustes guardados · ${MUSIC_TRACKS[S.settings.musicTrack]?.name||"Aqua"}`);}
+ S.profile.name=$("sName").value.trim()||S.profile.name;S.profile.bio=$("sBio").value.trim();S.settings.theme=$("sTheme").value;S.settings.music=$("sMusic").checked;S.settings.musicTrack=$("sMusicTrack").value||"aqua";S.settings.musicVol=+$("sMusicVol").value;S.settings.sfx=$("sSfx").checked;S.settings.sfxVol=+$("sSfxVol").value;const newDays=[...document.querySelectorAll(".day:checked")].map(x=>+x.value);if(!newDays.length){toast("Elige al menos un día de entrenamiento.");return}S.settings.days=newDays;save();applyTheme();closeModal();render();tone("save");restartAmbient();toast(`⚙️ Ajustes guardados · ${MUSIC_TRACKS[S.settings.musicTrack]?.name||"Aqua"}`);}
 function instructions(){
  modal(`<div class="kicker">📖 INSTRUCCIONES</div><h2>Cómo funciona</h2><div class="list">
  <div class="list-item"><b>🏊 Entrena</b><div class="sub">Añade series con distancia, repeticiones, estilo, intensidad, correctivo y tiempo opcional. La dificultad general del entrenamiento se calcula automáticamente por metros, estilo y XP; la intensidad de una sola serie no la decide por sí sola.</div></div>
@@ -1342,7 +1672,7 @@ function importData(){
 function resetData(){if(!confirm("Se borrará todo el progreso de Swim Quest."))return;S=clone(DEFAULT);draft=[];save();closeModal();render();toast("♻️ Progreso reiniciado")}
 
 let toastTimer=null;function toast(message,duration=2600){const el=$("toast");if(!el)return;el.textContent=message;el.className="toast reveal";clearTimeout(toastTimer);toastTimer=setTimeout(()=>{el.className="";el.textContent=""},duration);}
-function modal(content){$("modal").innerHTML=`<div class="modal-bg" onclick="if(event.target===this)closeModal()"><div class="modal">${content}</div></div>`}
+function modal(content){const extra=String(content).includes("fish-shop-shell")?" fish-shop-modal":"";$("modal").innerHTML=`<div class="modal-bg" onclick="if(event.target===this)closeModal()"><div class="modal${extra}">${content}</div></div>`}
 function closeModal(){$("modal").innerHTML=""}
 function rankReveal(r){
  const i=RANKS.findIndex(x=>x.c===r.c),tier=i<7?"low":i<14?"mid":i<19?"high":"legend";
@@ -1357,15 +1687,7 @@ function showMonthSummary(force=false,month=null){
 function hasMonthlyShield(){return !!S.monthlyShieldUntil&&new Date(S.monthlyShieldUntil).getTime()>Date.now();}
 function activateMonthlyShield(){const base=hasMonthlyShield()?new Date(S.monthlyShieldUntil):new Date();S.monthlyShieldUntil=new Date(base.getTime()+30*86400000).toISOString();S.purchases.monthShield=true;}
 function reviewWeek(){
- if(!S.profile)return;
- const wk=weekKey();
- if(!S.lastReviewWeek){S.lastReviewWeek=wk;save();return}
- if(S.lastReviewWeek===wk)return;
- const prev=S.lastReviewWeek;const st=dateObj(prev),missing=[];
- for(let i=0;i<7;i++){const d=new Date(st);d.setDate(d.getDate()+i);const ds=d.toISOString().slice(0,10);if(S.settings.days.includes(d.getDay())&&!S.trainings.some(e=>e.date===ds))missing.push(ds)}
- S.lastReviewWeek=wk;save();
- if(!missing.length){S.streak++;save();toast(`🔥 Semana completada · racha ${S.streak}`)}
- else reviewModal(missing);
+ if(!S.profile)return;const wk=weekKey();if(!S.lastReviewWeek){S.lastReviewWeek=wk;save();return}if(S.lastReviewWeek===wk)return;const prevWeekStart=S.lastReviewWeek;const st=dateObj(prevWeekStart),missing=[];for(let i=0;i<7;i++){const d=new Date(st);d.setDate(d.getDate()+i);const ds=d.toISOString().slice(0,10);if(S.settings.days.includes(d.getDay())&&!S.trainings.some(e=>e.date===ds))missing.push(ds)}S.lastReviewWeek=wk;save();if(!missing.length){S.streak++;save();toast(`🔥 Semana completada · racha ${S.streak}`)}else reviewModal(missing);
 }
 function reviewModal(missing){
  modal(`<div class="kicker">📅 REVISIÓN SEMANAL</div><h2>Faltó una práctica</h2><p class="sub">No es para castigarte. Queremos que tu historial sepa qué pasó. Una causa válida no rompe la racha.</p>${missing.map((d,i)=>`<div class="list-item"><b>${labelDate(d)}</b><select id="reason${i}" style="margin-top:7px"><option>Enfermedad</option><option>Estudios</option><option>Motivo familiar</option><option>Otra razón</option><option>Sin motivo</option></select></div>`).join("")}<button class="btn primary" style="margin-top:10px" onclick='saveReview(${JSON.stringify(missing)})'>Guardar revisión</button>`);
@@ -1398,13 +1720,16 @@ async function installApp(){
  try{await prompt.prompt();await prompt.userChoice;}catch(e){}
 }
 
+function normalizeSecretState(){S.secret=S.secret||{};S.secret.bananaRemoved=!!S.secret.bananaRemoved;S.secret.pearBananaSeen=!!S.secret.pearBananaSeen;S.secret.pearRouteSeen=!!S.secret.pearRouteSeen;S.secret.pearRouteDialogueSeen=!!S.secret.pearRouteDialogueSeen;S.secret.pearOpening=!!S.secret.pearOpening;S.secret.pearAfterShown=!!S.secret.pearAfterShown;S.secret.firstPearEvent=typeof S.secret.firstPearEvent==="string"?S.secret.firstPearEvent:"";S.secret.hotdogUnlocked=!!S.secret.hotdogUnlocked;S.secret.hitmanEverBought=!!(S.secret.hitmanEverBought||S.purchases?.sicario||S.secret?.fishRoute||S.secret?.bananaRemoved||S.secret?.pearRouteSeen);if(!Array.isArray(S.secret.hitmanTargets))S.secret.hitmanTargets=[];S.secret.hitmanTargets=[...new Set(S.secret.hitmanTargets.filter(x=>["fish","banana","pear"].includes(x)))];if(S.secret.bananaRemoved&&!S.secret.hitmanTargets.includes("banana"))S.secret.hitmanTargets.push("banana");if(S.secret.fishRoute&&!S.secret.hitmanTargets.includes("fish"))S.secret.hitmanTargets.push("fish");if(S.secret.pearRouteSeen&&!S.secret.hitmanTargets.includes("pear"))S.secret.hitmanTargets.push("pear");if(hitmanRetired())S.purchases.sicario=false;S.social=S.social||{friends:[],clan:null};if(!Array.isArray(S.social.friends))S.social.friends=[];if(S.social.clan&&Array.isArray(S.social.clan.members)){S.social.clan.members=S.social.clan.members.map(m=>{if(typeof m==="string")return clanMemberFromFriend({id:m,name:"Jugador "+m});return m});}}
 function boot(){
+ window.__bananaGhostVisible=false;
+ normalizeSecretState();
  if(S.profile) ensureMissions(); render(); if(S.profile) reviewWeek();
  updateInstallButton();
  document.body.addEventListener("pointerdown",()=>ambientStart(),{once:true});
 }
 window.requestNotifications=requestNotifications;window.openPearScene=openPearScene;window.pearNext=pearNext;window.closePearScene=closePearScene;window.showAchievements=showAchievements;window.coinShop=coinShop;window.comingSoonPurchases=comingSoonPurchases;window.comingSoonSocial=comingSoonSocial;window.createProfile=createProfile;window.installApp=installApp;window.go=go;window.settings=settings;window.instructions=instructions;window.closeModal=closeModal;window.saveSettings=saveSettings;window.exportData=exportData;window.importData=importData;window.resetData=resetData;
-window.fishMotivation=fishMotivation;window.trainingTimer=trainingTimer;window.timerToggle=timerToggle;window.timerReset=timerReset;window.timerClose=timerClose;window.addSeries=addSeries;window.removeSeries=removeSeries;window.saveTraining=saveTraining;window.editTraining=editTraining;window.commitEdit=commitEdit;window.deleteTraining=deleteTraining;window.claimMission=claimMission;window.buy=buy;window.showMonthSummary=showMonthSummary;window.missions=missions;
+window.fishMotivation=fishMotivation;window.openFishShop=openFishShop;window.buySecret=buySecret;window.hitmanModal=hitmanModal;window.useHitman=useHitman;window.openBananaScene=openBananaScene;window.bananaNext=bananaNext;window.closeBananaScene=closeBananaScene;window.addFriendModal=addFriendModal;window.lookupFriend=lookupFriend;window.simulateAddFriend=simulateAddFriend;window.createGroupModal=createGroupModal;window.simulateCreateGroup=simulateCreateGroup;window.openClan=openClan;window.trainingTimer=trainingTimer;window.timerToggle=timerToggle;window.timerReset=timerReset;window.timerClose=timerClose;window.addSeries=addSeries;window.removeSeries=removeSeries;window.saveTraining=saveTraining;window.editTraining=editTraining;window.commitEdit=commitEdit;window.deleteTraining=deleteTraining;window.claimMission=claimMission;window.buy=buy;window.showMonthSummary=showMonthSummary;window.missions=missions;
 boot();
 </script>
 <script>
