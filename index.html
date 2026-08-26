@@ -545,6 +545,27 @@ body.theme-eclipse .eclipse-cartoon-star{position:fixed;pointer-events:none;z-in
 .clan-rank{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#142e49;font-weight:1000}
 @media(max-width:560px){.clan-shell{width:96vw;padding:12px}.clan-request{grid-template-columns:1fr}.clan-member{align-items:flex-start;flex-direction:column}}
 </style>
+<style>
+/* FINAL RANK POLISH: vivos, brillantes y diferenciados sin alterar la lógica */
+.rank-card{transition:transform .2s ease,box-shadow .25s ease,border-color .25s ease}
+.rank-card:hover{transform:translateY(-3px);box-shadow:0 18px 44px rgba(0,0,0,.34),0 0 26px color-mix(in srgb,var(--rankGlow,#42ddff) 24%,transparent)}
+.badge .rank-glyph{will-change:transform,filter;filter:saturate(1.25) brightness(1.08) drop-shadow(0 4px 8px rgba(0,0,0,.3))}
+.oro{--rankGlow:#ffd93d}.plata{--rankGlow:#f1f7ff}.platino{--rankGlow:#75e8ff}.diamante{--rankGlow:#54d4ff}.esmeralda{--rankGlow:#58f2b0}.zafiro{--rankGlow:#43bcff}.amatista{--rankGlow:#cf72ff}.mercurio{--rankGlow:#eef5fb}.venus{--rankGlow:#ff9c8c}.marte{--rankGlow:#ff5c45}.jupiter{--rankGlow:#ffb36a}.saturno{--rankGlow:#f1d98a}.urano{--rankGlow:#74fff1}.neptuno{--rankGlow:#5ba8ff}.orca{--rankGlow:#e7fbff}.tiburon{--rankGlow:#71d8ff}.kraken{--rankGlow:#62ffe8}.megalodon{--rankGlow:#8edfff}.leviatan{--rankGlow:#59ffe9}.poseidon{--rankGlow:#75cfff}.coach{--rankGlow:#ffffff}
+.rank-glyph.oro,.rank-glyph.plata,.rank-glyph.platino,.rank-glyph.diamante,.rank-glyph.esmeralda,.rank-glyph.amatista,.rank-glyph.zafiro,.rank-glyph.mercurio,.rank-glyph.venus,.rank-glyph.marte,.rank-glyph.jupiter,.rank-glyph.saturno,.rank-glyph.urano,.rank-glyph.neptuno,.rank-glyph.orca,.rank-glyph.tiburon,.rank-glyph.kraken,.rank-glyph.megalodon,.rank-glyph.leviatan,.rank-glyph.poseidon,.rank-glyph.coach{box-shadow:0 0 18px color-mix(in srgb,var(--rankGlow) 34%,transparent),inset 0 0 18px rgba(255,255,255,.13)}
+.rank-glyph.oro{animation:rankGoldFinal 1.8s ease-in-out infinite!important}.rank-glyph.plata,.rank-glyph.platino{animation:rankMetalFinal 2.15s ease-in-out infinite!important}.rank-glyph.diamante,.rank-glyph.zafiro{animation:rankCrystalFinal 1.75s ease-in-out infinite!important}.rank-glyph.esmeralda{animation:rankEmeraldFinal 2.2s ease-in-out infinite!important}.rank-glyph.amatista,.rank-glyph.neptuno{animation:rankArcaneFinal 2s ease-in-out infinite!important}.rank-glyph.mercurio{animation:rankMercuryFinal 1.7s ease-in-out infinite!important}.rank-glyph.venus,.rank-glyph.marte,.rank-glyph.jupiter,.rank-glyph.saturno{animation:rankPlanetFinal 2.35s ease-in-out infinite!important}.rank-glyph.urano{animation:rankRingFinal 2.1s ease-in-out infinite!important}.rank-glyph.orca,.rank-glyph.tiburon,.rank-glyph.megalodon{animation:rankSeaFinal 1.6s ease-in-out infinite!important}.rank-glyph.kraken,.rank-glyph.leviatan{animation:rankLegendFinal 1.7s ease-in-out infinite!important}.rank-glyph.poseidon{animation:rankPoseidonFinal 1.5s ease-in-out infinite!important}.rank-glyph.coach{animation:rankCoachFinal 1.3s ease-in-out infinite!important}
+@keyframes rankGoldFinal{0%,100%{transform:translateY(0) scale(1);filter:brightness(1.06) saturate(1.25)}50%{transform:translateY(-3px) scale(1.07);filter:brightness(1.38) saturate(1.5) drop-shadow(0 0 18px rgba(255,214,65,.85))}}
+@keyframes rankMetalFinal{0%,100%{transform:scale(1);filter:brightness(1.05) saturate(1.08)}50%{transform:scale(1.045) rotate(-1deg);filter:brightness(1.32) saturate(1.25) drop-shadow(0 0 15px rgba(238,248,255,.72))}}
+@keyframes rankCrystalFinal{0%,100%{transform:scale(1);filter:brightness(1.08) saturate(1.25)}32%{transform:scale(1.08) rotate(-2deg);filter:brightness(1.48) saturate(1.5) drop-shadow(0 0 22px rgba(85,214,255,.9))}65%{transform:scale(.99) rotate(2deg)}}
+@keyframes rankEmeraldFinal{0%,100%{transform:rotate(-35deg) translateY(0) scale(1)}50%{transform:rotate(-29deg) translateY(-3px) scale(1.06);filter:brightness(1.38) saturate(1.55) drop-shadow(0 0 20px rgba(88,242,176,.85))}}
+@keyframes rankArcaneFinal{0%,100%{transform:scale(1) rotate(-1deg)}50%{transform:scale(1.07) rotate(3deg);filter:brightness(1.4) saturate(1.55) drop-shadow(0 0 22px rgba(208,108,255,.86))}}
+@keyframes rankMercuryFinal{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2px) scale(1.07);filter:brightness(1.36) saturate(1.2) drop-shadow(0 0 17px rgba(236,246,255,.82))}}
+@keyframes rankPlanetFinal{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2px) scale(1.05);filter:brightness(1.3) saturate(1.28) drop-shadow(0 0 16px color-mix(in srgb,var(--rankGlow) 80%,transparent))}}
+@keyframes rankRingFinal{0%,100%{transform:rotate(55deg) scale(1)}50%{transform:rotate(63deg) scale(1.06);filter:brightness(1.34) drop-shadow(0 0 19px rgba(116,255,241,.88))}}
+@keyframes rankSeaFinal{0%,100%{transform:translate(0,0) scale(1)}35%{transform:translate(3px,-3px) scale(1.055)}70%{transform:translate(-3px,1px) scale(1.02);filter:brightness(1.32) saturate(1.38) drop-shadow(0 0 20px rgba(110,220,255,.85))}}
+@keyframes rankLegendFinal{0%,100%{transform:translateY(0) scale(1);filter:brightness(1.1) saturate(1.35)}50%{transform:translateY(-3px) scale(1.08) rotate(2deg);filter:brightness(1.46) saturate(1.6) drop-shadow(0 0 25px rgba(87,255,231,.96))}}
+@keyframes rankPoseidonFinal{0%,100%{transform:scale(1);filter:brightness(1.12) saturate(1.3)}34%{transform:scale(1.07) rotate(-2deg);filter:brightness(1.5) saturate(1.6) drop-shadow(0 0 27px rgba(116,211,255,1))}58%{transform:scale(1.03) rotate(2deg)}}
+@keyframes rankCoachFinal{0%,100%{transform:translateY(0) rotate(-1deg) scale(1);filter:brightness(1.1) saturate(1.35)}45%{transform:translateY(-4px) rotate(2deg) scale(1.09);filter:brightness(1.52) saturate(1.6) drop-shadow(0 0 32px rgba(255,255,255,1))}}
+</style>
 </head>
 <body>
 <div id="themeParticles" aria-hidden="true"></div>
@@ -1979,7 +2000,74 @@ function boot(){
 }
 window.requestNotifications=requestNotifications;window.openPearScene=openPearScene;window.pearNext=pearNext;window.closePearScene=closePearScene;window.showAchievements=showAchievements;window.coinShop=coinShop;window.comingSoonPurchases=comingSoonPurchases;window.comingSoonSocial=comingSoonSocial;window.createProfile=createProfile;window.installApp=installApp;window.go=go;window.settings=settings;window.instructions=instructions;window.closeModal=closeModal;window.saveSettings=saveSettings;window.exportData=exportData;window.importData=importData;window.resetData=resetData;
 window.authModal=authModal;window.requestPasswordReset=requestPasswordReset;window.showPasswordRecovery=showPasswordRecovery;window.changeRecoveredPassword=changeRecoveredPassword;window.signUpReal=signUpReal;window.signInReal=signInReal;window.signOutReal=signOutReal;window.openSocial=openSocial;window.socialModal=socialModal;window.sendFriendRequest=sendFriendRequest;window.acceptFriend=acceptFriend;window.createRealClan=createRealClan;window.searchClans=searchClans;window.requestClanJoin=requestClanJoin;window.approveClanRequest=approveClanRequest;window.removeClanMember=removeClanMember;window.leaveClan=leaveClan;window.openStyleBox=openStyleBox;window.fishMotivation=fishMotivation;window.openFishShop=openFishShop;window.buySecret=buySecret;window.hitmanModal=hitmanModal;window.useHitman=useHitman;window.openBananaScene=openBananaScene;window.bananaNext=bananaNext;window.closeBananaScene=closeBananaScene;window.addFriendModal=addFriendModal;window.lookupFriend=lookupFriend;window.simulateAddFriend=simulateAddFriend;window.createGroupModal=createGroupModal;window.simulateCreateGroup=simulateCreateGroup;window.openClan=openClan;window.trainingTimer=trainingTimer;window.timerToggle=timerToggle;window.timerReset=timerReset;window.timerClose=timerClose;window.addSeries=addSeries;window.removeSeries=removeSeries;window.saveTraining=saveTraining;window.editTraining=editTraining;window.commitEdit=commitEdit;window.deleteTraining=deleteTraining;window.claimMission=claimMission;window.buy=buy;window.showMonthSummary=showMonthSummary;window.missions=missions;
+
 boot();
+</script>
+<script>
+/* === INTEGRATED FINAL PATCH: workout identity/deletion + real clan ranking === */
+(function(){
+  const workoutMeters=e=>(e?.series||[]).reduce((a,x)=>a+(Number(x.distance)||0)*(Number(x.reps)||0),0);
+  const workoutSig=e=>[e?.date||'',e?.name||'',workoutMeters(e),Number(e?.xp||0),Number(e?.coins||0),JSON.stringify(e?.series||[])].join('|');
+  const workoutClientId=e=>String(e?.id||'').startsWith('cloud_')?String(e.id).slice(7):String(e?.id||'');
+
+  syncTrainingToCloud=async function(e){
+    if(!supabaseClient||!authUser||!e)return;
+    try{
+      const client_id=workoutClientId(e);if(!client_id)return;
+      const payload={user_id:authUser.id,client_id,workout_date:e.date,name:e.name||null,meters:workoutMeters(e),xp_earned:Number(e.xp||0),coins_earned:Number(e.coins||0),details:{durationMin:Number(e.durationMin||0),series:e.series||[],difficulty:e.difficulty||difficultyInfo(e,S?.profile?.avgMeters).key,client_id}};
+      const {error}=await supabaseClient.from('workouts').upsert(payload,{onConflict:'user_id,client_id'});if(error)throw error;
+      await syncProfileToCloud();
+    }catch(err){console.warn('workout sync',err)}
+  };
+
+  async function reconcileWorkouts(){
+    if(!supabaseClient||!authUser||!S)return;
+    try{
+      const r=await supabaseClient.from('workouts').select('id,client_id,workout_date,name,meters,xp_earned,coins_earned,details,created_at').eq('user_id',authUser.id).order('created_at',{ascending:true});
+      if(r.error||!r.data)return;
+      const seenIds=new Set(),seenSigs=new Set(),remote=[];
+      for(const w of r.data){
+        const e={id:'cloud_'+w.id,number:remote.length+1,date:w.workout_date,name:w.name||'',durationMin:Number(w.details?.durationMin||0),series:Array.isArray(w.details?.series)?w.details.series:[],xp:Number(w.xp_earned||0),coins:Number(w.coins_earned||0),difficulty:w.details?.difficulty||'normal',clientId:w.client_id||''};
+        const sig=workoutSig(e);
+        if((e.clientId&&seenIds.has(e.clientId))||seenSigs.has(sig))continue;
+        if(e.clientId)seenIds.add(e.clientId);seenSigs.add(sig);remote.push(e);
+      }
+      const local=(S.trainings||[]).filter(e=>!String(e.id||'').startsWith('cloud_'));
+      const remoteSigs=new Set(remote.map(workoutSig));
+      const unsynced=local.filter(e=>!remoteSigs.has(workoutSig(e)));
+      S.trainings=[...remote,...unsynced].sort((a,b)=>String(a.date).localeCompare(String(b.date)));S.nextTrainingNumber=S.trainings.length+1;save();
+      for(const e of unsynced)await syncTrainingToCloud(e);
+      render();
+    }catch(err){console.warn('reconcile workouts',err)}
+  }
+
+  deleteTraining=async function(id){
+    const e=(S.trainings||[]).find(x=>x.id===id);if(!e||!confirm('¿Eliminar este entrenamiento?'))return;
+    try{
+      if(supabaseClient&&authUser){
+        if(String(id).startsWith('cloud_')){const r=await supabaseClient.rpc('delete_my_workout',{p_workout_id:String(id).slice(7)});if(r.error)throw r.error;}
+        else{const r=await supabaseClient.from('workouts').delete().eq('user_id',authUser.id).eq('client_id',workoutClientId(e));if(r.error)throw r.error;}
+      }
+      S.trainings=S.trainings.filter(x=>x.id!==id);rebuildProfile();save();if(authUser)await syncProfileToCloud();render();toast('🗑️ Entrenamiento eliminado de forma permanente.');
+    }catch(err){console.error('deleteTraining',err);toast('❌ No se pudo eliminar el entrenamiento.',4000)}
+  };
+
+  async function enhanceClanLeaderboard(){
+    try{
+      if(!authUser||!supabaseClient)return;
+      const r=await supabaseClient.rpc('get_my_clan');if(r.error||!r.data?.clan)return;
+      const clan=r.data.clan;let board=await supabaseClient.rpc('get_clan_leaderboard',{p_clan_id:clan.id});let rows=board.data||[];
+      if(board.error){rows=(r.data.members||[]).map(m=>({...m,rank:m.rank||'Bronce',level:Number(m.level||1),meters:Number(m.meters||0),coins:Number(m.coins||0),xp:Number(m.xp||0),role:m.role||'member',rank_index:RANKS.findIndex(x=>x.n===m.rank)}));}
+      const ids=rows.map(x=>x.user_id||x.id).filter(Boolean);if(ids.length){const p=await supabaseClient.from('profiles').select('id,username,public_player_id,level,xp,coins,meters,rank').in('id',ids);if(!p.error){const pm=Object.fromEntries((p.data||[]).map(x=>[x.id,x]));rows=rows.map(x=>({...x,...(pm[x.user_id]||{})}));}}
+      rows.sort((a,b)=>Number(b.rank_index??RANKS.findIndex(x=>x.n===b.rank)??0)-Number(a.rank_index??RANKS.findIndex(x=>x.n===a.rank)??0)||Number(b.meters||0)-Number(a.meters||0)||Number(b.level||0)-Number(a.level||0)||Number(b.coins||0)-Number(a.coins||0)||Number(b.xp||0)-Number(a.xp||0));
+      const host=document.querySelector('#modal .clan-shell');if(!host)return;const title=[...host.querySelectorAll('h3')].find(x=>/Miembros/.test(x.textContent));const list=title?.nextElementSibling;if(!list)return;
+      let label=host.querySelector('.clan-leaderboard-title');if(!label){label=document.createElement('div');label.className='kicker clan-leaderboard-title';label.style.margin='14px 0 7px';label.textContent='🏆 TOP DEL CLAN · RANGO + METROS + NIVEL + MONEDAS';title?.parentNode.insertBefore(label,title)}
+      list.innerHTML=rows.map((m,i)=>`<div class="clan-member"><div class="row" style="justify-content:flex-start"><div class="clan-rank">${i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1)}</div><div><b>${m.user_id===authUser.id?'Tú':esc(m.username||'Nadador')}</b><div class="sub">${esc(m.rank||'Bronce')} · LV ${fmt(m.level||1)} · ${fmt(m.meters||0)} m · ${fmt(m.coins||0)} 🪙${m.role==='owner'?' · 👑 Propietario':''}</div></div></div><span class="pill">⭐ ${fmt(m.xp||0)} XP</span></div>`).join('');
+    }catch(e){console.warn('clan leaderboard',e)}
+  }
+  const baseOpenSocial=openSocial;openSocial=async function(tab='friends'){await baseOpenSocial(tab);if(tab==='clan')setTimeout(enhanceClanLeaderboard,100)};
+  setTimeout(reconcileWorkouts,1400);
+})();
 </script>
 <script>
 if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));}
