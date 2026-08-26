@@ -502,24 +502,48 @@ body.theme-cianneon .hero,body.theme-cianneon .card{box-shadow:inset 0 0 35px rg
 body.theme-cianneon .btn.primary{box-shadow:0 0 0 1px rgba(178,255,255,.14),0 0 24px rgba(0,238,255,.18),0 10px 28px rgba(0,120,255,.18)}
 body.theme-eclipse .card::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(circle at 15% 20%,rgba(255,190,95,.05),transparent 22%),radial-gradient(circle at 85% 78%,rgba(113,136,255,.05),transparent 24%)}
 body.theme-eclipse .hero::after{box-shadow:0 0 80px rgba(255,184,74,.18),0 0 140px rgba(76,99,255,.14)}
-
-/* SWIM QUEST — ESTILO 80s / TV CRT */
-body.theme-retro80s{--bg:#111;--bg2:#1b1b1b;--panel:#161616;--panel2:#222;--line:#666;--text:#f3f3f3;--muted:#b9b9b9;--a:#fff;--b:#777;filter:grayscale(1) contrast(1.08);background:radial-gradient(circle at 50% 45%,#2b2b2b 0,#111 55%,#050505 100%)!important}
-body.theme-retro80s::before{background:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 4px),radial-gradient(circle at 50% 50%,rgba(255,255,255,.08),transparent 60%);animation:retroNoise .18s steps(2) infinite;opacity:.75}
-body.theme-retro80s::after{content:"";position:fixed;inset:0;z-index:40;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(255,255,255,.035) 3px,transparent 4px);mix-blend-mode:screen;opacity:.42}
-body.theme-retro80s .logo,body.theme-retro80s .primary{background:linear-gradient(180deg,#fff,#777)!important;color:#080808!important}
-body.theme-retro80s .card,body.theme-retro80s .hero,body.theme-retro80s .nav{border-color:#707070;box-shadow:0 0 0 1px rgba(255,255,255,.04),0 12px 35px rgba(0,0,0,.45)}
-body.theme-retro80s .btn,body.theme-retro80s .pill{border-radius:4px}
-body.theme-retro80s .card,body.theme-retro80s .hero{border-radius:7px}
-body.theme-retro80s.retro-glitch .app{animation:retroGlitch .16s steps(2) 2}
-body.theme-retro80s.retro-glitch .logo,body.theme-retro80s.retro-glitch .big,body.theme-retro80s.retro-glitch h1,body.theme-retro80s.retro-glitch h2{transform:skewX(-2deg);text-shadow:2px 0 #fff,-2px 0 #777}
-@keyframes retroNoise{0%{transform:translate(0,0)}25%{transform:translate(-1px,1px)}50%{transform:translate(1px,-1px)}75%{transform:translate(0,1px)}100%{transform:translate(-1px,0)}}
-@keyframes retroGlitch{0%{transform:translate(0)}30%{transform:translate(-4px,1px)}55%{transform:translate(4px,-1px)}100%{transform:translate(0)}}
-
 </style>
-
 <style>
 .daily-roulette .roulette-wheel{width:150px;height:150px;box-shadow:0 0 24px rgba(66,221,255,.15),inset 0 0 20px rgba(255,255,255,.12);animation:rouletteSpin 1.35s cubic-bezier(.2,.8,.2,1);}.daily-roulette .roulette-wheel:before{inset:8px;animation:none}.daily-roulette .roulette-wheel:after{inset:22px}.daily-roulette .roulette-text{font-size:34px;animation:none}.pear-speaker{font-size:12px;text-transform:uppercase}.pear-sad{font-size:30px;margin-top:6px;color:#6b7d6f}.theme-particle.abyssdrop{position:fixed}.theme-particle.eclipseSpark{position:fixed}
+</style>
+<style>
+/* 80s CRT: fixed, compact and never allowed to create page overflow */
+html,body{overflow-x:hidden;}
+body.theme-retro80s{background:linear-gradient(180deg,#f1f1f1 0%,#c8c8c8 52%,#303030 100%);color:#111;filter:none;}
+body.theme-retro80s .app{position:relative;overflow-x:clip;min-height:100vh;}
+body.theme-retro80s .card,body.theme-retro80s .hero,body.theme-retro80s .list-item,body.theme-retro80s .series,body.theme-retro80s .shop-item{background:linear-gradient(180deg,#f5f5f5,#b8b8b8);border-color:#555;color:#111;box-shadow:inset 0 0 18px rgba(255,255,255,.35),0 8px 22px rgba(0,0,0,.2)}
+body.theme-retro80s .btn{background:linear-gradient(180deg,#f7f7f7,#767676);border-color:#222;color:#111;text-shadow:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.7),0 3px 0 #222}
+body.theme-retro80s .btn.primary{background:#111;color:#fff;border-color:#000}
+body.theme-retro80s .nav{background:#d8d8d8;border-top-color:#222}
+body.theme-retro80s .nav button{color:#111}
+body.theme-retro80s .wallet{background:#111;color:#fff;border-color:#000}
+body.theme-retro80s::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:40;background:repeating-linear-gradient(0deg,rgba(0,0,0,.07) 0 1px,transparent 1px 4px);mix-blend-mode:multiply;opacity:.3}
+body.theme-retro80s.retro-glitch .app{animation:retroGlitch .16s steps(2,end)}
+body.theme-retro80s.retro-glitch::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:41;background:linear-gradient(transparent 45%,rgba(0,0,0,.25) 46%,transparent 49%);transform:translateX(4px)}
+@keyframes retroGlitch{0%{transform:translate3d(0,0,0);filter:none}25%{transform:translate3d(-3px,0,0);filter:contrast(1.45)}50%{transform:translate3d(3px,0,0);filter:contrast(.78)}75%{transform:translate3d(-1px,0,0)}100%{transform:translate3d(0,0,0);filter:none}}
+
+/* Eclipse rework: cartoonish night-sky, soft shapes and playful rings */
+body.theme-eclipse{background:radial-gradient(circle at 50% 10%,#7180a5 0,#283657 18%,#11182e 48%,#050812 100%);color:#fff6df;overflow-x:hidden}
+body.theme-eclipse::before{content:"";position:fixed;inset:-8%;z-index:-3;pointer-events:none;background:radial-gradient(circle at 18% 18%,rgba(255,221,141,.14),transparent 18%),radial-gradient(circle at 82% 24%,rgba(120,153,255,.18),transparent 18%),radial-gradient(circle at 55% 78%,rgba(192,103,255,.12),transparent 25%);animation:eclipseSkyDrift 18s ease-in-out infinite alternate}
+body.theme-eclipse::after{content:"☾";position:fixed;left:50%;top:100px;transform:translateX(-50%);z-index:-2;pointer-events:none;width:min(240px,50vw);height:min(240px,50vw);border-radius:50%;display:grid;place-items:center;font-size:min(110px,22vw);color:#12182e;background:radial-gradient(circle at 36% 33%,#fff4c9 0 5%,#f4b85c 6% 22%,#1b2441 23% 65%,#0b0f20 66% 100%);border:9px solid #ffcf73;box-shadow:0 0 0 13px rgba(255,207,115,.11),0 0 0 28px rgba(107,132,255,.10),0 22px 70px rgba(0,0,0,.35);animation:eclipseFloat 7s ease-in-out infinite}
+body.theme-eclipse .hero{background:linear-gradient(145deg,rgba(46,61,101,.96),rgba(9,13,28,.99));border-color:rgba(255,207,115,.48)}
+body.theme-eclipse .card{background:linear-gradient(180deg,rgba(28,38,70,.97),rgba(8,12,25,.99));border-color:rgba(152,174,255,.36);box-shadow:0 16px 50px rgba(0,0,0,.34),inset 0 0 26px rgba(112,134,220,.04)}
+body.theme-eclipse .btn{background:linear-gradient(145deg,#253862,#0d1427);border:1px solid rgba(255,207,115,.32)}
+body.theme-eclipse .btn.primary{background:linear-gradient(135deg,#ffd36e,#d56a2e,#64220f);color:#fff9ef;border-color:#ffe2a1;box-shadow:0 10px 30px rgba(255,147,48,.2)}
+body.theme-eclipse .nav{background:rgba(3,6,13,.96);border-top-color:rgba(255,207,115,.24)}
+body.theme-eclipse .nav button.active{background:linear-gradient(180deg,rgba(255,207,115,.18),rgba(118,135,255,.18))}
+body.theme-eclipse .eclipse-cartoon-star{position:fixed;pointer-events:none;z-index:-1;color:#ffe8a7;animation:twinkle 2.8s ease-in-out infinite}
+@keyframes eclipseSkyDrift{to{transform:translate(2%,-1%) scale(1.04)}}
+@keyframes eclipseFloat{50%{transform:translateX(-50%) translateY(-7px) rotate(1deg)}}
+@keyframes twinkle{50%{opacity:.25;transform:scale(.7) rotate(18deg)}}
+
+/* Clan modal */
+.clan-shell{width:min(680px,94vw);max-height:82vh;overflow:auto;border-radius:24px;padding:18px;background:linear-gradient(180deg,#102740,#07121f);border:1px solid #385879;box-shadow:0 24px 90px rgba(0,0,0,.5)}
+.clan-hero{padding:16px;border-radius:18px;background:linear-gradient(135deg,rgba(66,221,255,.13),rgba(118,92,255,.11));border:1px solid rgba(66,221,255,.2)}
+.clan-member{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;border:1px solid #274663;border-radius:14px;background:#0a1929}
+.clan-request{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:12px;border:1px solid rgba(97,239,170,.28);border-radius:14px;background:linear-gradient(145deg,rgba(16,45,48,.85),rgba(7,21,31,.95))}
+.clan-rank{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#142e49;font-weight:1000}
+@media(max-width:560px){.clan-shell{width:96vw;padding:12px}.clan-request{grid-template-columns:1fr}.clan-member{align-items:flex-start;flex-direction:column}}
 </style>
 </head>
 <body>
@@ -577,7 +601,8 @@ const THEMES={
  Eclipse:{a:"#16233e",b:"#050914",emoji:"🌘",desc:"Eclipse legendario: azul negro profundo con detalles naranja brillante."},
  Pera:{a:"#b8f58a",b:"#6da83e",emoji:"🍐",desc:"Un jardín verde claro con peras cayendo y pequeños detalles de pera."},
  Hacker:{a:"#39d353",b:"#08160a",emoji:"💻",desc:"Terminal oscura con verdes profundos, blanco tenue y lluvia de 0 y 1."},
- PerroCaliente:{a:"#ff4a3d",b:"#ffc928",emoji:"🌭",desc:"Rojo y amarillo con salchichas cayendo desde el cielo."}, Retro80s:{a:"#ffffff",b:"#555555",emoji:"📺",desc:"Televisión de los 80: blanco, gris y negro, con interferencias CRT ocasionales."}
+ Retro80s:{a:"#f2f2f2",b:"#333333",emoji:"📺",desc:"Televisión de los 80: blanco, gris, negro, CRT e interferencias ocasionales."},
+ PerroCaliente:{a:"#ff4a3d",b:"#ffc928",emoji:"🌭",desc:"Rojo y amarillo con salchichas cayendo desde el cielo."}
 };
 const RANKS=[
  {n:"Bronce",c:"bronce",icon:"",lv:1,m:0,t:0,d:"La primera insignia. El punto donde comienza tu historia."},
@@ -658,7 +683,7 @@ const SUPABASE_URL="https://eyvzpzwagdccphsktogu.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_TuwjOiBnavNXWkxzGye_Jw_20vuNP8E";
 function supabaseReady(){return !!supabaseClient}
 function publicPlayerId(){return "SQ-"+Math.random().toString(36).slice(2,8).toUpperCase()}
-async function initSupabase(){try{if(!window.supabase?.createClient)return;supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});const {data}=await supabaseClient.auth.getSession();authUser=data?.session?.user||null;supabaseClient.auth.onAuthStateChange((_event,session)=>{authUser=session?.user||null;if(authUser)setTimeout(()=>syncCurrentAccount(),0);if(_event==="PASSWORD_RECOVERY")setTimeout(()=>changePasswordModal(),250);render()});if(authUser)await syncCurrentAccount()}catch(e){console.warn("Supabase no disponible",e)}}
+async function initSupabase(){try{if(!window.supabase?.createClient)return;supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});const {data}=await supabaseClient.auth.getSession();authUser=data?.session?.user||null;supabaseClient.auth.onAuthStateChange((_event,session)=>{authUser=session?.user||null;if(_event==="PASSWORD_RECOVERY"){setTimeout(()=>showPasswordRecovery(),0)}if(authUser)setTimeout(()=>syncCurrentAccount(),0);render()});if(authUser)await syncCurrentAccount()}catch(e){console.warn("Supabase no disponible",e)}}
 async function syncCurrentAccount(){
  if(!supabaseClient||!authUser||remoteSyncBusy)return;remoteSyncBusy=true;
  try{
@@ -773,10 +798,11 @@ function applyTheme(){
  const changed=activeThemeTimerTheme!==S.settings.theme;
  document.documentElement.style.setProperty("--a",t.a);
  document.documentElement.style.setProperty("--b",t.b);
- document.body.classList.toggle("leva",S.settings.theme==="Leviatan"); document.body.classList.toggle("retro-glitch",false); if(S.settings.theme==="Retro80s")setTimeout(()=>{if(S.settings.theme==="Retro80s"){document.body.classList.add("retro-glitch");setTimeout(()=>document.body.classList.remove("retro-glitch"),420)}},900+Math.random()*3200);
+ document.body.classList.toggle("leva",S.settings.theme==="Leviatan");
  [...document.body.classList].filter(x=>x.startsWith("theme-")).forEach(x=>document.body.classList.remove(x));
  document.body.classList.add("theme-"+String(S.settings.theme).toLowerCase());
  if(changed){activeThemeTimerTheme=S.settings.theme;restartThemeParticles();if(S.settings.theme==="Leviatan")setTimeout(()=>showLeviathanEvent(),1100);}
+ if(S.settings.theme==="Retro80s"){clearTimeout(window.__retroGlitchTimer);const glitch=()=>{if(S.settings.theme!=="Retro80s")return;document.body.classList.add("retro-glitch");setTimeout(()=>document.body.classList.remove("retro-glitch"),180);window.__retroGlitchTimer=setTimeout(glitch,7000+Math.random()*11000)};window.__retroGlitchTimer=setTimeout(glitch,3500+Math.random()*6500);}
 }
 applyTheme();
 
@@ -1280,7 +1306,7 @@ function achievementCheck(){
    if(a.reward?.xp){S.xp+=Number(a.reward.xp||0);S.level=levelFromXP(S.xp);}
   }
  }
- if(unlocked.length){save();if(authUser&&supabaseClient)syncProfileToCloud();}
+ if(unlocked.length){save();if(authUser)syncProfileToCloud()}
  return unlocked;
 }
 function achievementModal(a){
@@ -1294,7 +1320,7 @@ function showAchievements(){
 function unlockSecretAchievement(id){
  const a=ACHIEVEMENTS.find(x=>x.id===id);if(!a||achievementUnlocked(a))return null;
  
- S.achievements.push(id);if(a.reward?.theme)S.purchases["theme_"+a.reward.theme]=true;if(a.reward?.coins)S.coins+=Number(a.reward.coins);if(a.reward?.xp){S.xp+=Number(a.reward.xp);S.level=levelFromXP(S.xp)}save();if(authUser&&supabaseClient)syncProfileToCloud();return a;
+ S.achievements.push(id);if(a.reward?.theme)S.purchases["theme_"+a.reward.theme]=true;if(a.reward?.coins)S.coins+=Number(a.reward.coins);if(a.reward?.xp){S.xp+=Number(a.reward.xp);S.level=levelFromXP(S.xp)}save();return a;
 }
 function unlockHotdog(){if(S.secret.hotdogUnlocked)return null;const a=unlockSecretAchievement("hotdog");if(a){S.secret.hotdogUnlocked=true;S.purchases.theme_PerroCaliente=true;S.purchases.theme_PerroCaliente=true;save();return a}return null}
 const BANANA_DIALOGUE=[{speaker:"🍌 BANANA",text:"Hola."},{speaker:"👤 TÚ",text:"¿Eres una banana?"},{speaker:"🍌 BANANA",text:"Sí."},{speaker:"👤 TÚ",text:"¿Y qué haces?"},{speaker:"🍌 BANANA",text:"Existir."},{speaker:"👤 TÚ",text:"¿Eso es todo?"},{speaker:"🍌 BANANA",text:"Supongo. ¿Para qué sirven los humanos?"},{speaker:"👤 TÚ",text:"¿Qué?"},{speaker:"🍌 BANANA",text:"Caminan. Piensan. Nadan. Duermen. Vuelven a nadar. ¿Cuál es el objetivo?"},{speaker:"👤 TÚ",text:"No sé."},{speaker:"🍌 BANANA",text:"Yo tampoco. Pero soy una banana, así que tengo una excusa."},{speaker:"🍌 BANANA",text:"Ah, por cierto. Saluda a la Pera por mí."},{speaker:"👤 TÚ",text:"¿Por qué no se lo dices tú?"},{speaker:"🍌 BANANA",text:"Estamos literalmente al lado. No podemos comunicarnos. No preguntes."}];let bananaIndex=0,bananaReady=false;function openBananaScene(){if(!S.purchases.banana||S.secret.bananaRemoved){toast("🍌 La Banana ya no existe.");return}ambientStop();bananaIndex=0;bananaReady=false;renderBananaScene()}function renderBananaScene(){const old=$("bananaScene");if(old)old.remove();const item=BANANA_DIALOGUE[bananaIndex];const scene=document.createElement("div");scene.id="bananaScene";scene.className="pear-scene";scene.innerHTML=`<div class="pear-shine"></div><div class="pear-stage"><div class="pear-emoji">🍌</div><div class="pear-speaker">${esc(item.speaker)}</div><div class="pear-text">${esc(item.text)}</div><button class="pear-next" id="bananaNext" disabled>Siguiente</button><button class="pear-close" onclick="closeBananaScene()">Salir</button></div>`;document.body.appendChild(scene);const ms=Math.max(900,Math.min(3500,item.text.length*18));setTimeout(()=>{bananaReady=true;const b=$("bananaNext");if(b){b.disabled=false;b.onclick=bananaNext}},ms)}function bananaNext(){if(!bananaReady)return;if(bananaIndex<BANANA_DIALOGUE.length-1){bananaIndex++;bananaReady=false;renderBananaScene()}else closeBananaScene()}function closeBananaScene(){$("bananaScene")?.remove();if(S.settings.music)restartAmbient()}
@@ -1502,8 +1528,8 @@ function syncDraft(){
  }
 }
 function draftMeters(){return draft.reduce((a,s)=>a+(+s.distance||0)*(+s.reps||0),0)}
-function draftXP(){const base=Math.max(60,draft.reduce((a,s)=>a+seriesXP(s),0)+Math.round(draftDuration*.4));return Math.round(base*(S.purchases.ketchup?1.10:1)*.85*(S.consumables?.cloroPremium>0?1.20:1))}
-function draftCoins(){return Math.max(25,Math.round(draftXP()*.132*trainingCoinMultiplier()))}
+function draftXP(){const base=Math.max(60,draft.reduce((a,s)=>a+seriesXP(s),0)+Math.round(draftDuration*.4));return Math.round(base*(S.purchases.ketchup?1.10:1)*.70*(S.consumables?.cloroPremium>0?1.20:1))}
+function draftCoins(){return Math.max(25,Math.round(draftXP()*.11*trainingCoinMultiplier()))}
 function addSeries(){syncDraft();draft.push({distance:50,reps:1,style:"crol",intensity:"normal",time:"",corrective:false});render();tone("click")}
 function removeSeries(i){syncDraft();draft.splice(i,1);render();tone("click")}
 function countTrainingsOnDate(date,excludeId=""){return S.trainings.filter(x=>x.date===date&&x.id!==excludeId).length}
@@ -1522,7 +1548,7 @@ function saveTraining(){
  e.number=S.nextTrainingNumber++;e.name=(document.getElementById("tName")?.value||"").trim();
  e.xp=trainingXP(e);if(Number(S.consumables?.cloroPremium||0)>0){e.xp=Math.round(e.xp*1.20);S.consumables.cloroPremium--;};e.coins=trainingCoins(e);e.difficulty=difficultyInfo(e,S?.profile?.avgMeters).key;
  const beforeRank=currentRank().r.c;
- S.trainings.push(e);const levelEvent=gainXP(e.xp);S.coins+=e.coins;const newRecords=updatePersonalRecords(e);ensureMissions();save();if(authUser&&supabaseClient){Promise.all([syncTrainingToCloud(e,false),syncProfileToCloud()]).catch(err=>console.warn("sync after training",err));}tone("save");
+ S.trainings.push(e);const levelEvent=gainXP(e.xp);S.coins+=e.coins;const newRecords=updatePersonalRecords(e);ensureMissions();save();tone("save");
  draft=[];draftDuration=0;currentTrainingName="";render();
  const levelText=levelEvent.levels?` · ⬆️ LV ${S.level} · +${fmt(levelEvent.coins)} 🪙`:"";
  toast(`✅ Entrenamiento guardado · ${difficultyLabel(e)} · +${fmt(e.xp)} XP · +${fmt(e.coins)} 🪙${levelText}`,3300);
@@ -1530,7 +1556,7 @@ function saveTraining(){
  setTimeout(()=>{if(currentRank().r.c!==beforeRank)rankReveal(currentRank().r)},420);
  checkRecords(e);
  checkMonthly();
- if(authUser)syncTrainingToCloud(e);
+ if(authUser){syncTrainingToCloud(e);syncProfileToCloud()}
 }
 function checkRecords(e){const dist=Math.max(...S.trainings.map(x=>totalMeters([x])));if(totalMeters([e])===dist){toast("🏆 ¡Nuevo récord de distancia en un entrenamiento!",2200);tone("record");}}
 let timerInterval=null,timerStartedAt=0,timerElapsed=0;
@@ -1653,7 +1679,7 @@ const SHOP=[
  {id:"xp1500",icon:"🔷",name:"Cristal XP 1500",price:380,desc:"Compra 1500 XP con monedas.",buy:()=>gainXP(1500)},
  {id:"xpJuan",icon:"🔮",name:"Cristal de Ascensión",price:2500,desc:"Cristal único y especial. Otorga 10.000 XP inmediatamente.",buy:()=>gainXP(10000)},
  {id:"cloroPremium",icon:"🧴",name:"Cloro Premium",price:180,desc:"Consumible. Potencia en un 20% el XP del próximo entrenamiento. El efecto se consume al finalizar esa sesión.",buy:()=>{S.consumables=S.consumables||{};S.consumables.cloroPremium=(S.consumables.cloroPremium||0)+1;}},
- {id:"styleBox",icon:"🎁",name:"Caja de estilos",price:280,desc:"Consumible. Te garantiza un estilo visual aleatorio que todavía no tengas. Los estilos exclusivos de logros no pueden salir.",buy:()=>openStyleBox()},
+ {id:"styleBox",icon:"🎁",name:"Caja de estilos",price:280,desc:"Consumible. Te garantiza un estilo visual aleatorio que todavía no tengas. Los estilos exclusivos de logros nunca pueden salir.",buy:()=>openStyleBox()},
  {id:"theme_Cosmos",icon:"🌌",name:"Tema Cosmos",price:220,desc:"Estrellas, brillo y fondo espacial.",buy:()=>S.purchases.theme_Cosmos=true},
  {id:"theme_Abismo",icon:"🌑",name:"Tema Abismo",price:240,desc:"Fondo profundo y movimiento sutil.",buy:()=>S.purchases.theme_Abismo=true},
  {id:"theme_Solar",icon:"☀️",name:"Tema Solar",price:240,desc:"Pulsos cálidos y energía.",buy:()=>S.purchases.theme_Solar=true},
@@ -1665,8 +1691,8 @@ const SHOP=[
  {id:"theme_Sangriento",icon:"🩸",name:"Tema Sangriento",price:380,desc:"Botones rojos y gotas abstractas.",buy:()=>S.purchases.theme_Sangriento=true},
  {id:"theme_Rosadito",icon:"🌸",name:"Tema Rosadito",price:390,desc:"Estilo cute con botones rosado-blanco.",buy:()=>S.purchases.theme_Rosadito=true},
  {id:"theme_CianNeon",icon:"⚡",name:"Tema Cian Neón",price:340,desc:"Cian eléctrico y descargas ocasionales.",buy:()=>S.purchases.theme_CianNeon=true},
+ {id:"theme_Retro80s",icon:"📺",name:"Estilo 80s",price:320,desc:"Televisión de los 80: blanco, gris y negro con interferencias CRT ocasionales.",buy:()=>S.purchases.theme_Retro80s=true},
  {id:"music3",icon:"🕹️",name:"Tema musical: Salto Pixel",price:290,desc:"Música chiptune original.",buy:()=>S.purchases.music3=true},
- {id:"theme_Retro80s",icon:"📺",name:"Estilo 80s",price:320,desc:"Televisión clásica en blanco, gris y negro con interferencia CRT ocasional.",buy:()=>S.purchases.theme_Retro80s=true},
  {id:"monthShield",icon:"🛡️",name:"Protector de Racha · 30 días",price:780,desc:"Mantiene tu racha protegida durante 30 días.",buy:()=>activateMonthlyShield()},
  {id:"talismanMarea",icon:"🧿",name:"Talismán de la Marea",price:680,desc:"Objeto permanente. +15% monedas de entrenamientos y misiones.",buy:()=>S.purchases.talismanMarea=true},
  {id:"compassSwimmer",icon:"🧭",name:"Brújula del Nadador",price:540,desc:"Muestra qué te falta para tu siguiente rango.",buy:()=>S.purchases.compassSwimmer=true},
@@ -1674,10 +1700,11 @@ const SHOP=[
  {id:"motivationFish",icon:"🐟",name:"Pez Motivador",price:460,desc:"Aparece en tu perfil y comparte mensajes motivacionales. Pequeña posibilidad de abrir su tienda secreta.",buy:()=>S.purchases.motivationFish=true},
  {id:"pear",icon:"🍐",name:"La Pera",price:550,desc:"Mascota permanente. Desbloquea una escena secreta y el tema exclusivo Pera.",buy:()=>{S.purchases.pear=true;S.purchases.theme_Pera=true}}
 ];
-const ACHIEVEMENT_ONLY_THEMES=new Set(ACHIEVEMENTS.flatMap(a=>a.reward?.theme?[a.reward.theme]:[]));
+function achievementThemeKeys(){return new Set((typeof ACHIEVEMENTS!=="undefined"?ACHIEVEMENTS:[]).map(a=>a.reward?.theme).filter(Boolean));}
 function openStyleBox(){
- const available=Object.keys(THEMES).filter(k=>k!=="Aqua"&&!ACHIEVEMENT_ONLY_THEMES.has(k)&&!S.purchases["theme_"+k]);
- if(!available.length){S.coins+=250;toast("🎁 Ya tienes todos los estilos. Se devolvieron las 250 monedas.");return null;}
+ const lockedByAchievement=achievementThemeKeys();
+ const available=Object.keys(THEMES).filter(k=>k!=="Aqua"&&!lockedByAchievement.has(k)&&!S.purchases["theme_"+k]);
+ if(!available.length){toast("🎁 Ya tienes todos los estilos que esta caja puede entregar.");return null;}
  const key=available[Math.floor(Math.random()*available.length)];
  S.purchases["theme_"+key]=true;
  tone("rank");
@@ -1708,7 +1735,7 @@ function shop(){
  return `<div class="card shop-head"><div class="row"><div><div class="kicker">🛒 TIENDA</div><h2 style="margin-bottom:4px">Recompensas</h2><div class="sub">Todo está organizado para que encuentres rápido lo que buscas.</div></div><div class="wallet shop-wallet">🪙 ${fmt(S.coins)}</div></div><div class="shop-tabs" role="tablist" aria-label="Categorías de tienda">${categories.map(([key,icon,label])=>`<button class="shop-tab ${shopCategory===key?"active":""}" onclick="setShopCategory('${key}')" role="tab" aria-selected="${shopCategory===key}"><span>${icon}</span><b>${label}</b><small>${counts[key]}</small></button>`).join("")}</div></div><div class="shop-section-head"><div><div class="kicker">${section[1]} ${section[2]}</div><h2>${section[2]}</h2><div class="sub">${section[3]}</div></div><span class="pill">${visible.length} artículos</span></div><div class="shop shop-modern">${visible.map(renderItem).join("")}</div>`;
 }
 function buy(id){
- const it=SHOP.find(x=>x.id===id);if(!it)return;const permanent=["talismanMarea","compassSwimmer","trainingJournal","motivationFish","pear","music1","music2","music3"];if(permanent.includes(it.id)&&S.purchases[it.id]){toast("✅ Ya tienes este objeto permanente.");return}const price=discountedPrice(it);if(S.coins<price){toast(`🪙 No tienes suficiente dinero. Te faltan ${fmt(price-S.coins)} monedas.`);tone("click");return}const beforeRank=currentRank().r.c;if(it.id==="styleBox"&&!Object.keys(THEMES).some(k=>k!=="Aqua"&&!ACHIEVEMENT_ONLY_THEMES.has(k)&&!S.purchases["theme_"+k])){toast("🎁 Ya tienes todos los estilos disponibles.");return}S.coins-=price;const levelEvent=it.buy()||null;if(it.id==="monthShield")S.purchases.monthShield=true;save();applyTheme();tone("coin");updatePearPet();render();const levelText=levelEvent?.levels?` · ⬆️ LV ${S.level} · +${fmt(levelEvent.coins)} 🪙`:"";toast(`🛒 Comprado: ${it.name}${levelText}`);if(currentRank().r.c!==beforeRank)setTimeout(()=>rankReveal(currentRank().r),420);
+ const it=SHOP.find(x=>x.id===id);if(!it)return;const permanent=["talismanMarea","compassSwimmer","trainingJournal","motivationFish","pear","music1","music2","music3"];if(permanent.includes(it.id)&&S.purchases[it.id]){toast("✅ Ya tienes este objeto permanente.");return}const price=discountedPrice(it);if(S.coins<price){toast(`🪙 No tienes suficiente dinero. Te faltan ${fmt(price-S.coins)} monedas.`);tone("click");return}const beforeRank=currentRank().r.c;if(it.id==="styleBox"&&!Object.keys(THEMES).some(k=>k!=="Aqua"&&!S.purchases["theme_"+k])){toast("🎁 Ya tienes todos los estilos disponibles.");return}S.coins-=price;const levelEvent=it.buy()||null;if(it.id==="monthShield")S.purchases.monthShield=true;save();applyTheme();tone("coin");updatePearPet();render();const levelText=levelEvent?.levels?` · ⬆️ LV ${S.level} · +${fmt(levelEvent.coins)} 🪙`:"";toast(`🛒 Comprado: ${it.name}${levelText}`);if(currentRank().r.c!==beforeRank)setTimeout(()=>rankReveal(currentRank().r),420);
 }
 function profile(){
  const c=currentRank(),r=c.r,next=RANKS[Math.min(c.i+1,RANKS.length-1)],j=S.purchases.trainingJournal?journalStats():null;const styleName=j?.topStyle?.[0]?STYLE[j.topStyle[0]]?.name||j.topStyle[0]:"—";const objects=[S.purchases.mustard?"🟡 Mostaza":"",S.purchases.ketchup?"🔴 Ketchup":"",S.purchases.sausage?"🌭 Salchicha":"",S.purchases.banana&&!S.secret.bananaRemoved?"🍌 Banana":"",S.purchases.sicario?"🕶️ Sicario":"",Number(S.consumables?.cloroPremium||0)>0?`🧴 Cloro Premium ×${S.consumables.cloroPremium}`:""].filter(Boolean);const visibleAchievements=ACHIEVEMENTS.filter(a=>!a.secret||achievementUnlocked(a)).filter(achievementUnlocked).length;const visibleTotal=ACHIEVEMENTS.filter(a=>!a.secret||achievementUnlocked(a)).length;
@@ -1724,18 +1751,18 @@ function profile(){
 function authModal(mode="login"){
  const signup=mode==="signup";
  modal(`<div class="kicker">🔐 CUENTA</div><h2>${signup?"Crear cuenta":"Iniciar sesión"}</h2><p class="sub">Tu progreso local no se borra. La cuenta real añade sincronización entre dispositivos y acceso a amigos/clanes.</p>
- ${signup?`<div class="field"><label>Nombre de usuario</label><input id="authUserName" maxlength="24" placeholder="Tu nombre"></div><div class="field"><label>Días habituales de natación</label><div class="row wrap">${[[1,"Lun"],[2,"Mar"],[3,"Mié"],[4,"Jue"],[5,"Vie"],[6,"Sáb"],[0,"Dom"]].map(([v,n])=>`<label class="pill"><input class="signup-day" type="checkbox" value="${v}" ${S.settings.days.includes(v)?"checked":""} style="width:auto">${n}</label>`).join("")}</div><div class="sub" style="margin-top:5px">Solo se usará para la revisión semanal de prácticas faltantes.</div></div>`:""}
+ ${signup?`<div class="field"><label>Nombre de usuario</label><input id="authUserName" maxlength="24" placeholder="Tu nombre"></div>`:""}
  <div class="field"><label>Correo electrónico</label><input id="authEmail" type="email" autocomplete="email" placeholder="tu@email.com"></div>
  <div class="field"><label>Contraseña</label><input id="authPassword" type="password" minlength="6" autocomplete="${signup?"new-password":"current-password"}" placeholder="Mínimo 6 caracteres"></div>
- <button class="btn primary" style="margin-top:8px" onclick="${signup?"signUpReal()":"signInReal()"}">${signup?"Crear cuenta":"Entrar"}</button>${!signup?`<button class="btn secondary" style="margin-top:8px" onclick="resetPasswordRequest()">🔑 Olvidé mi contraseña</button>`:""}
+ <button class="btn primary" style="margin-top:8px" onclick="${signup?"signUpReal()":"signInReal()"}">${signup?"Crear cuenta":"Entrar"}</button>
+ ${!signup?`<button class="btn secondary" style="margin-top:8px" onclick="requestPasswordReset()">¿Olvidaste tu contraseña?</button>`:""}
  <button class="btn secondary" style="margin-top:8px" onclick="authModal('${signup?"login":"signup"}')">${signup?"Ya tengo una cuenta":"Crear una cuenta"}</button>
  <button class="btn secondary" style="margin-top:8px" onclick="closeModal()">Cerrar</button>`);
 }
 async function signUpReal(){
  if(!supabaseReady()){toast("Supabase todavía no está disponible.");return}
  const username=$("authUserName")?.value.trim(),email=$("authEmail")?.value.trim(),password=$("authPassword")?.value||"";
- const signupDays=[...document.querySelectorAll(".signup-day:checked")].map(x=>+x.value);
- if(!username||!email||password.length<6||!signupDays.length){toast("Completa nombre, correo y una contraseña de al menos 6 caracteres.");return}
+ if(!username||!email||password.length<6){toast("Completa nombre, correo y una contraseña de al menos 6 caracteres.");return}
  if(authBusy)return;authBusy=true;
  try{
   const {data,error}=await supabaseClient.auth.signUp({email,password});
@@ -1745,24 +1772,9 @@ async function signUpReal(){
    const row={id:data.user.id,username,public_player_id:publicPlayerId(),level:S.level,xp:S.xp,coins:S.coins,meters:totalMeters(),rank:currentRank().r.n};
    const ins=await supabaseClient.from("profiles").upsert(row,{onConflict:"id"}).select().single();
    if(ins.error)throw ins.error;
-   S.remote={userId:data.user.id,publicPlayerId:ins.data.public_player_id,username};S.profile=S.profile||{name:username,gender:"Prefiero no decirlo",bio:"",avgMeters:1000,records:{crol:"",espalda:"",pecho:"",mariposa:""},created:Date.now()};S.profile.name=username;S.settings.days=signupDays;save();if(authUser&&supabaseClient)await syncProfileToCloud();closeModal();render();toast("✅ Cuenta creada y vinculada a Swim Quest.");
+   S.remote={userId:data.user.id,publicPlayerId:ins.data.public_player_id,username};S.profile=S.profile||{name:username,gender:"Prefiero no decirlo",bio:"",avgMeters:1000,records:{crol:"",espalda:"",pecho:"",mariposa:""},created:Date.now()};S.profile.name=username;save();closeModal();render();toast("✅ Cuenta creada y vinculada a Swim Quest.");
   }else{toast("📩 Cuenta creada. Revisa tu correo para confirmar la cuenta y luego inicia sesión.",5000)}
  }catch(e){toast("❌ "+(e?.message||"No se pudo crear la cuenta."),4200)}finally{authBusy=false}
-}
-
-
-async function changePasswordModal(){modal(`<div class="kicker">🔐 SEGURIDAD</div><h2>Cambiar contraseña</h2><p class="sub">La contraseña la gestiona Supabase Auth; Swim Quest nunca la guarda en tu perfil.</p><div class="field"><label>Nueva contraseña</label><input id="newPassword" type="password" minlength="6" autocomplete="new-password" placeholder="Mínimo 6 caracteres"></div><div class="field"><label>Repetir contraseña</label><input id="newPassword2" type="password" minlength="6" autocomplete="new-password" placeholder="Repite la contraseña"></div><button class="btn primary" onclick="saveNewPassword()">Guardar contraseña</button><button class="btn secondary" style="margin-top:8px" onclick="closeModal()">Cancelar</button>`)}
-async function saveNewPassword(){const a=$("newPassword")?.value||"",b=$("newPassword2")?.value||"";if(a.length<6){toast("La contraseña debe tener al menos 6 caracteres.");return}if(a!==b){toast("Las contraseñas no coinciden.");return}const {error}=await supabaseClient.auth.updateUser({password:a});if(error){toast("❌ "+(error.message||"No se pudo cambiar la contraseña."));return}closeModal();toast("🔐 Contraseña actualizada correctamente.",4000)}
-
-async function resetPasswordRequest(){
- if(!supabaseReady()){toast("Supabase todavía no está disponible.");return}
- const email=$("authEmail")?.value.trim();
- if(!email){toast("Escribe tu correo primero.");return}
- try{
-  const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
-  if(error)throw error;
-  closeModal();toast("📩 Te enviamos un enlace para cambiar tu contraseña.",5000);
- }catch(e){toast("❌ "+(e?.message||"No se pudo enviar el correo de recuperación."),4500)}
 }
 async function signInReal(){
  if(!supabaseReady()){toast("Supabase todavía no está disponible.");return}
@@ -1771,6 +1783,14 @@ async function signInReal(){
  if(authBusy)return;authBusy=true;
  try{const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});if(error)throw error;authUser=data.user;await syncCurrentAccount();closeModal();render();toast("👋 Sesión iniciada.");}catch(e){toast("❌ "+(e?.message||"No se pudo iniciar sesión."),4200)}finally{authBusy=false}
 }
+async function requestPasswordReset(){
+ if(!supabaseReady()){toast("Supabase todavía no está disponible.");return}
+ const email=$("authEmail")?.value.trim();
+ if(!email){toast("Introduce primero tu correo electrónico.");return}
+ try{const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+window.location.pathname});if(error)throw error;toast("📩 Te enviamos un enlace para cambiar la contraseña.",5000);}catch(e){toast("❌ "+(e?.message||"No se pudo enviar el correo."),4500)}
+}
+function showPasswordRecovery(){modal(`<div class="kicker">🔐 RECUPERAR CUENTA</div><h2>Cambiar contraseña</h2><p class="sub">Escribe una contraseña nueva para tu cuenta.</p><div class="field"><label>Nueva contraseña</label><input id="newPassword" type="password" minlength="6" autocomplete="new-password"></div><div class="field"><label>Repetir contraseña</label><input id="newPassword2" type="password" minlength="6" autocomplete="new-password"></div><button class="btn primary" onclick="changeRecoveredPassword()">Guardar contraseña</button><button class="btn secondary" style="margin-top:8px" onclick="closeModal()">Cerrar</button>`)}
+async function changeRecoveredPassword(){const a=$("newPassword")?.value||"",b=$("newPassword2")?.value||"";if(a.length<6||a!==b){toast("Las contraseñas deben coincidir y tener al menos 6 caracteres.");return}try{const {error}=await supabaseClient.auth.updateUser({password:a});if(error)throw error;closeModal();toast("✅ Contraseña actualizada.",4000)}catch(e){toast("❌ "+(e?.message||"No se pudo cambiar la contraseña."),4500)}}
 async function signOutReal(){if(supabaseClient)await supabaseClient.auth.signOut();authUser=null;closeModal();render();toast("👋 Sesión cerrada. Tu progreso local permanece.")}
 async function openSocial(tab="friends"){
  if(!authUser){modal(`<div class="kicker">👥 SOCIAL</div><h2>Conecta tu cuenta</h2><p class="sub">Para usar amigos y clanes necesitas una cuenta real. Tu progreso local se conserva.</p><button class="btn primary" onclick="authModal('signup')">Crear cuenta</button><button class="btn secondary" style="margin-top:8px" onclick="authModal('login')">Iniciar sesión</button><button class="btn secondary" style="margin-top:8px" onclick="closeModal()">Cerrar</button>`);return}
@@ -1778,26 +1798,49 @@ async function openSocial(tab="friends"){
 }
 async function socialModal(tab="friends"){
  let friends=[],requests=[],myClan=null,joinRequests=[];
- try{const f=await supabaseClient.from("friendships").select("user_id,friend_id").or(`user_id.eq.${authUser.id},friend_id.eq.${authUser.id}`);friends=f.data||[];const rq=await supabaseClient.from("friend_requests").select("id,sender_id,receiver_id,created_at").or(`sender_id.eq.${authUser.id},receiver_id.eq.${authUser.id}`).order("created_at",{ascending:false});requests=rq.data||[];const mc=await supabaseClient.rpc("get_my_clan");if(!mc.error&&mc.data?.clan)myClan={...mc.data.clan,members:mc.data.members||[]};if(myClan?.owner_id===authUser.id){const jr=await supabaseClient.from("clan_join_requests").select("id,user_id,created_at").eq("clan_id",myClan.id).order("created_at",{ascending:true});joinRequests=jr.data||[];}}catch(e){console.warn("social",e)}
- if(tab==="clan"){if(myClan){const ids=myClan.members.map(m=>m.user_id);let prof=[];if(ids.length){const r=await supabaseClient.from("profiles").select("id,username,public_player_id,level,rank,meters,xp").in("id",ids);prof=r.data||[];}const pmap=Object.fromEntries(prof.map(p=>[p.id,p]));const members=myClan.members.map(m=>({...m,profile:pmap[m.user_id]}));modal(`<div class="kicker">🏷️ CLAN</div><h2>${esc(myClan.name)}</h2><div class="pill">${myClan.owner_id===authUser.id?"👑 Eres el propietario":"👥 Miembro"}</div><p class="sub" style="margin-top:8px">El propietario puede aceptar solicitudes y expulsar miembros.</p><div class="list" style="margin-top:10px">${members.map(m=>{const p=m.profile||{};return `<div class="list-item"><div class="row"><div><b>${m.user_id===authUser.id?"👑 Tú":`👤 ${esc(p.username||m.user_id.slice(0,8))}`}</b><div class="sub">${esc(p.public_player_id||"")} · ${esc(p.rank||"Bronce")} · LV ${fmt(p.level||1)} · ${fmt(p.meters||0)} m</div></div><span class="pill">${m.role==="owner"?"Propietario":"Miembro"}</span></div>${myClan.owner_id===authUser.id&&m.user_id!==authUser.id?`<button class="btn danger" style="margin-top:7px" onclick="removeClanMember('${myClan.id}','${m.user_id}')">Expulsar</button>`:""}</div>`}).join("")}</div>${myClan.owner_id===authUser.id?`<h3 style="margin-top:12px">📩 Solicitudes de entrada</h3>${joinRequests.length?joinRequests.map(r=>`<div class="list-item row"><span>👤 ${esc(r.user_id.slice(0,8))}</span><button class="btn primary" style="width:auto" onclick="approveClanRequest('${r.id}','${r.user_id}','${myClan.id}')">Aceptar</button></div>`).join(""):`<div class="sub">No hay solicitudes pendientes.</div>`}`:""}<button class="btn secondary" style="margin-top:10px" onclick="leaveClan('${myClan.id}')">${myClan.owner_id===authUser.id?"Eliminar clan":"Salir del clan"}</button><button class="btn secondary" style="margin-top:8px" onclick="closeModal()">Cerrar</button>`);}else{modal(`<div class="kicker">🏷️ CLAN</div><h2>Crear o unirte</h2><p class="sub">Crea tu clan y serás su propietario automáticamente. Si ya existe uno, puedes solicitar entrar.</p><div class="field"><label>Nombre del clan</label><input id="newClanName" maxlength="40" placeholder="Nadadores Unidos"></div><button class="btn primary" onclick="createRealClan()">👑 Crear clan</button><div class="field" style="margin-top:12px"><label>Buscar clan</label><input id="clanSearch" placeholder="Nombre del clan"><button class="btn secondary" style="margin-top:7px" onclick="searchClans()">🔎 Buscar</button></div><div id="clanResults"></div><button class="btn secondary" style="margin-top:10px" onclick="closeModal()">Cerrar</button>`);}}else{const ids=[...new Set(friends.map(x=>x.user_id===authUser.id?x.friend_id:x.user_id))];let profiles=[];if(ids.length){const r=await supabaseClient.from("profiles").select("id,username,public_player_id,level,rank,meters,xp").in("id",ids);profiles=r.data||[];}const incoming=requests.filter(r=>r.receiver_id===authUser.id);modal(`<div class="kicker">👥 AMIGOS</div><h2>Tu red de nadadores</h2><div class="field"><label>ID público</label><input id="friendIdInput" placeholder="SQ-ABC123"><button class="btn primary" style="margin-top:7px" onclick="sendFriendRequest()">Enviar solicitud</button></div><div class="list-item"><b>Tu ID</b><div class="sub">${esc(S.remote?.publicPlayerId||"Generando...")}</div></div>${incoming.length?`<h3 style="margin-top:12px">📩 Solicitudes recibidas</h3>${incoming.map(r=>`<div class="list-item row"><span>👤 ${esc(r.sender_id.slice(0,8))}</span><button class="btn primary" style="width:auto" onclick="acceptFriend('${r.id}','${r.sender_id}')">Aceptar</button></div>`).join("")}:""}<h3 style="margin-top:12px">🤝 Amigos</h3>${profiles.length?profiles.map(p=>`<div class="list-item"><div class="row"><b>👤 ${esc(p.username)}</b><span class="pill">${esc(p.rank)} · LV ${p.level}</span></div><div class="sub">${esc(p.public_player_id)} · ${fmt(p.meters)} m · ${fmt(p.xp)} XP</div></div>`).join(""):"<div class='sub'>Todavía no tienes amigos.</div>"}<button class="btn secondary" style="margin-top:10px" onclick="closeModal()">Cerrar</button>`);}}
+ try{
+  const f=await supabaseClient.from("friendships").select("user_id,friend_id").or(`user_id.eq.${authUser.id},friend_id.eq.${authUser.id}`);friends=f.data||[];
+  const rq=await supabaseClient.from("friend_requests").select("id,sender_id,receiver_id,created_at").or(`sender_id.eq.${authUser.id},receiver_id.eq.${authUser.id}`).order("created_at",{ascending:false});requests=rq.data||[];
+  const mc=await supabaseClient.rpc("get_my_clan");
+  if(!mc.error&&mc.data?.clan)myClan={...mc.data.clan,members:mc.data.members||[]};
+  if(myClan?.owner_id===authUser.id){const jr=await supabaseClient.from("clan_join_requests").select("id,user_id,created_at").eq("clan_id",myClan.id).order("created_at",{ascending:true});joinRequests=jr.data||[];}
+ }catch(e){console.warn("social",e)}
+ if(tab==="clan"){
+  if(myClan){
+   const ids=[...new Set(myClan.members.map(m=>m.user_id).concat(joinRequests.map(r=>r.user_id)))];let prof=[];
+   if(ids.length){const r=await supabaseClient.from("profiles").select("id,username,public_player_id,level,rank,meters,xp").in("id",ids);prof=r.data||[];}
+   const pmap=Object.fromEntries(prof.map(p=>[p.id,p]));
+   const membersHtml=myClan.members.map((m,i)=>{const p=pmap[m.user_id]||{};return `<div class="clan-member"><div class="row" style="justify-content:flex-start"><div class="clan-rank">${m.role==="owner"?"👑":"#"+(i+1)}</div><div><b>${m.user_id===authUser.id?"Tú":esc(p.username||"Nadador")}</b><div class="sub">${esc(p.public_player_id||"")} · ${esc(p.rank||"Bronce")} · LV ${fmt(p.level||1)} · ${fmt(p.meters||0)} m</div></div></div><div>${m.role==="owner"?'<span class="pill">👑 Propietario</span>':myClan.owner_id===authUser.id?`<button class="btn danger" style="width:auto" onclick="removeClanMember('${myClan.id}','${m.user_id}')">Expulsar</button>`:'<span class="pill">Miembro</span>'}</div></div>`}).join("");
+   const requestHtml=myClan.owner_id===authUser.id?`<div class="card" style="margin-top:12px;background:#081825"><div class="row"><div><div class="kicker">📩 SOLICITUDES</div><h3 style="margin:4px 0">Jugadores que quieren entrar</h3></div><span class="pill">${joinRequests.length}</span></div><div class="list" style="margin-top:10px">${joinRequests.length?joinRequests.map(r=>{const p=pmap[r.user_id]||{};return `<div class="clan-request"><div><b>👤 ${esc(p.username||"Nadador")}</b><div class="sub">${esc(p.public_player_id||"")} · LV ${fmt(p.level||1)} · ${fmt(p.meters||0)} m</div></div><button class="btn primary" onclick="approveClanRequest('${r.id}','${r.user_id}','${myClan.id}')">✅ Aceptar</button></div>`}).join(""):'<div class="sub">No hay solicitudes pendientes.</div>'}</div></div>`:"";
+   modal(`<div class="clan-shell"><div class="clan-hero"><div class="kicker">🏷️ TU CLAN</div><div class="row"><div><h1 style="margin:5px 0">${esc(myClan.name)}</h1><div class="sub">${myClan.owner_id===authUser.id?'👑 Eres el propietario':'👥 Eres miembro'} · ${myClan.members.length} integrante${myClan.members.length===1?'':'s'}</div></div><div style="font-size:54px">🏊</div></div></div><div class="grid g2" style="margin-top:12px"><div class="stat"><div class="kicker">Metros</div><div class="v">${fmt(prof.reduce((a,p)=>a+Number(p.meters||0),0))}</div></div><div class="stat"><div class="kicker">XP</div><div class="v">${fmt(prof.reduce((a,p)=>a+Number(p.xp||0),0))}</div></div></div><h3 style="margin:14px 0 8px">🏆 Miembros</h3><div class="list">${membersHtml}</div>${requestHtml}<button class="btn danger" style="margin-top:12px" onclick="leaveClan('${myClan.id}')">${myClan.owner_id===authUser.id?'Eliminar clan':'Salir del clan'}</button><button class="btn secondary" style="margin-top:8px" onclick="closeModal()">Cerrar</button></div>`);
+  }else{
+   modal(`<div class="clan-shell"><div class="clan-hero"><div class="kicker">🏷️ CLAN</div><h1>Tu equipo empieza aquí</h1><p class="sub">Crea un clan y conviértete automáticamente en su propietario, o busca uno existente y solicita entrar.</p></div><div class="field" style="margin-top:12px"><label>Nombre del clan</label><input id="newClanName" maxlength="40" placeholder="Nadadores Unidos"></div><button class="btn primary" onclick="createRealClan()">👑 Crear clan</button><div class="field" style="margin-top:14px"><label>Buscar clan</label><input id="clanSearch" placeholder="Nombre del clan"><button class="btn secondary" style="margin-top:7px" onclick="searchClans()">🔎 Buscar</button></div><div id="clanResults" class="list" style="margin-top:10px"></div><button class="btn secondary" style="margin-top:12px" onclick="closeModal()">Cerrar</button></div>`);
+  }
+  return;
+ }
+ const ids=[...new Set(friends.map(x=>x.user_id===authUser.id?x.friend_id:x.user_id))];let profiles=[];if(ids.length){const r=await supabaseClient.from("profiles").select("id,username,public_player_id,level,rank,meters,xp").in("id",ids);profiles=r.data||[]}
+ const incoming=requests.filter(r=>r.receiver_id===authUser.id);
+ modal(`<div class="clan-shell"><div class="kicker">👥 AMIGOS</div><h1>Tu red de nadadores</h1><div class="field"><label>ID público</label><input id="friendIdInput" placeholder="SQ-ABC123"><button class="btn primary" style="margin-top:7px" onclick="sendFriendRequest()">Enviar solicitud</button></div><h3 style="margin-top:14px">🤝 Amigos</h3><div class="list">${profiles.length?profiles.map(p=>`<div class="clan-member"><div><b>👤 ${esc(p.username||"Nadador")}</b><div class="sub">${esc(p.public_player_id||"")} · ${esc(p.rank||"Bronce")} · LV ${fmt(p.level||1)} · ${fmt(p.meters||0)} m</div></div></div>`).join(""):'<div class="sub">Todavía no tienes amigos.</div>'}</div>${incoming.length?`<div class="card" style="margin-top:12px"><div class="kicker">📩 SOLICITUDES</div>${incoming.map(r=>`<div class="clan-request" style="margin-top:8px"><span>👤 Jugador ${esc(r.sender_id.slice(0,8))}</span><button class="btn primary" onclick="acceptFriend('${r.id}','${r.sender_id}')">Aceptar</button></div>`).join("")}</div>`:""}<button class="btn secondary" style="margin-top:12px" onclick="closeModal()">Cerrar</button></div>`);
 }
 async function sendFriendRequest(){const raw=$("friendIdInput")?.value.trim().toUpperCase();if(!raw){toast("Escribe un ID.");return}const p=await supabaseClient.from("profiles").select("id,username,public_player_id").eq("public_player_id",raw).maybeSingle();if(p.error||!p.data){toast("No encontré ese jugador.");return}if(p.data.id===authUser.id){toast("No puedes agregarte a ti mismo.");return}const r=await supabaseClient.from("friend_requests").insert({sender_id:authUser.id,receiver_id:p.data.id});if(r.error){toast(r.error.code==="23505"?"Ya existe una solicitud o amistad.":"No se pudo enviar la solicitud.");return}toast("📩 Solicitud enviada.");socialModal("friends")}
 async function acceptFriend(requestId,senderId){const a=await supabaseClient.from("friendships").insert([{user_id:senderId,friend_id:authUser.id},{user_id:authUser.id,friend_id:senderId}]);if(a.error){toast("No se pudo aceptar la solicitud.");return}await supabaseClient.from("friend_requests").delete().eq("id",requestId);toast("🤝 ¡Ahora son amigos!");socialModal("friends")}
-async function createRealClan(){
- const name=$("newClanName")?.value.trim();if(!name){toast("Ponle un nombre al clan.");return}
- let c=await supabaseClient.rpc("create_clan",{p_name:name});
- if(c.error){
-  const direct=await supabaseClient.from("clans").insert({name,owner_id:authUser.id}).select().single();
-  if(direct.error){toast(direct.error.code==="23505"?"Ese nombre ya existe.":"No se pudo crear el clan.");return}
-  const m=await supabaseClient.from("clan_members").insert({clan_id:direct.data.id,user_id:authUser.id,role:"owner"});
-  if(m.error){toast("El clan se creó pero no se pudo asignar el propietario.");return}
- }
- toast("🏷️ Clan creado · eres el propietario.");socialModal("clan")
+async function createRealClan(){const name=$("newClanName")?.value.trim();if(!name){toast("Ponle un nombre al clan.");return}if(!supabaseClient||!authUser)return;try{let r=await supabaseClient.rpc("create_clan",{p_name:name});if(r.error){const c=await supabaseClient.from("clans").insert({name,owner_id:authUser.id}).select().single();if(c.error)throw c.error;const m=await supabaseClient.from("clan_members").insert({clan_id:c.data.id,user_id:authUser.id,role:"owner"});if(m.error){await supabaseClient.from("clans").delete().eq("id",c.data.id);throw m.error}}toast("🏷️ Clan creado. ¡Eres el propietario!");await socialModal("clan")}catch(e){toast(e?.code==="23505"?"Ese nombre ya existe.":"No se pudo crear el clan.")}}
+async function searchClans(){const q=$("clanSearch")?.value.trim();if(!q){toast("Escribe un nombre.");return}const r=await supabaseClient.from("clans").select("id,name,owner_id,created_at").ilike("name",`%${q}%`).limit(10);if(r.error){toast("No se pudieron buscar clanes.");return}const el=$("clanResults");if(!el)return;el.innerHTML=r.data?.length?r.data.map(c=>`<div class="clan-member"><div><b>🏷️ ${esc(c.name)}</b><div class="sub">Clan creado recientemente · busca y solicita entrar</div></div><button class="btn primary" style="width:auto" onclick="requestClanJoin('${c.id}')">📩 Solicitar</button></div>`).join(""):"<div class='sub' style='margin-top:8px'>No encontré clanes.</div>"}
+async function requestClanJoin(clanId){if(!authUser)return;let r=await supabaseClient.rpc("request_clan_join",{p_clan_id:clanId});if(r.error)r=await supabaseClient.from("clan_join_requests").insert({clan_id:clanId,user_id:authUser.id});toast(r.error?"Ya existe una solicitud, ya perteneces a un clan o no se pudo enviar.":"📩 Solicitud enviada al líder.");}
+async function approveClanRequest(requestId,userId,clanId){
+ if(!authUser){toast("Inicia sesión para administrar el clan.");return}
+ try{
+  let r=await supabaseClient.rpc("accept_clan_join_request",{p_request_id:requestId});
+  if(r.error){
+   const m=await supabaseClient.from("clan_members").insert({clan_id:clanId,user_id:userId,role:"member"});
+   if(m.error)throw m.error;
+   const d=await supabaseClient.from("clan_join_requests").delete().eq("id",requestId);
+   if(d.error)throw d.error;
+  }
+  toast("✅ Jugador añadido al clan.");
+  setTimeout(()=>socialModal("clan"),120);
+ }catch(e){console.error("accept clan",e);toast("❌ No se pudo aceptar la solicitud: "+(e?.message||"revisa tus permisos"),5000)}
 }
-
-async function searchClans(){const q=$("clanSearch")?.value.trim();if(!q){toast("Escribe un nombre.");return}const r=await supabaseClient.from("clans").select("id,name,owner_id,created_at").ilike("name",`%${q}%`).limit(10);if(r.error){toast("No se pudieron buscar clanes.");return}const el=$("clanResults");if(el)el.innerHTML=r.data?.length?r.data.map(c=>`<div class="list-item row"><span>🏷️ ${esc(c.name)}</span><button class="btn primary" style="width:auto" onclick="requestClanJoin('${c.id}')">Solicitar</button></div>`).join(""):"<div class='sub' style='margin-top:8px'>No encontré clanes.</div>"}
-async function requestClanJoin(clanId){let r=await supabaseClient.rpc("request_clan_join",{p_clan_id:clanId});if(r.error)r=await supabaseClient.from("clan_join_requests").insert({clan_id:clanId,user_id:authUser.id});toast(r.error?(r.error.code==="23505"?"Ya existe una solicitud.":"No se pudo enviar la solicitud."):"📩 Solicitud enviada al líder.");}
-async function approveClanRequest(requestId,userId,clanId){let m=await supabaseClient.rpc("accept_clan_join_request",{p_request_id:requestId});if(m.error){m=await supabaseClient.from("clan_members").insert({clan_id:clanId,user_id:userId,role:"member"});if(m.error){toast("No se pudo añadir al jugador.");return}await supabaseClient.from("clan_join_requests").delete().eq("id",requestId)}toast("✅ Jugador añadido al clan.");socialModal("clan")}
 async function removeClanMember(clanId,userId){if(!confirm("¿Expulsar a este miembro?"))return;const r=await supabaseClient.from("clan_members").delete().eq("clan_id",clanId).eq("user_id",userId);toast(r.error?"No se pudo expulsar.":"👋 Miembro expulsado.");socialModal("clan")}
 async function leaveClan(clanId){if(!confirm("¿Seguro que quieres salir/eliminar este clan?"))return;if((await supabaseClient.from("clans").select("owner_id").eq("id",clanId).single()).data?.owner_id===authUser.id){await supabaseClient.from("clan_members").delete().eq("clan_id",clanId);await supabaseClient.from("clans").delete().eq("id",clanId)}else await supabaseClient.from("clan_members").delete().eq("clan_id",clanId).eq("user_id",authUser.id);closeModal();toast("🏷️ Acción completada.")}
 function addFriendModal(){openSocial("friends");return;/* legacy */modal(`<div class="kicker">👥 AMIGOS</div><h2>Añadir amigo</h2><div class="field"><label>ID del jugador</label><input id="friendId" placeholder="Ej. 48291"></div><button class="btn primary" onclick="lookupFriend()">🔎 Buscar</button><div id="friendPreview" style="margin-top:10px"></div><button class="btn secondary" style="margin-top:10px" onclick="closeModal()">Cerrar</button>`)}
@@ -1828,7 +1871,7 @@ function settings(){
  <button class="btn primary" style="margin-top:10px" onclick="saveSettings()">Guardar</button>`);
 }
 function equipTheme(theme){
- if(theme==="Aqua" || S.purchases["theme_"+theme]){S.settings.theme=theme;applyTheme();save();return}
+ if(theme==="Aqua" || S.purchases["theme_"+theme]){S.settings.theme=theme;applyTheme();eclipseCartoonStars();save();return}
  toast("🔒 Ese estilo todavía no está comprado.");
  render();
 }
@@ -1847,7 +1890,7 @@ function previewMusicTrack(track){
  if(S.settings.music)restartAmbient();
 }
 function saveSettings(){
- S.profile.name=$("sName").value.trim()||S.profile.name;S.profile.bio=$("sBio").value.trim();S.settings.theme=$("sTheme").value;S.settings.music=$("sMusic").checked;S.settings.musicTrack=$("sMusicTrack").value||"aqua";S.settings.musicVol=+$("sMusicVol").value;S.settings.sfx=$("sSfx").checked;S.settings.sfxVol=+$("sSfxVol").value;const newDays=[...document.querySelectorAll(".day:checked")].map(x=>+x.value);if(!newDays.length){toast("Elige al menos un día de entrenamiento.");return}S.settings.days=newDays;save();if(authUser&&supabaseClient)syncProfileToCloud();applyTheme();closeModal();render();tone("save");restartAmbient();toast(`⚙️ Ajustes guardados · ${MUSIC_TRACKS[S.settings.musicTrack]?.name||"Aqua"}`);}
+ S.profile.name=$("sName").value.trim()||S.profile.name;S.profile.bio=$("sBio").value.trim();S.settings.theme=$("sTheme").value;S.settings.music=$("sMusic").checked;S.settings.musicTrack=$("sMusicTrack").value||"aqua";S.settings.musicVol=+$("sMusicVol").value;S.settings.sfx=$("sSfx").checked;S.settings.sfxVol=+$("sSfxVol").value;const newDays=[...document.querySelectorAll(".day:checked")].map(x=>+x.value);if(!newDays.length){toast("Elige al menos un día de entrenamiento.");return}S.settings.days=newDays;save();applyTheme();closeModal();render();tone("save");restartAmbient();toast(`⚙️ Ajustes guardados · ${MUSIC_TRACKS[S.settings.musicTrack]?.name||"Aqua"}`);}
 function instructions(){
  modal(`<div class="kicker">📖 INSTRUCCIONES</div><h2>Cómo funciona</h2><div class="list">
  <div class="list-item"><b>🏊 Entrena</b><div class="sub">Añade series con distancia, repeticiones, estilo, intensidad, correctivo y tiempo opcional. La dificultad general del entrenamiento se calcula automáticamente por metros, estilo y XP; la intensidad de una sola serie no la decide por sí sola.</div></div>
@@ -1871,23 +1914,7 @@ function exportData(){
 function importData(){
  const i=document.createElement("input");i.type="file";i.accept=".json,application/json";i.onchange=()=>{const f=i.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{S=merge(clone(DEFAULT),JSON.parse(r.result));save();closeModal();render();toast("📂 Progreso restaurado")}catch(e){toast("Archivo no válido")}};r.readAsText(f)};i.click();
 }
-async function resetData(){
- if(!confirm("Se borrará todo el progreso de Swim Quest. Si tienes una cuenta conectada, también se reiniciarán sus entrenamientos y estadísticas en la nube."))return;
- if(authUser&&supabaseClient){
-  try{
-   const wd=await supabaseClient.from("workouts").delete().eq("user_id",authUser.id);
-   if(wd.error)throw wd.error;
-   const fresh=clone(DEFAULT);
-   fresh.profile={name:S.profile?.name||"Nadador",gender:"Prefiero no decirlo",bio:"",avgMeters:1000,records:{crol:"",espalda:"",pecho:"",mariposa:""},created:Date.now()};
-   fresh.settings.days=[...(S.settings?.days||DEFAULT.settings.days)];
-   S=fresh;
-   const pr=await supabaseClient.from("profiles").update({username:S.profile.name,level:1,xp:0,coins:0,meters:0,rank:RANKS[0].n,updated_at:new Date().toISOString()}).eq("id",authUser.id);
-   if(pr.error)throw pr.error;
-  }catch(e){toast("❌ No se pudo reiniciar la cuenta en la nube: "+(e?.message||"error"));return}
- }else S=clone(DEFAULT);
- draft=[];save();closeModal();render();toast("♻️ Progreso reiniciado");
-}
-
+function resetData(){if(!confirm("Se borrará todo el progreso de Swim Quest."))return;S=clone(DEFAULT);draft=[];save();closeModal();render();toast("♻️ Progreso reiniciado")}
 
 let toastTimer=null;function toast(message,duration=2600){const el=$("toast");if(!el)return;el.textContent=message;el.className="toast reveal";clearTimeout(toastTimer);toastTimer=setTimeout(()=>{el.className="";el.textContent=""},duration);}
 function modal(content){const extra=String(content).includes("fish-shop-shell")?" fish-shop-modal":"";$("modal").innerHTML=`<div class="modal-bg" onclick="if(event.target===this)closeModal()"><div class="modal${extra}">${content}</div></div>`}
@@ -1939,20 +1966,22 @@ async function installApp(){
 }
 
 function normalizeSecretState(){S.secret=S.secret||{};S.secret.bananaRemoved=!!S.secret.bananaRemoved;S.secret.pearBananaSeen=!!S.secret.pearBananaSeen;S.secret.pearRouteSeen=!!S.secret.pearRouteSeen;S.secret.pearRouteDialogueSeen=!!S.secret.pearRouteDialogueSeen;S.secret.pearOpening=!!S.secret.pearOpening;S.secret.pearAfterShown=!!S.secret.pearAfterShown;S.secret.firstPearEvent=typeof S.secret.firstPearEvent==="string"?S.secret.firstPearEvent:"";S.secret.hotdogUnlocked=!!S.secret.hotdogUnlocked;S.secret.hitmanEverBought=!!(S.secret.hitmanEverBought||S.purchases?.sicario||S.secret?.fishRoute||S.secret?.bananaRemoved||S.secret?.pearRouteSeen);if(!Array.isArray(S.secret.hitmanTargets))S.secret.hitmanTargets=[];S.secret.hitmanTargets=[...new Set(S.secret.hitmanTargets.filter(x=>["fish","banana","pear"].includes(x)))];if(S.secret.bananaRemoved&&!S.secret.hitmanTargets.includes("banana"))S.secret.hitmanTargets.push("banana");if(S.secret.fishRoute&&!S.secret.hitmanTargets.includes("fish"))S.secret.hitmanTargets.push("fish");if(S.secret.pearRouteSeen&&!S.secret.hitmanTargets.includes("pear"))S.secret.hitmanTargets.push("pear");if(hitmanRetired())S.purchases.sicario=false;S.social=S.social||{friends:[],clan:null};if(!Array.isArray(S.social.friends))S.social.friends=[];if(S.social.clan&&Array.isArray(S.social.clan.members)){S.social.clan.members=S.social.clan.members.map(m=>{if(typeof m==="string")return clanMemberFromFriend({id:m,name:"Jugador "+m});return m});}}
+function eclipseCartoonStars(){if(S.settings.theme!=="Eclipse")return;const host=$("themeParticles");if(!host)return;for(let i=0;i<10;i++){const el=document.createElement("span");el.className="eclipse-cartoon-star";el.textContent=["✦","★","⋆"][Math.floor(Math.random()*3)];el.style.left=(7+Math.random()*86)+"%";el.style.top=(10+Math.random()*76)+"%";el.style.fontSize=(10+Math.random()*14)+"px";el.style.animationDelay=(Math.random()*2)+"s";host.appendChild(el);setTimeout(()=>el.remove(),5200)}}
+
 function boot(){
  window.__bananaGhostVisible=false;
  initSupabase();
  normalizeSecretState();
+ eclipseCartoonStars();
  if(S.profile) ensureMissions(); render(); if(S.profile) reviewWeek();
  updateInstallButton();
  document.body.addEventListener("pointerdown",()=>ambientStart(),{once:true});
 }
 window.requestNotifications=requestNotifications;window.openPearScene=openPearScene;window.pearNext=pearNext;window.closePearScene=closePearScene;window.showAchievements=showAchievements;window.coinShop=coinShop;window.comingSoonPurchases=comingSoonPurchases;window.comingSoonSocial=comingSoonSocial;window.createProfile=createProfile;window.installApp=installApp;window.go=go;window.settings=settings;window.instructions=instructions;window.closeModal=closeModal;window.saveSettings=saveSettings;window.exportData=exportData;window.importData=importData;window.resetData=resetData;
-window.changePasswordModal=changePasswordModal;window.saveNewPassword=saveNewPassword;window.authModal=authModal;window.resetPasswordRequest=resetPasswordRequest;window.signUpReal=signUpReal;window.signInReal=signInReal;window.signOutReal=signOutReal;window.openSocial=openSocial;window.socialModal=socialModal;window.sendFriendRequest=sendFriendRequest;window.acceptFriend=acceptFriend;window.createRealClan=createRealClan;window.searchClans=searchClans;window.requestClanJoin=requestClanJoin;window.approveClanRequest=approveClanRequest;window.removeClanMember=removeClanMember;window.leaveClan=leaveClan;window.openStyleBox=openStyleBox;window.fishMotivation=fishMotivation;window.openFishShop=openFishShop;window.buySecret=buySecret;window.hitmanModal=hitmanModal;window.useHitman=useHitman;window.openBananaScene=openBananaScene;window.bananaNext=bananaNext;window.closeBananaScene=closeBananaScene;window.addFriendModal=addFriendModal;window.lookupFriend=lookupFriend;window.simulateAddFriend=simulateAddFriend;window.createGroupModal=createGroupModal;window.simulateCreateGroup=simulateCreateGroup;window.openClan=openClan;window.trainingTimer=trainingTimer;window.timerToggle=timerToggle;window.timerReset=timerReset;window.timerClose=timerClose;window.addSeries=addSeries;window.removeSeries=removeSeries;window.saveTraining=saveTraining;window.editTraining=editTraining;window.commitEdit=commitEdit;window.deleteTraining=deleteTraining;window.claimMission=claimMission;window.buy=buy;window.showMonthSummary=showMonthSummary;window.missions=missions;
+window.authModal=authModal;window.requestPasswordReset=requestPasswordReset;window.showPasswordRecovery=showPasswordRecovery;window.changeRecoveredPassword=changeRecoveredPassword;window.signUpReal=signUpReal;window.signInReal=signInReal;window.signOutReal=signOutReal;window.openSocial=openSocial;window.socialModal=socialModal;window.sendFriendRequest=sendFriendRequest;window.acceptFriend=acceptFriend;window.createRealClan=createRealClan;window.searchClans=searchClans;window.requestClanJoin=requestClanJoin;window.approveClanRequest=approveClanRequest;window.removeClanMember=removeClanMember;window.leaveClan=leaveClan;window.openStyleBox=openStyleBox;window.fishMotivation=fishMotivation;window.openFishShop=openFishShop;window.buySecret=buySecret;window.hitmanModal=hitmanModal;window.useHitman=useHitman;window.openBananaScene=openBananaScene;window.bananaNext=bananaNext;window.closeBananaScene=closeBananaScene;window.addFriendModal=addFriendModal;window.lookupFriend=lookupFriend;window.simulateAddFriend=simulateAddFriend;window.createGroupModal=createGroupModal;window.simulateCreateGroup=simulateCreateGroup;window.openClan=openClan;window.trainingTimer=trainingTimer;window.timerToggle=timerToggle;window.timerReset=timerReset;window.timerClose=timerClose;window.addSeries=addSeries;window.removeSeries=removeSeries;window.saveTraining=saveTraining;window.editTraining=editTraining;window.commitEdit=commitEdit;window.deleteTraining=deleteTraining;window.claimMission=claimMission;window.buy=buy;window.showMonthSummary=showMonthSummary;window.missions=missions;
 boot();
 </script>
 <script>
 if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));}
-</script><!-- SWIM QUEST SOCIAL/PASSWORD/80S PATCH v1 -->
-</body>
+</script></body>
 </html>
