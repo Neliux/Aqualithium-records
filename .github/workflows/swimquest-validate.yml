@@ -1,7 +1,8 @@
 name: Swim Quest validation
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 permissions:
   contents: read
 jobs:
@@ -10,25 +11,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Validate inline JavaScript
+        shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
           import re
           s=Path('index.html').read_text(encoding='utf-8')
-          blocks=re.findall(r'<script(?:\\s[^>]*)?>(.*?)</script>',s,re.S|re.I)
+          blocks=re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>',s,re.S|re.I)
           Path('/tmp/combined.js').write_text('\n;'.join(blocks),encoding='utf-8')
           print('script blocks:',len(blocks))
           PY
           node --check /tmp/combined.js
       - name: Validate HTML structure
-        run: python3 - <<'PY'
+        shell: bash
+        run: |
+          python3 - <<'PY'
           from pathlib import Path
           s=Path('index.html').read_text(encoding='utf-8').lower()
-          assert s.count('<html')==1
-          assert s.count('</html>')==1
-          assert s.count('<head')==1
-          assert s.count('</head>')==1
-          assert s.count('<body')==1
-          assert s.count('</body>')==1
+          for tag in ('html','head','body'):
+              assert s.count('<'+tag)==1, (tag,s.count('<'+tag))
+              assert s.count('</'+tag+'>')==1, (tag,s.count('</'+tag+'>'))
           print('HTML structure OK')
           PY
