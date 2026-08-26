@@ -1,0 +1,55 @@
+name: Repair Swim Quest site
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    if: ${{ !contains(github.event.head_commit.message, '[site-repaired]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Repair index structure and validate scripts
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          marker = '\n<style>\n.daily-roulette .roulette-wheel'
+          idx = s.find(marker, s.find('</html>'))
+          if idx != -1:
+              tail = s[idx:]
+              s = s[:idx].rstrip() + '\n'
+              style = tail[:tail.rfind('</style>') + len('</style>')]
+              s = s.replace('</head>', style + '\n</head>', 1)
+          elif '<style>' in s[s.find('</html>') + 7:]:
+              raise SystemExit('Unexpected style block after </html>')
+          p.write_text(s, encoding='utf-8')
+          # Basic structural validation.
+          if s.count('<html') != 1 or s.count('</html>') != 1 or s.count('<head') != 1 or s.count('</head>') != 1:
+              raise SystemExit('Invalid HTML document structure')
+          if '<style>' in s[s.find('</html>') + 7:]:
+              raise SystemExit('CSS remains after </html>')
+          # Extract inline JS and let Node parse it.
+          scripts = re.findall(r'<script(?:\\s[^>]*)?>(.*?)</script>', s, flags=re.S|re.I)
+          Path('/tmp/swimquest-inline.js').write_text('\n'.join(scripts), encoding='utf-8')
+          PY
+          node --check /tmp/swimquest-inline.js
+      - name: Commit repaired site
+        shell: bash
+        run: |
+          if git diff --quiet -- index.html; then
+            echo 'No repair was necessary.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m 'Repair Swim Quest site structure [site-repaired]'
+          git push
