@@ -1031,10 +1031,10 @@ function seriesXP(s){
  const correct=s.corrective?1.14:1, timed=s.time?1.10:1, reps=s.reps>=4?1.08:1;
  return Math.max(4,Math.round(meters*.48*sm*im*correct*timed*reps*2.2));
 }
-function trainingXP(e,state=null){const purchases=(state&&state.purchases)||((typeof S!=="undefined"&&S&&S.purchases)?S.purchases:{});const base=Math.max(50,e.series.reduce((a,s)=>a+seriesXP(s),0)+Math.round((e.durationMin||0)*.3));return Math.round(base*(purchases.ketchup?1.10:1)*.70)}
+function trainingXP(e,state=null){const purchases=(state&&state.purchases)||((typeof S!=="undefined"&&S&&S.purchases)?S.purchases:{});const base=Math.max(50,e.series.reduce((a,s)=>a+seriesXP(s),0)+Math.round((e.durationMin||0)*.3));return Math.round(base*(purchases.ketchup?1.10:1)*.85)}
 function coinMultiplier(){return S.purchases.talismanMarea?1.15:1}
 function trainingCoinMultiplier(){return coinMultiplier()*(S.purchases.mustard?1.05:1)}
-function trainingCoins(e){return Math.max(25,Math.round(trainingXP(e)*.11*trainingCoinMultiplier()))}
+function trainingCoins(e){return Math.max(25,Math.round(trainingXP(e)*.132*trainingCoinMultiplier()))}
 function recalcAll(){
  let tx=0,tc=0;S.trainings.forEach(e=>{e.difficulty=difficultyInfo(e,S?.profile?.avgMeters).key;e.xp=trainingXP(e);e.coins=trainingCoins(e);tx+=e.xp;tc+=e.coins});
  let mx=0,mc=0;[...(S.missions.week||[]),...(S.missions.month||[])].forEach(m=>{if(S.claimed.includes(m.id)){mx+=m.xp;mc+=Math.round(m.coins*coinMultiplier())}});
@@ -1484,8 +1484,8 @@ function syncDraft(){
  }
 }
 function draftMeters(){return draft.reduce((a,s)=>a+(+s.distance||0)*(+s.reps||0),0)}
-function draftXP(){const base=Math.max(60,draft.reduce((a,s)=>a+seriesXP(s),0)+Math.round(draftDuration*.4));return Math.round(base*(S.purchases.ketchup?1.10:1)*.70*(S.consumables?.cloroPremium>0?1.20:1))}
-function draftCoins(){return Math.max(25,Math.round(draftXP()*.11*trainingCoinMultiplier()))}
+function draftXP(){const base=Math.max(60,draft.reduce((a,s)=>a+seriesXP(s),0)+Math.round(draftDuration*.4));return Math.round(base*(S.purchases.ketchup?1.10:1)*.85*(S.consumables?.cloroPremium>0?1.20:1))}
+function draftCoins(){return Math.max(25,Math.round(draftXP()*.132*trainingCoinMultiplier()))}
 function addSeries(){syncDraft();draft.push({distance:50,reps:1,style:"crol",intensity:"normal",time:"",corrective:false});render();tone("click")}
 function removeSeries(i){syncDraft();draft.splice(i,1);render();tone("click")}
 function countTrainingsOnDate(date,excludeId=""){return S.trainings.filter(x=>x.date===date&&x.id!==excludeId).length}
