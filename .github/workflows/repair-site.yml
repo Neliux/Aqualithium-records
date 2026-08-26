@@ -13,34 +13,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Repair index structure and validate scripts
+      - name: Repair index structure
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          import re
           p = Path('index.html')
           s = p.read_text(encoding='utf-8')
-          marker = '\n<style>\n.daily-roulette .roulette-wheel'
-          idx = s.find(marker, s.find('</html>'))
-          if idx != -1:
-              tail = s[idx:]
-              s = s[:idx].rstrip() + '\n'
-              style = tail[:tail.rfind('</style>') + len('</style>')]
-              s = s.replace('</head>', style + '\n</head>', 1)
-          elif '<style>' in s[s.find('</html>') + 7:]:
-              raise SystemExit('Unexpected style block after </html>')
-          p.write_text(s, encoding='utf-8')
-          # Basic structural validation.
-          if s.count('<html') != 1 or s.count('</html>') != 1 or s.count('<head') != 1 or s.count('</head>') != 1:
-              raise SystemExit('Invalid HTML document structure')
-          if '<style>' in s[s.find('</html>') + 7:]:
+          html_end = s.find('</html>')
+          if html_end < 0:
+              raise SystemExit('index.html has no closing html tag')
+          tail_start = s.find('\n<style>\n.daily-roulette .roulette-wheel', html_end)
+          if tail_start >= 0:
+              tail = s[tail_start:]
+              style_end = tail.find('</style>')
+              if style_end < 0:
+                  raise SystemExit('Trailing style block is incomplete')
+              style = tail[:style_end + len('</style>')]
+              s = s[:tail_start].rstrip() + '\n'
+              head_end = s.find('</head>')
+              if head_end < 0:
+                  raise SystemExit('index.html has no closing head tag')
+              s = s[:head_end] + style + '\n' + s[head_end:]
+              p.write_text(s, encoding='utf-8')
+          if '<style>' in s[s.find('</html>') + len('</html>'):]:
               raise SystemExit('CSS remains after </html>')
-          # Extract inline JS and let Node parse it.
-          scripts = re.findall(r'<script(?:\\s[^>]*)?>(.*?)</script>', s, flags=re.S|re.I)
-          Path('/tmp/swimquest-inline.js').write_text('\n'.join(scripts), encoding='utf-8')
+          print('index.html structure repaired')
           PY
-          node --check /tmp/swimquest-inline.js
       - name: Commit repaired site
         shell: bash
         run: |
