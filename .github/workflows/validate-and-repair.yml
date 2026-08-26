@@ -16,7 +16,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Repair misplaced CSS and validate HTML structure
+      - name: Repair social modal and document structure
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -25,54 +25,99 @@ jobs:
           p = Path('index.html')
           s = p.read_text(encoding='utf-8')
 
-          # Move any style block that was accidentally appended after </html>
-          # back into <head>. Preserve its exact CSS content.
+          # The previous clan/friends patch used deeply nested template literals and
+          # left an extra closing token in socialModal. Replace only that function
+          # with an equivalent, deliberately simple implementation.
+          start = s.find('async function socialModal(')
+          end = s.find('async function sendFriendRequest()', start)
+          if start < 0 or end < 0:
+              raise SystemExit('socialModal boundaries not found')
+
+          replacement = r'''async function socialModal(tab="friends"){
+ const friends=[],requests=[];let myClan=null,joinRequests=[];
+ try{
+  const f=await supabaseClient.from("friendships").select("user_id,friend_id").or("user_id.eq."+authUser.id+",friend_id.eq."+authUser.id);friends.push(...(f.data||[]));
+  const rq=await supabaseClient.from("friend_requests").select("id,sender_id,receiver_id,created_at").or("sender_id.eq."+authUser.id+",receiver_id.eq."+authUser.id).order("created_at",{ascending:false});requests.push(...(rq.data||[]));
+  const mc=await supabaseClient.rpc("get_my_clan");
+  if(!mc.error&&mc.data&&mc.data.clan)myClan=Object.assign({},mc.data.clan,{members:mc.data.members||[]});
+  if(myClan&&myClan.owner_id===authUser.id){const jr=await supabaseClient.from("clan_join_requests").select("id,user_id,created_at").eq("clan_id",myClan.id).order("created_at",{ascending:true});joinRequests=jr.data||[];}
+ }catch(e){console.warn("social",e)}
+
+ if(tab==="clan"){
+  if(myClan){
+   const ids=myClan.members.map(m=>m.user_id);let prof=[];
+   if(ids.length){const r=await supabaseClient.from("profiles").select("id,username,public_player_id,level,rank,meters,xp").in("id",ids);prof=r.data||[];}
+   const pmap=Object.fromEntries(prof.map(p=>[p.id,p]));
+   let membersHtml="";
+   myClan.members.forEach(m=>{
+    const p=pmap[m.user_id]||{};
+    const display=m.user_id===authUser.id?"👑 Tú":"👤 "+esc(p.username||m.user_id.slice(0,8));
+    membersHtml+='<div class="list-item"><div class="row"><div><b>'+display+'</b><div class="sub">'+esc(p.public_player_id||"")+" · "+esc(p.rank||"Bronce")+" · LV "+fmt(p.level||1)+" · "+fmt(p.meters||0)+" m</div></div><span class="pill">"+(m.role==="owner"?"Propietario":"Miembro")+"</span></div>";
+    if(myClan.owner_id===authUser.id&&m.user_id!==authUser.id)membersHtml+='<button class="btn danger" style="margin-top:7px" onclick="removeClanMember(\''+myClan.id+'\',\''+m.user_id+'\')">Expulsar</button>';
+    membersHtml+='</div>';
+   });
+   let requestsHtml="";
+   if(myClan.owner_id===authUser.id){
+    requestsHtml='<h3 style="margin-top:12px">📩 Solicitudes de entrada</h3>';
+    if(joinRequests.length){joinRequests.forEach(r=>{requestsHtml+='<div class="list-item row"><span>👤 '+esc(r.user_id.slice(0,8))+'</span><button class="btn primary" style="width:auto" onclick="approveClanRequest(\''+r.id+'\',\''+r.user_id+'\',\''+myClan.id+'\')">Aceptar</button></div>';});}
+    else requestsHtml+='<div class="sub">No hay solicitudes pendientes.</div>';
+   }
+   const exitText=myClan.owner_id===authUser.id?"Eliminar clan":"Salir del clan";
+   modal('<div class="kicker">🏷️ CLAN</div><h2>'+esc(myClan.name)+'</h2><div class="pill">'+(myClan.owner_id===authUser.id?"👑 Eres el propietario":"👥 Miembro")+'</div><p class="sub" style="margin-top:8px">El propietario puede aceptar solicitudes y expulsar miembros.</p><div class="list" style="margin-top:10px">'+membersHtml+'</div>'+requestsHtml+'<button class="btn secondary" style="margin-top:10px" onclick="leaveClan(\''+myClan.id+'\')">'+exitText+'</button><button class="btn secondary" style="margin-top:8px" onclick="closeModal()">Cerrar</button>');
+  }else{
+   modal('<div class="kicker">🏷️ CLAN</div><h2>Crear o unirte</h2><p class="sub">Crea tu clan y serás su propietario automáticamente. Si ya existe uno, puedes solicitar entrar.</p><div class="field"><label>Nombre del clan</label><input id="newClanName" maxlength="40" placeholder="Nadadores Unidos"></div><button class="btn primary" onclick="createRealClan()">👑 Crear clan</button><div class="field" style="margin-top:12px"><label>Buscar clan</label><input id="clanSearch" placeholder="Nombre del clan"><button class="btn secondary" style="margin-top:7px" onclick="searchClans()">🔎 Buscar</button></div><div id="clanResults"></div><button class="btn secondary" style="margin-top:10px" onclick="closeModal()">Cerrar</button>');
+  }
+  return;
+ }
+
+ const ids=[...new Set(friends.map(x=>x.user_id===authUser.id?x.friend_id:x.user_id))];let profiles=[];
+ if(ids.length){const r=await supabaseClient.from("profiles").select("id,username,public_player_id,level,rank,meters,xp").in("id",ids);profiles=r.data||[];}
+ const incoming=requests.filter(r=>r.receiver_id===authUser.id);
+ let incomingHtml="";
+ if(incoming.length){incomingHtml='<h3 style="margin-top:12px">📩 Solicitudes recibidas</h3>';incoming.forEach(r=>{incomingHtml+='<div class="list-item row"><span>👤 '+esc(r.sender_id.slice(0,8))+'</span><button class="btn primary" style="width:auto" onclick="acceptFriend(\''+r.id+'\',\''+r.sender_id+'\')">Aceptar</button></div>';});}
+ let profilesHtml="";
+ if(profiles.length){profiles.forEach(p=>{profilesHtml+='<div class="list-item"><div class="row"><b>👤 '+esc(p.username||"Nadador")+'</b><span class="pill">'+esc(p.rank||"Bronce")+' · LV '+fmt(p.level||1)+'</span></div><div class="sub">'+esc(p.public_player_id||"")+' · '+fmt(p.meters||0)+' m · '+fmt(p.xp||0)+' XP</div></div>';});}
+ else profilesHtml='<div class="sub">Todavía no tienes amigos.</div>';
+ modal('<div class="kicker">👥 AMIGOS</div><h2>Tu red de nadadores</h2><div class="field"><label>ID público</label><input id="friendIdInput" placeholder="SQ-ABC123"><button class="btn primary" style="margin-top:7px" onclick="sendFriendRequest()">Enviar solicitud</button></div><div class="list-item"><b>Tu ID</b><div class="sub">'+esc(S.remote?.publicPlayerId||"Generando...")+'</div></div>'+incomingHtml+'<h3 style="margin-top:12px">🤝 Amigos</h3>'+profilesHtml+'<button class="btn secondary" style="margin-top:10px" onclick="closeModal()">Cerrar</button>');
+}
+'''
+          s = s[:start] + replacement + s[end:]
+
+          # Move any style block that was accidentally appended after </html> back into <head>.
           m = re.search(r'</html>\s*(<style\b[^>]*>[\s\S]*?</style>)\s*$', s, re.I)
           if m:
-              style = m.group(1)
-              s = s[:m.start()].rstrip() + '\n</html>\n'
-              head = re.search(r'</head>', s, re.I)
-              if not head:
-                  raise SystemExit('index.html has no </head> tag')
-              s = s[:head.start()] + style + '\n' + s[head.start():]
-              p.write_text(s, encoding='utf-8')
-
-          if s.count('<html') != 1 or s.lower().count('</html>') != 1:
-              raise SystemExit('Invalid html root structure')
-          if s.lower().rfind('</html>') != len(s.rstrip().lower()) - len('</html>'):
-              raise SystemExit('Content exists after </html>')
-          if s.lower().count('<script') != s.lower().count('</script>'):
-              raise SystemExit('Unbalanced script tags')
-          if s.lower().count('<style') != s.lower().count('</style>'):
-              raise SystemExit('Unbalanced style tags')
-          print('HTML structure OK')
+              style=m.group(1)
+              s=s[:m.start()].rstrip()+'\n</html>\n'
+              head=re.search(r'</head>',s,re.I)
+              if not head: raise SystemExit('index.html has no </head>')
+              s=s[:head.start()]+style+'\n'+s[head.start():]
+          p.write_text(s,encoding='utf-8')
+          print('Social modal and HTML structure repaired')
           PY
 
-      - name: Validate JavaScript syntax
+      - name: Validate HTML structure and JavaScript syntax
         run: |
           python3 - <<'PY'
           from pathlib import Path
           import re, subprocess, tempfile
-          s = Path('index.html').read_text(encoding='utf-8')
-          scripts = re.findall(r'<script(?![^>]*src=)[^>]*>([\s\S]*?)</script>', s, re.I)
-          for i, code in enumerate(scripts, 1):
-              f = Path(tempfile.gettempdir()) / f'swim-quest-{i}.js'
-              f.write_text(code, encoding='utf-8')
-              r = subprocess.run(['node','--check',str(f)], capture_output=True, text=True)
-              if r.returncode:
-                  print(r.stderr)
-                  raise SystemExit(f'JavaScript syntax error in inline script {i}')
-          print(f'JavaScript syntax OK: {len(scripts)} inline script(s)')
+          s=Path('index.html').read_text(encoding='utf-8')
+          if s.lower().count('<html')!=1 or s.lower().count('</html>')!=1: raise SystemExit('Invalid html root')
+          if s.lower().rfind('</html>') != len(s.rstrip().lower())-len('</html>'): raise SystemExit('Content after </html>')
+          if s.lower().count('<script')!=s.lower().count('</script>'): raise SystemExit('Unbalanced script tags')
+          if s.lower().count('<style')!=s.lower().count('</style>'): raise SystemExit('Unbalanced style tags')
+          scripts=re.findall(r'<script(?![^>]*src=)[^>]*>([\s\S]*?)</script>',s,re.I)
+          for i,code in enumerate(scripts,1):
+              f=Path(tempfile.gettempdir())/f'swim-quest-{i}.js';f.write_text(code,encoding='utf-8')
+              r=subprocess.run(['node','--check',str(f)],capture_output=True,text=True)
+              if r.returncode: print(r.stderr);raise SystemExit(f'JavaScript syntax error in inline script {i}')
+          print(f'OK: HTML structure + {len(scripts)} inline script(s)')
           PY
 
-      - name: Commit automatic structural repair
+      - name: Commit repair if needed
         run: |
-          if git diff --quiet -- index.html; then
-            echo 'No repair needed.'
-          else
-            git config user.name 'github-actions[bot]'
-            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git add index.html
-            git commit -m 'fix: restore valid index.html structure'
-            git push
-          fi
+          if git diff --quiet -- index.html; then echo 'No repair needed.'; exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m 'fix: repair social modal and restore working index'
+          git push
