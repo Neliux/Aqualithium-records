@@ -11,6 +11,14 @@
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/swim-quest-icon-192.png">
 <title>Swim Quest</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+window.__swimSupabaseLoader=(async()=>{
+  if(window.supabase?.createClient)return true;
+  const urls=["https://unpkg.com/@supabase/supabase-js@2","https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.js"];
+  for(const src of urls){try{await new Promise((resolve,reject)=>{const s=document.createElement("script");s.src=src;s.async=true;s.onload=resolve;s.onerror=reject;document.head.appendChild(s);});if(window.supabase?.createClient)return true;}catch(e){}}
+  return false;
+})();
+</script>
 <style>
 :root{
   --bg:#06111e;--bg2:#0a192b;--panel:#0d1d31;--panel2:#112943;--line:#294867;
@@ -734,43 +742,34 @@ function difficultyCounts(arr){return Object.fromEntries(DIFFICULTIES.map(d=>[d.
 
 let S=load(), page="home", draft=[], draftDuration=0, currentTrainingName="", statsQuery="";
 
-let supabaseClient=null, authUser=null, authBusy=false, remoteSyncBusy=false;
+let supabaseClient=null, authUser=null, authBusy=false, remoteSyncBusy=false, supabaseInitPromise=null;
 const SUPABASE_URL="https://eyvzpzwagdccphsktogu.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_TuwjOiBnavNXWkxzGye_Jw_20vuNP8E";
 function supabaseReady(){return !!supabaseClient}
 function publicPlayerId(){return "SQ-"+Math.random().toString(36).slice(2,8).toUpperCase()}
-async function initSupabase(){try{if(!window.supabase?.createClient)return;supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});const {data}=await supabaseClient.auth.getSession();authUser=data?.session?.user||null;if(authUser)applySchlagDailyBonus();supabaseClient.auth.onAuthStateChange((_event,session)=>{authUser=session?.user||null;if(_event==="PASSWORD_RECOVERY"){setTimeout(()=>showPasswordRecovery(),0)}if(authUser){applySchlagDailyBonus();setTimeout(()=>syncCurrentAccount(),0);}render()});if(authUser){applySchlagDailyBonus();await syncCurrentAccount();await giftSyncOnStart()} }catch(e){console.warn("Supabase no disponible",e)}}
-async function syncCurrentAccount(){
- if(!supabaseClient||!authUser||remoteSyncBusy)return;remoteSyncBusy=true;
- try{
-  let {data:profile,error}=await supabaseClient.from("profiles").select("*").eq("id",authUser.id).maybeSingle();if(error)throw error;
-  const localHasProgress=!!S.profile&&((S.trainings||[]).length>0||Number(S.xp)>0||Number(S.coins)>0||totalMeters()>0);
-  if(!profile&&S.profile){
-   const row={id:authUser.id,username:S.profile.name,public_player_id:publicPlayerId(),level:S.level,xp:S.xp,coins:S.coins,meters:totalMeters(),rank:currentRank().r.n};
-   const r=await supabaseClient.from("profiles").insert(row).select().single();if(r.error)throw r.error;profile=r.data;
-   for(const e of S.trainings||[])await syncTrainingToCloud(e,true);
-  }
-  if(profile){
-   S.remote={userId:authUser.id,publicPlayerId:profile.public_player_id,username:profile.username};
-   const wr=await supabaseClient.from("workouts").select("id,workout_date,name,meters,xp_earned,coins_earned,details,created_at").eq("user_id",authUser.id).order("workout_date",{ascending:true});
-   if(!wr.error&&wr.data){
-    const remoteTrainings=wr.data.map((w,i)=>({id:"cloud_"+w.id,number:i+1,date:w.workout_date,name:w.name||"",durationMin:Number(w.details?.durationMin||0),series:Array.isArray(w.details?.series)?w.details.series:[],xp:Number(w.xp_earned||0),coins:Number(w.coins_earned||0),difficulty:w.details?.difficulty||"normal"}));
-    if(!localHasProgress){
-     S.profile={name:profile.username,gender:"Prefiero no decirlo",bio:"",avgMeters:1000,records:{crol:"",espalda:"",pecho:"",mariposa:""},created:Date.now()};
-     S.xp=Number(profile.xp||0);S.coins=Number(profile.coins||0);S.level=Number(profile.level||1);S.trainings=remoteTrainings;S.nextTrainingNumber=S.trainings.length+1;
-    }else{
-     const sig=e=>[e.date,e.name||"",totalMeters([e]),Number(e.xp||0)].join("|");
-     const known=new Set(remoteTrainings.map(sig));
-     for(const e of S.trainings||[])if(!known.has(sig(e)))remoteTrainings.push(e);
-     S.trainings=remoteTrainings.sort((a,b)=>String(a.date).localeCompare(String(b.date)));S.nextTrainingNumber=S.trainings.length+1;
-     S.xp=Math.max(Number(S.xp||0),Number(profile.xp||0));S.coins=Math.max(Number(S.coins||0),Number(profile.coins||0));S.level=Math.max(Number(S.level||1),Number(profile.level||1));
-     await syncProfileToCloud();
-     for(const e of S.trainings||[])if(!String(e.id||"").startsWith("cloud_"))await syncTrainingToCloud(e,false);
-    }
-   }else if(localHasProgress){await syncProfileToCloud()}
-   save();
-  }
- }catch(e){console.warn("No se pudo sincronizar la cuenta",e)}finally{remoteSyncBusy=false}
+async function initSupabase(){
+ if(supabaseClient)return true;
+ if(supabaseInitPromise)return supabaseInitPromise;
+ supabaseInitPromise=(async()=>{
+  try{
+   if(!window.supabase?.createClient&&window.__swimSupabaseLoader)await window.__swimSupabaseLoader;
+   if(!window.supabase?.createClient){console.warn("Supabase SDK no pudo cargarse");return false;}
+   supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:"swim-quest-supabase-auth"}});
+   const {data,error}=await supabaseClient.auth.getSession();
+   if(error)console.warn("Supabase getSession",error);
+   authUser=data?.session?.user||null;
+   if(authUser){applySchlagDailyBonus();await syncCurrentAccount();await giftSyncOnStart();}
+   supabaseClient.auth.onAuthStateChange((_event,session)=>{
+    authUser=session?.user||null;
+    if(_event==="PASSWORD_RECOVERY")setTimeout(()=>showPasswordRecovery(),0);
+    if(authUser){applySchlagDailyBonus();setTimeout(()=>syncCurrentAccount(),0);}
+    try{render()}catch(e){console.warn("render after auth",e)}
+   });
+   return true;
+  }catch(e){console.warn("Supabase init",e);supabaseClient=null;return false;}
+  finally{if(!supabaseClient)supabaseInitPromise=null;}
+ })();
+ return supabaseInitPromise;
 }
 async function syncProfileToCloud(){if(!supabaseClient||!authUser||!S.profile)return;try{const row={id:authUser.id,username:S.profile.name,level:S.level,xp:S.xp,coins:S.coins,meters:totalMeters(),rank:currentRank().r.n,updated_at:new Date().toISOString()};const {data,error}=await supabaseClient.from("profiles").upsert(row,{onConflict:"id"}).select("public_player_id").single();if(!error&&data){S.remote={...(S.remote||{}),userId:authUser.id,publicPlayerId:data.public_player_id,username:S.profile.name};save()}}catch(e){console.warn("sync profile",e)}}
 async function syncTrainingToCloud(e,allowDuplicate=false){if(!supabaseClient||!authUser||!e)return;try{if(!allowDuplicate){const existing=await supabaseClient.from("workouts").select("id").eq("user_id",authUser.id).eq("workout_date",e.date).eq("name",e.name||"").eq("meters",totalMeters([e])).eq("xp_earned",e.xp||0).limit(1);if(existing.data?.length)return}await supabaseClient.from("workouts").insert({user_id:authUser.id,workout_date:e.date,name:e.name||null,meters:totalMeters([e]),xp_earned:e.xp||0,coins_earned:e.coins||0,details:{durationMin:e.durationMin||0,series:e.series||[],difficulty:e.difficulty||"normal",theme:e.theme||"Aqua"}});await syncProfileToCloud()}catch(e){console.warn("sync workout",e)}}
@@ -1319,7 +1318,7 @@ function rankArt(c){
 }
 
 
-function miniGameDay(){const d=localDateKey();if(!S.minigame||S.minigame.date!==d){S.minigame={date:d,plays:0,best:Number(S.minigame?.best||0),bestHard:Number(S.minigame?.bestHard||0)};save()}return S.minigame;}
+function miniGameDay(){const d=localDateKey(),old=S.minigame||{};if(!S.minigame||S.minigame.date!==d){S.minigame={date:d,plays:0,best:Number(old.best||0),bestHard:Number(old.bestHard||0),limitVersion:2};save()}else if(Number(S.minigame.limitVersion||0)!==2){S.minigame.plays=0;S.minigame.limitVersion=2;save()}return S.minigame;}
 let miniGameTimer=null,miniGameSpawnTimer=null,miniGameMoveTimer=null,miniGameScore=0,miniGameCombo=0,miniGameRunning=false,miniGameDifficulty=null,miniGameMovingBubble=null;
 const MINI_LEVELS={
  suave:{name:'Suave',icon:'🫧',time:60,lifetime:1500,spawn:520,max:34,rewardMax:15,mobile:false,desc:'Burbujas lentas y mucho tiempo para practicar.'},
@@ -1327,11 +1326,11 @@ const MINI_LEVELS={
  dificil:{name:'Difícil',icon:'⚡',time:32,lifetime:900,spawn:370,max:42,rewardMax:40,mobile:true,desc:'Burbujas rápidas. Aquí empieza el reto serio.'},
  extremo:{name:'Extremo',icon:'🔥',time:22,lifetime:760,spawn:330,max:46,rewardMax:60,mobile:true,desc:'Muy poco tiempo y mucho movimiento. Máxima recompensa.'}
 };
-function chooseMiniDifficulty(){const mg=miniGameDay();if(mg.plays>=8){toast('🎮 Ya usaste tus 8 partidas con recompensa de hoy.');return}modal(`<div class="mini-panel"><div class="kicker">🎮 PASATIEMPO</div><h2 style="margin:4px 0 6px">Atrapa las burbujas</h2><p class="sub">Atrapa la mayor cantidad posible antes de que desaparezcan. Las dificultades altas duran menos, pero pagan mejor.</p><div class="grid g2" style="margin-top:12px">${Object.entries(MINI_LEVELS).map(([k,d])=>`<button class="card" style="text-align:left;border:1px solid #294867;background:#081625;padding:12px;cursor:pointer" onclick="startMiniGame('${k}')"><div style="font-size:28px">${d.icon}</div><b>${d.name}</b><div class="sub" style="margin-top:4px">${d.time}s · hasta ${d.rewardMax} 🪙</div><div class="sub" style="margin-top:4px">${d.desc}</div></button>`).join('')}</div><div class="sub" style="margin-top:10px;text-align:center">Partidas con recompensa: ${mg.plays}/8 · Récord: ${fmt(mg.best)}</div><button class="btn secondary" style="margin-top:10px" onclick="closeModal()">Cerrar</button></div>`);}
-function startMiniGame(level='normal'){const cfg=MINI_LEVELS[level]||MINI_LEVELS.normal;miniGameDifficulty=level;miniGameScore=0;miniGameCombo=0;miniGameRunning=true;miniGameMovingBubble=null;modal(`<div class="mini-panel"><div class="row"><div><div class="kicker">🎮 ${cfg.icon} ${cfg.name.toUpperCase()}</div><h2 style="margin:4px 0">Atrapa las burbujas</h2></div><span class="pill" id="miniPlays">${miniGameDay().plays+1}/8</span></div><div class="mini-game-board" id="miniBoard"><div class="mini-hud"><span class="pill">⭐ <b id="miniScore">0</b></span><span class="pill">🔥 <b id="miniCombo">0</b></span><span class="pill">⏱️ <b id="miniTime">${cfg.time}</b>s</span></div></div></div>`);const board=$('miniBoard');if(!board)return;miniGameSpawnTimer=setInterval(()=>spawnMiniBubble(board,cfg),cfg.spawn);const endAt=Date.now()+cfg.time*1000;miniGameTimer=setInterval(()=>{const remain=Math.max(0,Math.ceil((endAt-Date.now())/1000));const t=$('miniTime');if(t)t.textContent=remain;if(remain<=0){clearInterval(miniGameTimer);clearInterval(miniGameSpawnTimer);clearInterval(miniGameMoveTimer);finishMiniGame()}},100);}
+function chooseMiniDifficulty(){const mg=miniGameDay();if(mg.plays>=5){toast('🎮 Ya usaste tus 5 partidas con recompensa de hoy.');return}modal(`<div class="mini-panel"><div class="kicker">🎮 PASATIEMPO</div><h2 style="margin:4px 0 6px">Atrapa las burbujas</h2><p class="sub">Atrapa la mayor cantidad posible antes de que desaparezcan. Las dificultades altas duran menos, pero pagan mejor.</p><div class="grid g2" style="margin-top:12px">${Object.entries(MINI_LEVELS).map(([k,d])=>`<button class="card" style="text-align:left;border:1px solid #294867;background:#081625;padding:12px;cursor:pointer" onclick="startMiniGame('${k}')"><div style="font-size:28px">${d.icon}</div><b>${d.name}</b><div class="sub" style="margin-top:4px">${d.time}s · hasta ${d.rewardMax} 🪙</div><div class="sub" style="margin-top:4px">${d.desc}</div></button>`).join('')}</div><div class="sub" style="margin-top:10px;text-align:center">Partidas con recompensa: ${mg.plays}/5 · Récord: ${fmt(mg.best)}</div><button class="btn secondary" style="margin-top:10px" onclick="closeModal()">Cerrar</button></div>`);}
+function startMiniGame(level='normal'){const cfg=MINI_LEVELS[level]||MINI_LEVELS.normal;miniGameDifficulty=level;miniGameScore=0;miniGameCombo=0;miniGameRunning=true;miniGameMovingBubble=null;modal(`<div class="mini-panel"><div class="row"><div><div class="kicker">🎮 ${cfg.icon} ${cfg.name.toUpperCase()}</div><h2 style="margin:4px 0">Atrapa las burbujas</h2></div><span class="pill" id="miniPlays">${miniGameDay().plays+1}/5</span></div><div class="mini-game-board" id="miniBoard"><div class="mini-hud"><span class="pill">⭐ <b id="miniScore">0</b></span><span class="pill">🔥 <b id="miniCombo">0</b></span><span class="pill">⏱️ <b id="miniTime">${cfg.time}</b>s</span></div></div></div>`);const board=$('miniBoard');if(!board)return;miniGameSpawnTimer=setInterval(()=>spawnMiniBubble(board,cfg),cfg.spawn);const endAt=Date.now()+cfg.time*1000;miniGameTimer=setInterval(()=>{const remain=Math.max(0,Math.ceil((endAt-Date.now())/1000));const t=$('miniTime');if(t)t.textContent=remain;if(remain<=0){clearInterval(miniGameTimer);clearInterval(miniGameSpawnTimer);clearInterval(miniGameMoveTimer);finishMiniGame()}},100);}
 function spawnMiniBubble(board,cfg){if(!miniGameRunning||!board)return;const b=document.createElement('button');b.className='mini-bubble';const r=Math.random();let pts=1;if(r<.035){b.classList.add('rare');pts=8;b.textContent='★'}else if(r<.12){b.classList.add('gold');pts=5;b.textContent='🪙'}else if(r<.29){b.classList.add('bright');pts=3;b.textContent='✦'}else b.textContent='•';b.dataset.points=pts;const rect=board.getBoundingClientRect();const maxW=Math.max(0,rect.width-(b.offsetWidth||58));const maxH=Math.max(0,rect.height-118);b.style.left=(8+Math.random()*maxW)+'px';b.style.top=(54+Math.random()*maxH)+'px';b.onclick=()=>{if(!miniGameRunning)return;const p=Number(b.dataset.points)||1;miniGameScore+=p;miniGameCombo++;if(miniGameCombo%5===0)miniGameScore+=2;const s=$('miniScore'),c=$('miniCombo');if(s)s.textContent=miniGameScore;if(c)c.textContent=miniGameCombo;tone(p>=5?'coin':'click');b.classList.add('mini-caught');setTimeout(()=>b.remove(),120)};board.appendChild(b);setTimeout(()=>{if(!b.isConnected||!miniGameRunning)return;b.classList.add('mini-expire');setTimeout(()=>b.remove(),360)},cfg.lifetime);if(cfg.mobile&&Math.random()<.11&&!miniGameMovingBubble){miniGameMovingBubble=spawnMovingMiniBubble(board);}}
 function spawnMovingMiniBubble(board){const b=document.createElement('button');b.className='mini-bubble mobile';b.textContent='➤';b.dataset.points='7';const rect=board.getBoundingClientRect();let x=18,y=90,dx=2.2,dy=1.5;b.style.left=x+'px';b.style.top=y+'px';b.onclick=()=>{if(!miniGameRunning)return;miniGameScore+=7;miniGameCombo++;if(miniGameCombo%5===0)miniGameScore+=2;const s=$('miniScore'),c=$('miniCombo');if(s)s.textContent=miniGameScore;if(c)c.textContent=miniGameCombo;tone('coin');b.classList.add('mini-caught');setTimeout(()=>b.remove(),120);miniGameMovingBubble=null;clearInterval(miniGameMoveTimer)};board.appendChild(b);clearInterval(miniGameMoveTimer);miniGameMoveTimer=setInterval(()=>{if(!miniGameRunning||!b.isConnected){clearInterval(miniGameMoveTimer);miniGameMovingBubble=null;return}const r=board.getBoundingClientRect();x+=dx;y+=dy;if(x<6||x>r.width-60)dx*=-1;if(y<52||y>r.height-60)dy*=-1;b.style.transform=`translate(${x}px,${y}px)`;b.style.left='0';b.style.top='0'},16);setTimeout(()=>{if(b.isConnected){b.classList.add('mini-expire');setTimeout(()=>b.remove(),360)}miniGameMovingBubble=null;clearInterval(miniGameMoveTimer)},4200);return b;}
-function finishMiniGame(){miniGameRunning=false;clearInterval(miniGameTimer);clearInterval(miniGameSpawnTimer);clearInterval(miniGameMoveTimer);const mg=miniGameDay(),previousBest=Number(mg.best||0),previousHard=Number(mg.bestHard||0);mg.plays++;mg.best=Math.max(previousBest,miniGameScore);if(['dificil','extremo'].includes(miniGameDifficulty))mg.bestHard=Math.max(previousHard,miniGameScore);const cfg=MINI_LEVELS[miniGameDifficulty]||MINI_LEVELS.normal;const reward=Math.min(cfg.rewardMax,Math.floor(miniGameScore/3)+(['dificil','extremo'].includes(miniGameDifficulty)?2:0));S.coins+=reward;save();if(authUser)syncProfileToCloud();checkMiniAchievements();const best=miniGameScore>previousBest?'<div class="pill" style="margin-top:8px">🏆 Nuevo récord</div>':'';const hard=miniGameScore>=250&&['dificil','extremo'].includes(miniGameDifficulty)?'<div class="pill" style="margin-top:8px">⚡ Récord de dificultad alta</div>':'';modal(`<div class="mini-panel" style="text-align:center"><div class="kicker">🎮 FIN · ${cfg.name}</div><div class="mini-end">${fmt(miniGameScore)} puntos</div><div class="sub" style="margin-top:7px">+${fmt(reward)} 🪙</div><div class="mini-stat" style="margin-top:12px"><span>Mejor puntuación</span><b>${fmt(mg.best)}</b></div>${best}${hard}<button class="btn primary" style="margin-top:12px" onclick="closeModal();render()">Listo</button></div>`);tone(miniGameScore>=250?'rank':'coin');}
+function finishMiniGame(){miniGameRunning=false;clearInterval(miniGameTimer);clearInterval(miniGameSpawnTimer);clearInterval(miniGameMoveTimer);const mg=miniGameDay(),previousBest=Number(mg.best||0),previousHard=Number(mg.bestHard||0);mg.plays++;mg.best=Math.max(previousBest,miniGameScore);if(['dificil','extremo'].includes(miniGameDifficulty))mg.bestHard=Math.max(previousHard,miniGameScore);const cfg=MINI_LEVELS[miniGameDifficulty]||MINI_LEVELS.normal;const rawReward=Math.min(cfg.rewardMax,Math.floor(miniGameScore/3)+(['dificil','extremo'].includes(miniGameDifficulty)?2:0));const reward=Math.floor(rawReward*0.85);S.coins+=reward;save();if(authUser)syncProfileToCloud();checkMiniAchievements();const best=miniGameScore>previousBest?'<div class="pill" style="margin-top:8px">🏆 Nuevo récord</div>':'';const hard=miniGameScore>=250&&['dificil','extremo'].includes(miniGameDifficulty)?'<div class="pill" style="margin-top:8px">⚡ Récord de dificultad alta</div>':'';modal(`<div class="mini-panel" style="text-align:center"><div class="kicker">🎮 FIN · ${cfg.name}</div><div class="mini-end">${fmt(miniGameScore)} puntos</div><div class="sub" style="margin-top:7px">+${fmt(reward)} 🪙</div><div class="mini-stat" style="margin-top:12px"><span>Mejor puntuación</span><b>${fmt(mg.best)}</b></div>${best}${hard}<button class="btn primary" style="margin-top:12px" onclick="closeModal();render()">Listo</button></div>`);tone(miniGameScore>=250?'rank':'coin');}
 function checkMiniAchievements(){const unlocked=[];for(const a of ACHIEVEMENTS.filter(x=>['counter2','bubble_master'].includes(x.id))){if(!achievementUnlocked(a)&&a.ok()){S.achievements.push(a.id);unlocked.push(a);if(a.reward?.theme)S.purchases['theme_'+a.reward.theme]=true;if(a.reward?.coins)S.coins+=Number(a.reward.coins);if(a.reward?.xp){S.xp+=Number(a.reward.xp);S.level=levelFromXP(S.xp)}}}if(unlocked.length){save();if(authUser)syncProfileToCloud();setTimeout(()=>unlocked.forEach(achievementModal),180)}}
 
 function coinShop(){
@@ -1857,7 +1856,7 @@ function authModal(mode="login"){
  <button class="btn secondary" style="margin-top:8px" onclick="closeModal()">Cerrar</button>`);
 }
 async function signUpReal(){
- if(!supabaseReady()){toast("Supabase todavía no está disponible.");return}
+  if(!(await initSupabase())){toast("No se pudo conectar con el servidor. Intenta de nuevo en unos segundos.");return}
  const username=$("authUserName")?.value.trim(),email=$("authEmail")?.value.trim(),password=$("authPassword")?.value||"";
  if(!username||!email||password.length<6){toast("Completa nombre, correo y una contraseña de al menos 6 caracteres.");return}
  if(authBusy)return;authBusy=true;
@@ -1874,14 +1873,14 @@ async function signUpReal(){
  }catch(e){toast("❌ "+(e?.message||"No se pudo crear la cuenta."),4200)}finally{authBusy=false}
 }
 async function signInReal(){
- if(!supabaseReady()){toast("Supabase todavía no está disponible.");return}
+  if(!(await initSupabase())){toast("No se pudo conectar con el servidor. Intenta de nuevo en unos segundos.");return}
  const email=$("authEmail")?.value.trim(),password=$("authPassword")?.value||"";
  if(!email||!password){toast("Introduce tu correo y contraseña.");return}
  if(authBusy)return;authBusy=true;
  try{const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});if(error)throw error;authUser=data.user;await syncCurrentAccount();closeModal();render();toast("👋 Sesión iniciada.");}catch(e){toast("❌ "+(e?.message||"No se pudo iniciar sesión."),4200)}finally{authBusy=false}
 }
 async function requestPasswordReset(){
- if(!supabaseReady()){toast("Supabase todavía no está disponible.");return}
+  if(!(await initSupabase())){toast("No se pudo conectar con el servidor. Intenta de nuevo en unos segundos.");return}
  const email=$("authEmail")?.value.trim();
  if(!email){toast("Introduce primero tu correo electrónico.");return}
  try{const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+window.location.pathname});if(error)throw error;toast("📩 Te enviamos un enlace para cambiar la contraseña.",5000);}catch(e){toast("❌ "+(e?.message||"No se pudo enviar el correo."),4500)}
@@ -2006,7 +2005,7 @@ function saveSettings(){
 function instructions(){
  modal(`<div class="kicker">📖 INSTRUCCIONES</div><h2>Cómo funciona</h2><div class="list">
  <div class="list-item"><b>🏊 Entrena</b><div class="sub">Añade series con distancia, repeticiones, estilo, intensidad, correctivo y tiempo opcional. La dificultad general del entrenamiento se calcula automáticamente por metros, estilo y XP; la intensidad de una sola serie no la decide por sí sola.</div></div>
- <div class="list-item"><b>⭐ Gana XP</b><div class="sub">Los metros son la base. Mariposa da más que pecho, pecho más que espalda y espalda más que crol. Intensidad, correctivo y tiempo también influyen. Desde esta actualización, la recompensa base de XP de los entrenamientos se redujo un 30% para hacer el progreso más gradual. La dificultad general se determina por la carga total, el estilo y la XP; con más de 6.000 m se clasifica como Masoquista.</div></div>
+ <div class="list-item"><b>⭐ Gana XP</b><div class="sub">Los metros son la base. Mariposa da más que pecho, pecho más que espalda y espalda más que crol. Intensidad, correctivo y tiempo también influyen. Desde esta actualización, la recompensa base de XP de los entrenamientos se redujo un 15% para hacer el progreso más gradual. La dificultad general se determina por la carga total, el estilo y la XP; con más de 6.000 m se clasifica como Masoquista.</div></div>
  <div class="list-item"><b>🪙 Consigue monedas</b><div class="sub">Entrenamientos y misiones dan monedas. Puedes comprar XP con monedas, pero las monedas jamás se compran con XP. El Talismán de la Marea mejora permanentemente las monedas ganadas.</div></div>
  <div class="list-item"><b>🎯 Misiones adaptativas</b><div class="sub">La distancia semanal se ajusta a tu historial. Si superas tu objetivo, subirá; si tienes una semana más floja, bajará.</div></div>
  <div class="list-item"><b>🔥 Rachas</b><div class="sub">Si falta una práctica habitual al cerrar la semana, la app preguntará el motivo. El recuperador normal protege una ruptura; el Protector mensual mantiene la racha protegida durante 30 días.</div></div>
@@ -2100,10 +2099,12 @@ function boot(){
  try{ updateInstallButton(); }catch(e){}
  document.body.addEventListener("pointerdown",()=>{try{ambientStart()}catch(e){}},{once:true});
 }
+function openMiniGame(){ chooseMiniDifficulty(); }
 window.requestNotifications=requestNotifications;window.openPearScene=openPearScene;window.pearNext=pearNext;window.closePearScene=closePearScene;window.showAchievements=showAchievements;window.coinShop=coinShop;window.comingSoonPurchases=comingSoonPurchases;window.comingSoonSocial=comingSoonSocial;window.createProfile=createProfile;window.installApp=installApp;window.go=go;window.settings=settings;window.instructions=instructions;window.closeModal=closeModal;window.saveSettings=saveSettings;window.exportData=exportData;window.importData=importData;window.resetData=resetData;
 window.openMiniGame=openMiniGame;window.openGiftModal=openGiftModal;window.sendGift=sendGift;window.openGiftInbox=openGiftInbox;window.openGift=openGift;window.authModal=authModal;window.requestPasswordReset=requestPasswordReset;window.showPasswordRecovery=showPasswordRecovery;window.changeRecoveredPassword=changeRecoveredPassword;window.signUpReal=signUpReal;window.signInReal=signInReal;window.signOutReal=signOutReal;window.openSocial=openSocial;window.socialModal=socialModal;window.sendFriendRequest=sendFriendRequest;window.acceptFriend=acceptFriend;window.createRealClan=createRealClan;window.searchClans=searchClans;window.requestClanJoin=requestClanJoin;window.approveClanRequest=approveClanRequest;window.rejectClanRequest=rejectClanRequest;window.removeClanMember=removeClanMember;window.leaveClan=leaveClan;window.fishMotivation=fishMotivation;window.openFishShop=openFishShop;window.buySecret=buySecret;window.hitmanModal=hitmanModal;window.useHitman=useHitman;window.openBananaScene=openBananaScene;window.bananaNext=bananaNext;window.closeBananaScene=closeBananaScene;window.addFriendModal=addFriendModal;window.lookupFriend=lookupFriend;window.simulateAddFriend=simulateAddFriend;window.createGroupModal=createGroupModal;window.simulateCreateGroup=simulateCreateGroup;window.openClan=openClan;window.trainingTimer=trainingTimer;window.timerToggle=timerToggle;window.timerReset=timerReset;window.timerClose=timerClose;window.addSeries=addSeries;window.removeSeries=removeSeries;window.saveTraining=saveTraining;window.editTraining=editTraining;window.commitEdit=commitEdit;window.deleteTraining=deleteTraining;window.claimMission=claimMission;window.buy=buy;window.showMonthSummary=showMonthSummary;window.missions=missions;
 
 boot();
+if(!window.__swimSupabaseBootStarted){window.__swimSupabaseBootStarted=true;setTimeout(()=>{initSupabase().then(ok=>{if(!ok)setTimeout(()=>initSupabase(),1200)}).catch(()=>{});},0);}
 </script>
 <script>
 /* === INTEGRATED FINAL PATCH: workout identity/deletion + real clan ranking === */
