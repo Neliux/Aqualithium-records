@@ -25,7 +25,9 @@
   function readJson(key,fallback){try{return JSON.parse(localStorage.getItem(key)||'')||fallback}catch(e){return fallback}}
   function writeJson(key,value){try{localStorage.setItem(key,JSON.stringify(value))}catch(e){}}
 
-  // Envolvemos la apertura de Pera para permitir 25 visitas antes del estado de enojo.
+  // El contador independiente permite 25 aperturas antes de activar el enfado.
+  // En la visita 26 dejamos el contador interno justo en 25 para que el código original
+  // entre en su estado de enfado tanto en la versión vieja como en la versión parcheada.
   setTimeout(()=>{
     if(typeof window.openPearScene==='function' && !window.__swqPearWrapped){
       const originalOpen=window.openPearScene;
@@ -35,15 +37,8 @@
         if(!anger||anger.date!==today)anger={date:today,count:0};
         anger.count=Number(anger.count||0)+1;
         writeJson(PEAR_ANGER_KEY,anger);
-
-        // El código original se enfada al superar 5. Le damos un contador "visible"
-        // controlado: normal hasta 25; en la visita 26 dejamos que alcance el límite original.
         try{
-          if(anger.count<=25){
-            writeJson('SWIM_QUEST_PEAR_VISITS',{date:today,count:0,lockDate:''});
-          }else{
-            writeJson('SWIM_QUEST_PEAR_VISITS',{date:today,count:5,lockDate:''});
-          }
+          writeJson('SWIM_QUEST_PEAR_VISITS',{date:today,count:anger.count<=25?0:25,lockDate:''});
         }catch(e){}
         return originalOpen.apply(this,arguments);
       };
@@ -83,27 +78,16 @@
   }
 
   let envyIndex=0;
-  function startEnvyConversation(){
-    envyIndex=0;
-    renderEnvyLine();
-  }
+  function startEnvyConversation(){envyIndex=0;renderEnvyLine();}
   function renderEnvyLine(){
-    const old=document.getElementById('pearScene');
-    if(old)old.remove();
+    const old=document.getElementById('pearScene');if(old)old.remove();
     const item=PEAR_NEW_LINES[envyIndex];
-    const scene=document.createElement('div');
-    scene.id='pearScene';
-    scene.className='pear-scene';
+    const scene=document.createElement('div');scene.id='pearScene';scene.className='pear-scene';
     scene.innerHTML=`<div class="pear-stage"><div class="pear-emoji">🍐</div><div class="pear-speaker">${escapeHtml(item.speaker)}</div><div class="pear-text">${escapeHtml(item.text)}</div><button class="pear-next" id="swqEnvyNext">${envyIndex<PEAR_NEW_LINES.length-1?'Siguiente':'Terminar'}</button><button class="pear-close" id="swqEnvyClose">Salir</button></div>`;
-    document.body.appendChild(scene);
-    patchPearVisuals();
-    document.getElementById('swqEnvyNext')?.addEventListener('click',()=>{
-      if(envyIndex<PEAR_NEW_LINES.length-1){envyIndex++;renderEnvyLine();}
-      else {window.closePearScene?.();}
-    });
+    document.body.appendChild(scene);patchPearVisuals();
+    document.getElementById('swqEnvyNext')?.addEventListener('click',()=>{if(envyIndex<PEAR_NEW_LINES.length-1){envyIndex++;renderEnvyLine();}else{window.closePearScene?.();}});
     document.getElementById('swqEnvyClose')?.addEventListener('click',()=>window.closePearScene?.());
   }
-
   function escapeHtml(v){return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
 
   function enforceButterfly(){
@@ -119,15 +103,9 @@
       }
     });
   }
-  document.addEventListener('change',e=>{
-    if(e.target?.matches?.('select.draftInput[data-k="style"],select.draftInput[data-k="intensity"]'))setTimeout(enforceButterfly,0);
-  },true);
-
+  document.addEventListener('change',e=>{if(e.target?.matches?.('select.draftInput[data-k="style"],select.draftInput[data-k="intensity"]'))setTimeout(enforceButterfly,0);},true);
   const oldSave=window.saveTraining;
-  if(oldSave&&!window.__swqSaveWrapped){
-    window.saveTraining=function(){enforceButterfly();return oldSave.apply(this,arguments)};
-    window.__swqSaveWrapped=true;
-  }
+  if(oldSave&&!window.__swqSaveWrapped){window.saveTraining=function(){enforceButterfly();return oldSave.apply(this,arguments)};window.__swqSaveWrapped=true;}
 
   const observer=new MutationObserver(()=>{patchPearVisuals();createEnvyButton();enforceButterfly();});
   observer.observe(document.documentElement,{childList:true,subtree:true});
