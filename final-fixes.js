@@ -16,18 +16,11 @@
     {speaker:'🍐 PERA',text:'Ninguno. Puedes admirarlo, aprender de él y reconocer lo que hace bien sin convertirlo en una medida para castigarte. La admiración construye; la comparación constante te roba perspectiva.'}
   ];
 
-  function localDay(){
-    const d=new Date();
-    const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
-    return `${y}-${m}-${day}`;
-  }
-
+  function localDay(){const d=new Date();const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`;}
   function readJson(key,fallback){try{return JSON.parse(localStorage.getItem(key)||'')||fallback}catch(e){return fallback}}
   function writeJson(key,value){try{localStorage.setItem(key,JSON.stringify(value))}catch(e){}}
 
-  // El contador independiente permite 25 aperturas antes de activar el enfado.
-  // En la visita 26 dejamos el contador interno justo en 25 para que el código original
-  // entre en su estado de enfado tanto en la versión vieja como en la versión parcheada.
+  // 25 aperturas/ignorados por día. La visita 26 activa el estado de enojo del juego base.
   setTimeout(()=>{
     if(typeof window.openPearScene==='function' && !window.__swqPearWrapped){
       const originalOpen=window.openPearScene;
@@ -38,6 +31,7 @@
         anger.count=Number(anger.count||0)+1;
         writeJson(PEAR_ANGER_KEY,anger);
         try{
+          // Con el parche del service worker, el juego base usa x.count>25.
           writeJson('SWIM_QUEST_PEAR_VISITS',{date:today,count:anger.count<=25?0:25,lockDate:''});
         }catch(e){}
         return originalOpen.apply(this,arguments);
@@ -48,16 +42,7 @@
 
   function patchPearVisuals(){
     document.querySelectorAll('.pear-scene').forEach(scene=>{
-      Object.assign(scene.style,{
-        overflowY:'auto',
-        overflowX:'hidden',
-        alignItems:'flex-start',
-        justifyContent:'flex-start',
-        padding:'14px 10px 120px',
-        WebkitOverflowScrolling:'touch',
-        touchAction:'pan-y',
-        overscrollBehaviorY:'contain'
-      });
+      Object.assign(scene.style,{overflowY:'auto',overflowX:'hidden',alignItems:'flex-start',justifyContent:'flex-start',padding:'14px 10px 120px',WebkitOverflowScrolling:'touch',touchAction:'pan-y',overscrollBehaviorY:'contain'});
       scene.querySelectorAll('.pear-shine').forEach(x=>x.remove());
       const stage=scene.querySelector('.pear-stage');
       if(stage)Object.assign(stage.style,{minHeight:'0',height:'auto',justifyContent:'flex-start',width:'100%',padding:'12px 0 28px'});
@@ -70,19 +55,16 @@
     const grid=document.querySelector('#pearScene .pear-topic-grid');
     if(!grid||grid.querySelector('[data-swq-envy-topic]'))return;
     const b=document.createElement('button');
-    b.className='pear-topic-btn';
-    b.setAttribute('data-swq-envy-topic','1');
+    b.className='pear-topic-btn';b.setAttribute('data-swq-envy-topic','1');
     b.innerHTML='<b>"Siento envidia de alguien que parece mejor que yo"</b><span>Comparaciones, natación y aprender a valorar tu propio camino</span>';
-    b.addEventListener('click',startEnvyConversation);
-    grid.appendChild(b);
+    b.addEventListener('click',startEnvyConversation);grid.appendChild(b);
   }
 
   let envyIndex=0;
   function startEnvyConversation(){envyIndex=0;renderEnvyLine();}
   function renderEnvyLine(){
     const old=document.getElementById('pearScene');if(old)old.remove();
-    const item=PEAR_NEW_LINES[envyIndex];
-    const scene=document.createElement('div');scene.id='pearScene';scene.className='pear-scene';
+    const item=PEAR_NEW_LINES[envyIndex];const scene=document.createElement('div');scene.id='pearScene';scene.className='pear-scene';
     scene.innerHTML=`<div class="pear-stage"><div class="pear-emoji">🍐</div><div class="pear-speaker">${escapeHtml(item.speaker)}</div><div class="pear-text">${escapeHtml(item.text)}</div><button class="pear-next" id="swqEnvyNext">${envyIndex<PEAR_NEW_LINES.length-1?'Siguiente':'Terminar'}</button><button class="pear-close" id="swqEnvyClose">Salir</button></div>`;
     document.body.appendChild(scene);patchPearVisuals();
     document.getElementById('swqEnvyNext')?.addEventListener('click',()=>{if(envyIndex<PEAR_NEW_LINES.length-1){envyIndex++;renderEnvyLine();}else{window.closePearScene?.();}});
@@ -92,21 +74,21 @@
 
   function enforceButterfly(){
     document.querySelectorAll('select.draftInput[data-k="style"]').forEach(styleSel=>{
-      const series=styleSel.closest('.series');
-      const intensity=series?.querySelector('select.draftInput[data-k="intensity"]');
-      if(!intensity)return;
+      const intensity=styleSel.closest('.series')?.querySelector('select.draftInput[data-k="intensity"]');if(!intensity)return;
       const butterfly=styleSel.value==='mariposa';
       [...intensity.options].forEach(o=>{o.disabled=butterfly&&o.value==='suave';});
-      if(butterfly&&intensity.value==='suave'){
-        intensity.value='normal';
-        intensity.dispatchEvent(new Event('change',{bubbles:true}));
-      }
+      if(butterfly&&intensity.value==='suave'){intensity.value='normal';intensity.dispatchEvent(new Event('change',{bubbles:true}));}
+    });
+    document.querySelectorAll('select.ed[data-k="style"]').forEach(styleSel=>{
+      const intensity=styleSel.closest('.series')?.querySelector('select.ed[data-k="intensity"]');if(!intensity)return;
+      const butterfly=styleSel.value==='mariposa';
+      [...intensity.options].forEach(o=>{o.disabled=butterfly&&o.value==='suave';});
+      if(butterfly&&intensity.value==='suave')intensity.value='normal';
     });
   }
-  document.addEventListener('change',e=>{if(e.target?.matches?.('select.draftInput[data-k="style"],select.draftInput[data-k="intensity"]'))setTimeout(enforceButterfly,0);},true);
-  const oldSave=window.saveTraining;
-  if(oldSave&&!window.__swqSaveWrapped){window.saveTraining=function(){enforceButterfly();return oldSave.apply(this,arguments)};window.__swqSaveWrapped=true;}
-
+  document.addEventListener('change',e=>{if(e.target?.matches?.('select.draftInput[data-k="style"],select.draftInput[data-k="intensity"],select.ed[data-k="style"],select.ed[data-k="intensity"]'))setTimeout(enforceButterfly,0);},true);
+  const oldSave=window.saveTraining;if(oldSave&&!window.__swqSaveWrapped){window.saveTraining=function(){enforceButterfly();return oldSave.apply(this,arguments)};window.__swqSaveWrapped=true;}
+  const oldCommit=window.commitEdit;if(oldCommit&&!window.__swqCommitWrapped){window.commitEdit=function(){enforceButterfly();return oldCommit.apply(this,arguments)};window.__swqCommitWrapped=true;}
   const observer=new MutationObserver(()=>{patchPearVisuals();createEnvyButton();enforceButterfly();});
   observer.observe(document.documentElement,{childList:true,subtree:true});
   setTimeout(()=>{patchPearVisuals();createEnvyButton();enforceButterfly();},250);
