@@ -513,7 +513,7 @@ body.theme-carretera .app{position:relative;z-index:2}
       for(const r of (RANKS||[]))if(levelMap[r.c])r.lv=levelMap[r.c];
       const needForLevel=lvl=>Math.round((110+lvl*10+Math.pow(lvl,1.18)*4.5)*1.45+Math.max(0,15-lvl)*18);
       levelFromXP=function(xp){let lvl=1,used=0,target=Math.max(0,Number(xp)||0);while(lvl<999){const need=Math.max(1,needForLevel(lvl));if(used+need>target)break;used+=need;lvl++;}return lvl;};
-      xpForLevel=function(lvl){let x=0,target=Math.max(1,Math.floor(Number(lvl)||1));for(let i=1;i<target;i++)x+=Math.max(1,needForLevel(i));return x;};
+      xpForLevel=function(lvl){let x=0,target=Math.max(1,Math.floor(Number(lvl)||1));for(let i=1;i<target;i++)x+=Math.max(1,needForLevel(i));return x;}; S.level=levelFromXP(S.xp);
     }catch(e){console.warn('SWQ progression',e)}
   }
   const SWQ_EXTRA_FISH_MESSAGES=[
@@ -665,7 +665,7 @@ body.theme-carretera .app{position:relative;z-index:2}
             if(typeof syncCurrentAccount==='function')await syncCurrentAccount();
             await new Promise(r=>setTimeout(r,180));
             if(typeof syncCurrentAccount==='function'&&!remoteSyncBusy)await syncCurrentAccount();
-            if(authUser&&S.profile&&typeof syncProfileToCloud==='function')await syncProfileToCloud();
+            S.level=levelFromXP(S.xp);try{save();}catch(e){} if(authUser&&S.profile&&typeof syncProfileToCloud==='function')await syncProfileToCloud();
             return true;
           }
         }catch(e){if(i===tries-1)console.warn('SWQ account verify',e)}
