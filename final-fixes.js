@@ -1,4 +1,4 @@
-/* Swim Quest · actualización 2026-09-18 v7
+/* Swim Quest · actualización 2026-09-18 v8
    - Deduplicación local/remota de entrenamientos.
    - Dificultad basada principalmente en % de la media semanal.
    - Nuevo nivel Brutal.
@@ -213,19 +213,19 @@
   }
   function repairAchievements(){
     if(!Array.isArray(S.achievements))S.achievements=[];
-    const before=[...S.achievements],seen=new Set(),keep=[];let changed=false;
+    const before=[...S.achievements],seen=new Set(),keep=[];
     for(const id of before){
       if(seen.has(id))continue;
       seen.add(id);
-      /* Unlocked achievements are permanent: changing an achievement's rule must never erase progress. */
+      /* Achievement unlocks are permanent; rule updates never erase prior progress. */
       keep.push(id);
     }
     if(keep.length!==before.length){
-      changed=true;
       S.achievements=keep;
       try{save();}catch(e){}
+      return true;
     }
-    return changed;
+    return false;
   }
   function injectMainCSS(){
     if(document.getElementById('swq-main-fixes-'+VERSION))return;
@@ -516,58 +516,53 @@ body.theme-carretera .app{position:relative;z-index:2}
     try{
       if(typeof THEMES!=='undefined'&&!THEMES.Impacto)THEMES.Impacto={a:'#ff7a18',b:'#17110d',emoji:'💥',desc:'Impactos naranja, negro y amarillo con destellos y orbes de energía que caen lentamente.'};
       if(typeof SHOP!=='undefined'&&!SHOP.some(x=>x.id==='theme_Impacto'))SHOP.push({id:'theme_Impacto',icon:'💥',name:'Impacto Naranja',price:620,desc:'Estética naranja y negra con destellos, chispas y orbes de energía.',buy:()=>S.purchases.theme_Impacto=true});
-      if(typeof SHOP!=='undefined'&&!SHOP.some(x=>x.id==='fichaNadador'))SHOP.push({id:'fichaNadador',icon:'🎟️',name:'Ficha del Nadador',price:260,desc:'Consumible. +30% de monedas en tu siguiente entrenamiento.',buy:()=>{swqEnsureConsumables();S.consumables.fichaNadador=(S.consumables.fichaNadador||0)+1;}});
+      if(typeof SHOP!=='undefined'&&!SHOP.some(x=>x.id==='fichaNadador'))SHOP.push({id:'fichaNadador',icon:'🎟️',name:'Ficha del Nadador',price:260,desc:'Consumible. +45% de monedas en tu siguiente entrenamiento.',buy:()=>{swqEnsureConsumables();S.consumables.fichaNadador=(S.consumables.fichaNadador||0)+1;}});
     }catch(e){console.warn('SWQ new shop items',e)}
   }
   function swqPatchCloroAndTrainingXP(){
     try{
       swqEnsureConsumables();
 
-      if(!window.__swqTrainingRewardsPatched20260918_6){
+      if(!window.__swqTrainingRewardsPatched20260918_7){
         const baseTrainingXP=trainingXP;
+        const baseDraftXP=(typeof draftXP==='function')?draftXP:null;
+
+        /* Global training XP reward: +25% versus the previous live reward formula. */
         trainingXP=function(e,state=null){
           const raw=Math.max(0,Number(baseTrainingXP(e,state))||0);
           return Math.round(raw*1.25);
         };
 
+        /* Global training coins: +15% versus the previous live coin formula.
+           Uses the pre-boost XP formula so the +25% XP bonus does not accidentally compound into coins. */
         trainingCoins=function(e){
           const rawXp=Math.max(0,Number(baseTrainingXP(e,null))||0);
           return Math.max(25,Math.round(rawXp*.132*trainingCoinMultiplier()*1.15));
         };
 
-        if(typeof draftXP==='function'){
-          const baseDraftXP=draftXP;
+        /* Preview must match the real next-training reward. */
+        if(baseDraftXP){
           draftXP=function(){
             const hasCloro=Number(S.consumables?.cloroPremium||0)>0;
             let raw=Math.max(0,Number(baseDraftXP())||0);
-            if(hasCloro)raw/=1.20; /* remove the old preview-only Cloro multiplier */
+            if(hasCloro)raw/=1.20; /* remove legacy +20% preview multiplier */
             return Math.round(raw*1.25*(hasCloro?1.70:1));
           };
-        }
 
-        if(typeof draftCoins==='function'){
-          const baseDraftXP=typeof draftXP==='function'?draftXP:null;
-          const baseDraftPreview=typeof baseDraftXP==='function'?baseDraftXP:null;
           draftCoins=function(){
             const hasCloro=Number(S.consumables?.cloroPremium||0)>0;
             const hasTicket=Number(S.consumables?.fichaNadador||0)>0;
-            /* Coins are boosted independently by +15%; the new +25% XP boost does not compound into coins. */
-            let raw=0;
-            try{
-              const originalPreview=typeof baseDraftPreview==='function'?baseDraftPreview():0;
-              raw=Math.max(0,Number(originalPreview)||0);
-            }catch(e){}
-            if(hasCloro)raw/=1.25;
-            if(hasCloro)raw/=1.70;
-            const coinBase=Math.max(25,Math.round(raw*.132*trainingCoinMultiplier()*1.15));
-            return hasTicket?Math.max(25,Math.round(coinBase*1.45)):coinBase;
+            let raw=Math.max(0,Number(baseDraftXP())||0);
+            if(hasCloro)raw/=1.20;
+            const coins=Math.max(25,Math.round(raw*.132*trainingCoinMultiplier()*1.15));
+            return hasTicket?Math.max(25,Math.round(coins*1.45)):coins;
           };
         }
 
-        window.__swqTrainingRewardsPatched20260918_6=true;
+        window.__swqTrainingRewardsPatched20260918_7=true;
       }
 
-      if(!window.__swqSaveTrainingBoosts20260918_6){
+      if(!window.__swqSaveTrainingBoosts20260918_7){
         const previousSaveTraining=window.saveTraining;
         if(typeof previousSaveTraining==='function'){
           window.saveTraining=function(){
@@ -578,7 +573,7 @@ body.theme-carretera .app{position:relative;z-index:2}
             const oldCloro=Number(S.consumables.cloroPremium||0);
             const oldCoin=Number(S.consumables.fichaNadador||0);
 
-            /* Let the underlying save create the workout with the permanent global bonuses only. */
+            /* Suppress the legacy one-session boosts while the clean calculation runs. */
             if(hadCloro)S.consumables.cloroPremium=0;
             if(hadCoin)S.consumables.fichaNadador=0;
 
@@ -599,12 +594,15 @@ body.theme-carretera .app{position:relative;z-index:2}
                 }
 
                 const e=S.trainings[S.trainings.length-1];
+
+                /* Add the +70% Cloro multiplier on top of the new global +25% XP reward. */
                 const baseXp=Math.max(0,Number(e.xp)||0);
                 const desiredXp=Math.round(baseXp*(hadCloro?1.70:1));
                 const extraXp=Math.max(0,desiredXp-baseXp);
                 e.xp=desiredXp;
                 if(extraXp>0&&typeof gainXP==='function')gainXP(extraXp);
 
+                /* Add the +45% ticket multiplier on top of the new global +15% coin reward. */
                 const baseCoins=Math.max(0,Number(e.coins)||0);
                 const desiredCoins=hadCoin?Math.round(baseCoins*1.45):baseCoins;
                 const extraCoins=Math.max(0,desiredCoins-baseCoins);
@@ -622,11 +620,12 @@ body.theme-carretera .app{position:relative;z-index:2}
             },30);
             return result;
           };
-          window.__swqSaveTrainingBoosts20260918_6=true;
+          window.__swqSaveTrainingBoosts20260918_7=true;
         }
       }
     }catch(e){console.warn('SWQ training reward patch',e)}
   }
+
   function swqPatchProgression(){
     try{
       const levelMap={plata:5,oro:12,platino:20,diamante:30,esmeralda:42,zafiro:56,amatista:72,mercurio:90,venus:112,marte:138,jupiter:168,saturno:205,urano:250,neptuno:305,orca:350,tiburon:410,kraken:500,megalodon:600,leviatan:700,poseidon:820,coach:950};
@@ -770,6 +769,23 @@ body.theme-carretera .app{position:relative;z-index:2}
       };
       window.__swqEntityBudget20260918_6=true;
     }catch(e){console.warn('SWQ entity budget',e)}
+  }
+
+  function swqDiagnostics(){
+    try{
+      const issues=[];
+      if(typeof trainingXP!=='function')issues.push('trainingXP');
+      if(typeof trainingCoins!=='function')issues.push('trainingCoins');
+      if(typeof saveTraining!=='function')issues.push('saveTraining');
+      if(!Array.isArray(SHOP))issues.push('SHOP');
+      if(!Array.isArray(ACHIEVEMENTS))issues.push('ACHIEVEMENTS');
+      if(typeof THEMES?.Ajedrez==='undefined')issues.push('Ajedrez');
+      const bee=ACHIEVEMENTS.find(a=>a.id==='whoLeftThis');
+      if(!bee||bee.reward?.theme!=='Bee')issues.push('Bee achievement');
+      if(fc???){}
+      if(issues.length)console.warn('SWQ diagnostics',issues);
+      return issues;
+    }catch(e){console.warn('SWQ diagnostics failed',e);return ['diagnostics'];}
   }
 
   function swqThemeName(k){
