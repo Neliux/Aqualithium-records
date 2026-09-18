@@ -874,9 +874,9 @@ function save(){localStorage.setItem(SAVE,JSON.stringify(S))}
 function $(id){return document.getElementById(id)}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function fmt(n){return Number(n||0).toLocaleString("es-ES")}
-function today(){return new Date().toISOString().slice(0,10)}
+function today(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
 function dateObj(s){return new Date(s+"T12:00:00")}
-function weekKey(d=new Date()){const x=new Date(d);const day=x.getDay();x.setDate(x.getDate()+(day===0?-6:1-day));return x.toISOString().slice(0,10)}
+function weekKey(d=new Date()){const x=new Date(d);const day=x.getDay();x.setDate(x.getDate()+(day===0?-6:1-day));return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,"0")}-${String(x.getDate()).padStart(2,"0")}`}
 function monthKey(d=new Date()){return new Date(d).toISOString().slice(0,7)}
 function labelDate(s){return new Intl.DateTimeFormat("es-ES",{weekday:"long",day:"numeric",month:"long"}).format(dateObj(s))}
 function totalMeters(arr=S.trainings){return arr.reduce((a,e)=>a+e.series.reduce((b,s)=>b+s.distance*s.reps,0),0)}
@@ -2086,7 +2086,7 @@ function showMonthSummary(force=false,month=null){
 function hasMonthlyShield(){return !!S.monthlyShieldUntil&&new Date(S.monthlyShieldUntil).getTime()>Date.now();}
 function activateMonthlyShield(){const base=hasMonthlyShield()?new Date(S.monthlyShieldUntil):new Date();S.monthlyShieldUntil=new Date(base.getTime()+30*86400000).toISOString();S.purchases.monthShield=true;}
 function reviewWeek(){
- if(!S.profile)return;const wk=weekKey();if(!S.lastReviewWeek){S.lastReviewWeek=wk;save();return}if(S.lastReviewWeek===wk)return;const prevWeekStart=S.lastReviewWeek;const st=dateObj(prevWeekStart),missing=[];for(let i=0;i<7;i++){const d=new Date(st);d.setDate(d.getDate()+i);const ds=d.toISOString().slice(0,10);if(S.settings.days.includes(d.getDay())&&!S.trainings.some(e=>e.date===ds))missing.push(ds)}S.lastReviewWeek=wk;save();if(!missing.length){S.streak++;save();toast(`🔥 Semana completada · racha ${S.streak}`)}else reviewModal(missing);
+ if(!S.profile)return;const now=new Date();if(now.getDay()!==0)return;const wk=weekKey();if(!S.lastReviewWeek){S.lastReviewWeek=wk;save();return}if(S.lastReviewWeek===wk)return;const prevWeekStart=S.lastReviewWeek;const st=dateObj(prevWeekStart),missing=[];const todayDate=today();for(let i=0;i<7;i++){const d=new Date(st);d.setDate(d.getDate()+i);const ds=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;if(ds>todayDate)continue;if(S.settings.days.includes(d.getDay())&&!S.trainings.some(e=>e.date===ds))missing.push(ds)}S.lastReviewWeek=wk;save();if(!missing.length){S.streak++;save();toast(`🔥 Semana completada · racha ${S.streak}`)}else reviewModal(missing);
 }
 function reviewModal(missing){
  modal(`<div class="kicker">📅 REVISIÓN SEMANAL</div><h2>Faltó una práctica</h2><p class="sub">No es para castigarte. Queremos que tu historial sepa qué pasó. Una causa válida no rompe la racha.</p>${missing.map((d,i)=>`<div class="list-item"><b>${labelDate(d)}</b><select id="reason${i}" style="margin-top:7px"><option>Enfermedad</option><option>Estudios</option><option>Motivo familiar</option><option>Otra razón</option><option>Sin motivo</option></select></div>`).join("")}<button class="btn primary" style="margin-top:10px" onclick='saveReview(${JSON.stringify(missing)})'>Guardar revisión</button>`);
