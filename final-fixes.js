@@ -494,21 +494,21 @@ body.theme-carretera .app{position:relative;z-index:2}
         if(typeof previousSaveTraining==='function'){
           window.saveTraining=function(){
             swqEnsureConsumables();
-            const hadCloro=Number(S.consumables.cloroPremium||0)>0,hadIso=Number(S.consumables.bebidaIsotonica||0)>0,hadCoin=Number(S.consumables.fichaNadador||0)>0;
+            const hadCloro=Number(S.consumables.cloroPremium||0)>0,hadCoin=Number(S.consumables.fichaNadador||0)>0;
             const beforeCount=Array.isArray(S.trainings)?S.trainings.length:0;
-            const oldCloro=Number(S.consumables.cloroPremium||0),oldIso=Number(S.consumables.bebidaIsotonica||0),oldCoin=Number(S.consumables.fichaNadador||0);
-            if(hadCloro)S.consumables.cloroPremium=0;if(hadIso)S.consumables.bebidaIsotonica=0;if(hadCoin)S.consumables.fichaNadador=0;
+            const oldCloro=Number(S.consumables.cloroPremium||0),oldCoin=Number(S.consumables.fichaNadador||0);
+            if(hadCloro)S.consumables.cloroPremium=0;if(hadCoin)S.consumables.fichaNadador=0;
             let result;
-            try{result=previousSaveTraining.apply(this,arguments);}catch(err){S.consumables.cloroPremium=oldCloro;S.consumables.bebidaIsotonica=oldIso;S.consumables.fichaNadador=oldCoin;throw err;}
+            try{result=previousSaveTraining.apply(this,arguments);}catch(err){S.consumables.cloroPremium=oldCloro;S.consumables.fichaNadador=oldCoin;throw err;}
             setTimeout(async()=>{
               try{
                 if(!Array.isArray(S.trainings)||S.trainings.length<=beforeCount){S.consumables.cloroPremium=oldCloro;S.consumables.bebidaIsotonica=oldIso;S.consumables.fichaNadador=oldCoin;return;}
                 const e=S.trainings[S.trainings.length-1],baseXp=Math.max(0,Number(e.xp)||0);
-                const desiredXp=Math.round(baseXp*(hadCloro?1.40:1)*(hadIso?1.25:1)),extraXp=Math.max(0,desiredXp-baseXp);
+                const desiredXp=Math.round(baseXp*(hadCloro?1.40:1)),extraXp=Math.max(0,desiredXp-baseXp);
                 e.xp=desiredXp;if(extraXp>0&&typeof gainXP==='function')gainXP(extraXp);
                 const baseCoins=Math.max(0,Number(e.coins)||0),desiredCoins=hadCoin?Math.round(baseCoins*1.50):baseCoins,extraCoins=Math.max(0,desiredCoins-baseCoins);
                 e.coins=desiredCoins;if(extraCoins)S.coins+=extraCoins;
-                S.consumables.cloroPremium=Math.max(0,oldCloro-(hadCloro?1:0));S.consumables.bebidaIsotonica=Math.max(0,oldIso-(hadIso?1:0));S.consumables.fichaNadador=Math.max(0,oldCoin-(hadCoin?1:0));
+                S.consumables.cloroPremium=Math.max(0,oldCloro-(hadCloro?1:0));S.consumables.fichaNadador=Math.max(0,oldCoin-(hadCoin?1:0));
                 try{save();}catch(e){}try{render();}catch(e){}
                 if(authUser&&typeof syncTrainingToCloud==='function')try{await syncTrainingToCloud(e);}catch(err){console.warn('SWQ boosted workout sync',err)}
                 if(authUser&&typeof syncProfileToCloud==='function')try{await syncProfileToCloud();}catch(err){console.warn('SWQ boosted profile sync',err)}
