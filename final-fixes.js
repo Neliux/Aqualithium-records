@@ -1,4 +1,4 @@
-/* Swim Quest · actualización 2026-09-18 v4
+/* Swim Quest · actualización 2026-09-18 v5
    - Deduplicación local/remota de entrenamientos.
    - Dificultad basada principalmente en % de la media semanal.
    - Nuevo nivel Brutal.
@@ -11,10 +11,10 @@
 */
 (function(){
   'use strict';
-  if(window.__SWQ_FINAL_FIXES_20260918_1__)return;
+  if(window.__SWQ_FINAL_FIXES_20260918_2__)return;
   window.__SWQ_FINAL_FIXES_20260918_1__=true;
 
-  const VERSION='20260918-1';
+  const VERSION='20260918-2';
   let updatingProfilePanel=false;
   let roadTimer=null,planeTimer=null,roadLayer=null;
   let timeCategory=localStorage.getItem('SWIM_QUEST_TIME_CATEGORY')||'50';
@@ -478,7 +478,7 @@ body.theme-carretera .app{position:relative;z-index:2}
       if(typeof SHOP!=='undefined'&&!SHOP.some(x=>x.id==='theme_Impacto'))SHOP.push({id:'theme_Impacto',icon:'💥',name:'Impacto Naranja',price:620,desc:'Estética naranja y negra con destellos, chispas y orbes de energía.',buy:()=>S.purchases.theme_Impacto=true});
       if(typeof THEMES!=='undefined'&&!THEMES.EspejoAbisal)THEMES.EspejoAbisal={a:'#bfe9ff',b:'#101827',emoji:'🪞',desc:'Océano de cristal oscuro: fragmentos de espejo, reflejos líquidos y ondas de luz lentas.'};
       if(typeof SHOP!=='undefined'&&!SHOP.some(x=>x.id==='theme_EspejoAbisal'))SHOP.push({id:'theme_EspejoAbisal',icon:'🪞',name:'Espejo Abisal',price:590,desc:'Océano de cristal oscuro con reflejos líquidos y fragmentos flotantes.',buy:()=>S.purchases.theme_EspejoAbisal=true});
-      if(typeof SHOP!=='undefined'&&!SHOP.some(x=>x.id==='fichaNadador'))SHOP.push({id:'fichaNadador',icon:'🎟️',name:'Ficha del Nadador',price:260,desc:'Consumible. +50% de monedas en tu siguiente entrenamiento.',buy:()=>{swqEnsureConsumables();S.consumables.fichaNadador=(S.consumables.fichaNadador||0)+1;}});
+      if(typeof SHOP!=='undefined'&&!SHOP.some(x=>x.id==='fichaNadador'))SHOP.push({id:'fichaNadador',icon:'🎟️',name:'Ficha del Nadador',price:260,desc:'Consumible. +25% de monedas en tu siguiente entrenamiento.',buy:()=>{swqEnsureConsumables();S.consumables.fichaNadador=(S.consumables.fichaNadador||0)+1;}});
     }catch(e){console.warn('SWQ new shop items',e)}
   }
   function swqPatchCloroAndTrainingXP(){
@@ -506,7 +506,7 @@ body.theme-carretera .app{position:relative;z-index:2}
                 const e=S.trainings[S.trainings.length-1],baseXp=Math.max(0,Number(e.xp)||0);
                 const desiredXp=Math.round(baseXp*(hadCloro?1.40:1)),extraXp=Math.max(0,desiredXp-baseXp);
                 e.xp=desiredXp;if(extraXp>0&&typeof gainXP==='function')gainXP(extraXp);
-                const baseCoins=Math.max(0,Number(e.coins)||0),desiredCoins=hadCoin?Math.round(baseCoins*1.50):baseCoins,extraCoins=Math.max(0,desiredCoins-baseCoins);
+                const baseCoins=Math.max(0,Number(e.coins)||0),desiredCoins=hadCoin?Math.round(baseCoins*1.25):baseCoins,extraCoins=Math.max(0,desiredCoins-baseCoins);
                 e.coins=desiredCoins;if(extraCoins)S.coins+=extraCoins;
                 S.consumables.cloroPremium=Math.max(0,oldCloro-(hadCloro?1:0));S.consumables.fichaNadador=Math.max(0,oldCoin-(hadCoin?1:0));
                 try{save();}catch(e){}try{render();}catch(e){}
@@ -757,5 +757,362 @@ body.theme-carretera .app{position:relative;z-index:2}
   }
   swqInitUpdate2();setTimeout(swqInitUpdate2,1200);
   setInterval(()=>{try{swqRemoveBebidaIsotonica();swqInflateShopPrices();swqPatchXPGems();swqEnsureConsumables();swqPatchCloroShopText();swqPatchPearExtra();swqSyncLeviathan();swqSyncImpactTheme();swqSyncEspejoAbisal();swqPatchFishMotivation();swqInjectQuickThemeButton();}catch(e){}},5000);
+
+
+  /* === UPDATE 2026-09-18 v5: quick theme repair, Espejo Abisal rework, chess, ticket 25%, Impacto extra === */
+  function swqPatchTicket25(){
+    try{
+      const it=SHOP?.find?.(x=>x.id==='fichaNadador');
+      if(it){
+        it.name='Ficha del Nadador';
+        it.icon='🎟️';
+        it.desc='Consumible. +25% de monedas en tu siguiente entrenamiento.';
+      }
+    }catch(e){console.warn('SWQ ticket 25',e)}
+  }
+
+  function swqEnsureChessTheme(){
+    try{
+      if(typeof THEMES!=='undefined'&&!THEMES.Ajedrez){
+        THEMES.Ajedrez={
+          a:'#e8f0ff',b:'#1a1730',emoji:'♟️',
+          desc:'Tablero nocturno eléctrico: cuadrícula animada, piezas cayendo, destellos y piezas que salen disparadas al pulsar botones.'
+        };
+      }
+      if(typeof SHOP!=='undefined'&&!SHOP.some(x=>x.id==='theme_Ajedrez')){
+        SHOP.push({
+          id:'theme_Ajedrez',
+          icon:'♟️',
+          name:'Ajedrez',
+          price:720,
+          desc:'Tablero nocturno con piezas cayendo, líneas luminosas y ráfagas de piezas al pulsar botones.',
+          buy:()=>{S.purchases.theme_Ajedrez=true;}
+        });
+      }
+    }catch(e){console.warn('SWQ chess theme',e)}
+  }
+
+  function swqInjectVisualsV5(){
+    if(document.getElementById('swq-v5-visuals'))return;
+    const s=document.createElement('style');
+    s.id='swq-v5-visuals';
+    s.textContent=[
+      /* --- Espejo Abisal: nueva identidad visual --- */
+      "body.theme-espejoabisal{background:radial-gradient(circle at 50% 8%,rgba(52,232,255,.18),transparent 22%),radial-gradient(circle at 12% 72%,rgba(119,66,255,.22),transparent 26%),radial-gradient(circle at 88% 28%,rgba(0,255,214,.16),transparent 24%),linear-gradient(145deg,#020714 0%,#07182a 36%,#0a0e2a 64%,#02030c 100%)!important;color:#e9fbff!important;overflow-x:hidden!important}",
+      "body.theme-espejoabisal::before{content:'';position:fixed;inset:-30%;z-index:-2;pointer-events:none;background:conic-gradient(from 20deg at 50% 50%,rgba(0,255,229,.00),rgba(0,255,229,.13),rgba(141,83,255,.18),rgba(0,255,229,.00),rgba(255,255,255,.10),rgba(0,255,229,.00));filter:blur(28px);animation:swqMirrorAurora 18s linear infinite}",
+      "body.theme-espejoabisal::after{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:repeating-linear-gradient(115deg,transparent 0 54px,rgba(149,242,255,.05) 55px 56px,transparent 57px 120px),repeating-radial-gradient(ellipse at 30% 40%,transparent 0 38px,rgba(90,246,255,.045) 39px 40px,transparent 41px 92px);mix-blend-mode:screen;animation:swqMirrorLines 15s ease-in-out infinite alternate;opacity:.8}",
+      "body.theme-espejoabisal .app{position:relative;z-index:3}",
+      "body.theme-espejoabisal .topbar{background:linear-gradient(180deg,rgba(3,12,25,.88),rgba(5,15,30,.62),transparent)!important;border-bottom-color:rgba(132,248,255,.20)!important}",
+      "body.theme-espejoabisal .wallet{background:linear-gradient(145deg,rgba(10,39,56,.92),rgba(8,16,35,.92))!important;border-color:rgba(125,248,255,.38)!important;box-shadow:0 0 22px rgba(0,234,255,.10)!important}",
+      "body.theme-espejoabisal .card,body.theme-espejoabisal .hero,body.theme-espejoabisal .stat,body.theme-espejoabisal .list-item,body.theme-espejoabisal .series,body.theme-espejoabisal .shop-item{background:linear-gradient(145deg,rgba(10,28,48,.82),rgba(9,10,31,.76))!important;border:1px solid rgba(126,247,255,.24)!important;box-shadow:inset 0 0 38px rgba(0,240,255,.035),inset 0 -2px 0 rgba(173,112,255,.12),0 18px 48px rgba(0,0,0,.42),0 0 28px rgba(0,206,255,.055)!important;backdrop-filter:blur(15px) saturate(1.25)}",
+      "body.theme-espejoabisal .btn{background:linear-gradient(135deg,rgba(28,75,91,.94),rgba(23,17,63,.94))!important;border:1px solid rgba(148,251,255,.42)!important;color:#efffff!important;box-shadow:inset 0 0 18px rgba(103,250,255,.08),0 7px 26px rgba(0,0,0,.34),0 0 20px rgba(0,231,255,.08)!important;backdrop-filter:blur(10px);position:relative;overflow:hidden}",
+      "body.theme-espejoabisal .btn::after{content:'';position:absolute;top:-40%;left:-20%;width:24%;height:180%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.33),transparent);transform:skewX(-16deg);animation:swqMirrorButtonSheen 4.8s ease-in-out infinite}",
+      "body.theme-espejoabisal .btn.primary{background:linear-gradient(135deg,#49f4ff,#6c62ff 58%,#d363ff)!important;color:#06101f!important;border-color:#9efcff!important;box-shadow:0 0 28px rgba(0,236,255,.22),0 0 48px rgba(132,89,255,.10)!important}",
+      "body.theme-espejoabisal .nav{background:rgba(3,8,20,.93)!important;border-top-color:rgba(125,248,255,.24)!important;backdrop-filter:blur(14px)}",
+      ".swq-mirror-layer{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;perspective:900px}",
+      ".swq-mirror-shard{position:absolute;width:var(--w,54px);height:var(--h,86px);clip-path:polygon(50% 0,100% 36%,76% 100%,18% 86%,0 34%);background:linear-gradient(145deg,rgba(240,255,255,.48),rgba(86,250,255,.12) 30%,rgba(120,91,255,.20) 58%,rgba(0,0,0,.08));border:1px solid rgba(206,255,255,.48);box-shadow:0 0 18px rgba(0,231,255,.18),inset 0 0 22px rgba(255,255,255,.10);filter:saturate(1.5);animation:swqMirrorShard var(--d,11s) ease-in-out infinite}",
+      ".swq-mirror-shard::after{content:'';position:absolute;inset:0;background:linear-gradient(112deg,transparent 20%,rgba(255,255,255,.52) 40%,transparent 58%);transform:translateX(-120%);animation:swqMirrorGlint 4.5s ease-in-out infinite}",
+      ".swq-mirror-glow{position:absolute;width:clamp(120px,22vw,250px);height:clamp(120px,22vw,250px);border-radius:50%;background:radial-gradient(circle,rgba(72,250,255,.20),rgba(115,70,255,.09) 38%,transparent 72%);filter:blur(2px);animation:swqMirrorGlow 9s ease-in-out infinite alternate}",
+      ".swq-mirror-ripple{position:absolute;width:140px;height:140px;border-radius:50%;border:1px solid rgba(117,248,255,.24);box-shadow:0 0 24px rgba(70,235,255,.10),inset 0 0 20px rgba(142,92,255,.06);animation:swqMirrorRipple 7.5s ease-out infinite}",
+      ".swq-mirror-beam{position:absolute;top:-20%;width:3px;height:150%;background:linear-gradient(180deg,transparent,rgba(112,247,255,.55),rgba(203,112,255,.22),transparent);filter:blur(.5px);box-shadow:0 0 18px rgba(0,239,255,.25);transform:rotate(18deg);animation:swqMirrorBeam 8s ease-in-out infinite}",
+      ".swq-mirror-wave{position:absolute;left:-12%;width:124%;height:160px;border:1px solid rgba(96,239,255,.12);border-radius:48%;filter:blur(.6px);transform:rotate(-4deg);animation:swqMirrorWave 10s ease-in-out infinite}",
+      ".swq-mirror-speck{position:absolute;width:3px;height:3px;border-radius:50%;background:#dffeff;box-shadow:0 0 12px rgba(105,242,255,.9);animation:swqMirrorSpeck var(--d,6s) linear infinite}",
+      "@keyframes swqMirrorAurora{0%{transform:rotate(0deg) scale(1)}50%{transform:rotate(180deg) scale(1.14)}100%{transform:rotate(360deg) scale(1)}}",
+      "@keyframes swqMirrorLines{0%{transform:translate3d(-4%,0,0) scale(1)}100%{transform:translate3d(4%,-3%,0) scale(1.05)}}",
+      "@keyframes swqMirrorButtonSheen{0%,60%{transform:translateX(-160%) skewX(-16deg);opacity:0}72%{opacity:.95}88%,100%{transform:translateX(560%) skewX(-16deg);opacity:0}}",
+      "@keyframes swqMirrorShard{0%,100%{transform:translate3d(0,0,0) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) rotateZ(var(--rz,0deg)) scale(.76);opacity:.12}18%{opacity:.74}48%{transform:translate3d(var(--sx,80px),var(--sy,-50px),40px) rotateX(24deg) rotateY(-28deg) rotateZ(var(--rz,0deg)) scale(1.04);opacity:.88}80%{opacity:.28}}",
+      "@keyframes swqMirrorGlint{0%,42%{transform:translateX(-140%)}63%,100%{transform:translateX(140%)}}",
+      "@keyframes swqMirrorGlow{from{transform:translate3d(-2vw,0,0) scale(.72);opacity:.22}to{transform:translate3d(7vw,8vh,0) scale(1.28);opacity:.68}}",
+      "@keyframes swqMirrorRipple{0%{transform:scale(.25);opacity:0}12%{opacity:.55}100%{transform:scale(2.9);opacity:0}}",
+      "@keyframes swqMirrorBeam{0%,100%{opacity:0;transform:translateX(-5vw) rotate(18deg)}50%{opacity:.7;transform:translateX(15vw) rotate(18deg)}}",
+      "@keyframes swqMirrorWave{0%,100%{transform:translateY(9vh) rotate(-4deg);opacity:.10}50%{transform:translateY(-3vh) rotate(3deg);opacity:.42}}",
+      "@keyframes swqMirrorSpeck{from{transform:translateY(5vh) scale(.5);opacity:0}15%{opacity:.8}85%{opacity:.28}to{transform:translateY(-105vh) scale(1.2);opacity:0}}",
+
+      /* --- Ajedrez: 4 efectos principales --- */
+      "body.theme-ajedrez{background-color:#070713!important;background-image:linear-gradient(45deg,rgba(255,255,255,.055) 25%,transparent 25%,transparent 75%,rgba(255,255,255,.055) 75%),linear-gradient(45deg,rgba(255,255,255,.055) 25%,transparent 25%,transparent 75%,rgba(255,255,255,.055) 75%),radial-gradient(circle at 50% 10%,rgba(78,220,255,.16),transparent 26%),radial-gradient(circle at 80% 78%,rgba(255,81,195,.13),transparent 30%),linear-gradient(160deg,#111126,#06060f 55%,#020205)!important;background-size:74px 74px,74px 74px,100% 100%,100% 100%,100% 100%;background-position:0 0,37px 37px,0 0,0 0,0 0!important;color:#f8f8ff!important;overflow-x:hidden!important}",
+      "body.theme-ajedrez::before{content:'';position:fixed;inset:-14%;z-index:-2;pointer-events:none;background:repeating-linear-gradient(90deg,rgba(105,221,255,.07) 0 2px,transparent 2px 74px),repeating-linear-gradient(0deg,rgba(255,105,210,.06) 0 2px,transparent 2px 74px);transform:rotate(-8deg) scale(1.16);animation:swqChessGrid 13s linear infinite}",
+      "body.theme-ajedrez::after{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(115deg,transparent 0 42%,rgba(98,235,255,.16) 49%,transparent 57%),linear-gradient(290deg,transparent 0 46%,rgba(255,105,213,.12) 51%,transparent 56%);background-size:260% 260%,220% 220%;animation:swqChessScan 8s linear infinite;mix-blend-mode:screen}",
+      "body.theme-ajedrez .app{position:relative;z-index:3}",
+      "body.theme-ajedrez .topbar{background:linear-gradient(180deg,rgba(7,7,20,.94),rgba(10,10,28,.74),transparent)!important;border-bottom-color:rgba(118,230,255,.22)!important}",
+      "body.theme-ajedrez .wallet,body.theme-ajedrez .card,body.theme-ajedrez .hero,body.theme-ajedrez .stat,body.theme-ajedrez .list-item,body.theme-ajedrez .series,body.theme-ajedrez .shop-item{background:linear-gradient(145deg,rgba(17,19,43,.91),rgba(8,8,21,.90))!important;border-color:rgba(130,228,255,.25)!important;box-shadow:inset 0 0 26px rgba(77,218,255,.045),0 16px 42px rgba(0,0,0,.42),0 0 22px rgba(255,81,191,.035)!important;backdrop-filter:blur(8px)}",
+      "body.theme-ajedrez .btn{background:linear-gradient(145deg,rgba(30,34,70,.96),rgba(12,13,31,.98))!important;color:#f7fbff!important;border-color:rgba(118,224,255,.42)!important;box-shadow:inset 0 0 14px rgba(100,219,255,.08),0 7px 23px rgba(0,0,0,.34),0 0 16px rgba(255,87,195,.05)!important;position:relative;overflow:hidden}",
+      "body.theme-ajedrez .btn.primary{background:linear-gradient(135deg,#52e9ff,#7e67ff 52%,#ff66c9)!important;color:#080a18!important;border-color:#d2fdff!important;box-shadow:0 0 26px rgba(77,223,255,.20),0 0 34px rgba(255,91,198,.12)!important}",
+      "body.theme-ajedrez .nav{background:rgba(5,5,14,.95)!important;border-top-color:rgba(121,225,255,.22)!important;backdrop-filter:blur(10px)}",
+      ".swq-chess-layer{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}",
+      ".swq-chess-board-glow{position:absolute;inset:8%;border:1px solid rgba(117,228,255,.16);box-shadow:0 0 90px rgba(86,222,255,.07),inset 0 0 80px rgba(255,89,197,.05);transform:rotate(-3deg);animation:swqChessBoardPulse 5.5s ease-in-out infinite}",
+      ".swq-chess-fall{position:absolute;top:-12vh;font-size:clamp(18px,4vw,38px);font-weight:900;color:rgba(239,247,255,.76);text-shadow:0 0 10px rgba(88,228,255,.55),0 0 22px rgba(255,98,199,.25);animation:swqChessFall var(--d,8s) linear infinite;animation-delay:var(--delay,0s);filter:drop-shadow(0 3px 4px rgba(0,0,0,.45))}",
+      ".swq-chess-scan{position:absolute;inset:-20%;background:linear-gradient(180deg,transparent 0 44%,rgba(95,234,255,.12) 50%,transparent 56%);filter:blur(2px);animation:swqChessScanBand 6.5s ease-in-out infinite}",
+      ".swq-chess-burst-layer{position:fixed;inset:0;z-index:120;pointer-events:none;overflow:hidden}",
+      ".swq-chess-burst{position:absolute;font-size:20px;font-weight:900;transform:translate(-50%,-50%) scale(.4);opacity:1;text-shadow:0 0 10px rgba(105,231,255,.95),0 0 22px rgba(255,100,204,.66);animation:swqChessBurst var(--d,.78s) cubic-bezier(.16,.75,.18,1) forwards}",
+      ".swq-chess-burst-core{position:absolute;width:22px;height:22px;border-radius:50%;border:2px solid rgba(228,255,255,.80);box-shadow:0 0 20px rgba(90,225,255,.6),0 0 38px rgba(255,88,198,.22);transform:translate(-50%,-50%) scale(.2);animation:swqChessCore .45s ease-out forwards}",
+      "@keyframes swqChessGrid{from{transform:rotate(-8deg) translate3d(-2%,0,0) scale(1.16)}to{transform:rotate(-8deg) translate3d(2%,-3%,0) scale(1.18)}}",
+      "@keyframes swqChessScan{0%{background-position:-110% 0,110% 100%}100%{background-position:110% 100%,-110% 0}}",
+      "@keyframes swqChessBoardPulse{0%,100%{transform:rotate(-3deg) scale(.985);opacity:.46}50%{transform:rotate(-1deg) scale(1.02);opacity:.88}}",
+      "@keyframes swqChessFall{0%{transform:translate3d(0,-8vh,0) rotate(-12deg) scale(.72);opacity:0}10%{opacity:.76}52%{transform:translate3d(var(--dx,12px),62vh,0) rotate(170deg) scale(1)}88%{opacity:.48}100%{transform:translate3d(calc(var(--dx,12px)*-1),118vh,0) rotate(330deg) scale(.82);opacity:0}}",
+      "@keyframes swqChessScanBand{0%,100%{transform:translateY(-48vh) rotate(-2deg);opacity:.08}50%{transform:translateY(48vh) rotate(2deg);opacity:.62}}",
+      "@keyframes swqChessBurst{0%{transform:translate(-50%,-50%) translate3d(0,0,0) rotate(0deg) scale(.35);opacity:1}16%{opacity:1}100%{transform:translate(-50%,-50%) translate3d(var(--dx,0),var(--dy,0),0) rotate(var(--rot,220deg)) scale(.85);opacity:0}}",
+      "@keyframes swqChessCore{0%{transform:translate(-50%,-50%) scale(.2);opacity:.9}100%{transform:translate(-50%,-50%) scale(3.2);opacity:0}}",
+
+      /* --- Impacto: efecto extra de onda expansiva --- */
+      ".swq-impact-wave{position:fixed;width:86px;height:86px;border:3px solid rgba(255,225,125,.88);border-radius:50%;pointer-events:none;z-index:121;transform:translate(-50%,-50%) scale(.16);box-shadow:0 0 18px rgba(255,120,25,.72),inset 0 0 20px rgba(255,210,95,.22);animation:swqImpactWave .62s cubic-bezier(.12,.72,.18,1) forwards}",
+      ".swq-impact-wave.inner{width:38px;height:38px;border-width:2px;border-color:rgba(255,116,35,.94);animation-duration:.42s}",
+      ".swq-impact-ray{position:fixed;width:3px;height:54px;border-radius:999px;background:linear-gradient(180deg,#fff7cf,#ff8c1f,transparent);pointer-events:none;z-index:122;transform-origin:50% 100%;animation:swqImpactRay .50s ease-out forwards;filter:drop-shadow(0 0 8px rgba(255,120,25,.78))}",
+      "@keyframes swqImpactWave{0%{transform:translate(-50%,-50%) scale(.16);opacity:1}58%{opacity:.74}100%{transform:translate(-50%,-50%) scale(3.15);opacity:0}}",
+      "@keyframes swqImpactRay{from{transform:translate(-50%,-100%) rotate(var(--ang,0deg)) scaleY(.35);opacity:1}to{transform:translate(-50%,-100%) rotate(var(--ang,0deg)) translateY(-42px) scaleY(1.35);opacity:0}}"
+    ].join('');
+    document.head.appendChild(s);
+  }
+
+  function swqSyncEspejoAbisal(){
+    let layer=document.getElementById('swqEspejoAbisalLayer');
+    if(S.settings.theme==='EspejoAbisal'){
+      if(layer)return;
+      layer=document.createElement('div');
+      layer.id='swqEspejoAbisalLayer';
+      layer.className='swq-mirror-layer';
+      for(let i=0;i<30;i++){
+        const sh=document.createElement('span');
+        sh.className='swq-mirror-shard';
+        sh.style.left=(1+Math.random()*98)+'%';
+        sh.style.top=(4+Math.random()*96)+'%';
+        sh.style.setProperty('--w',(30+Math.random()*82)+'px');
+        sh.style.setProperty('--h',(42+Math.random()*120)+'px');
+        sh.style.setProperty('--sx',(-120+Math.random()*240)+'px');
+        sh.style.setProperty('--sy',(-95+Math.random()*190)+'px');
+        sh.style.setProperty('--rx',(-30+Math.random()*60)+'deg');
+        sh.style.setProperty('--ry',(-35+Math.random()*70)+'deg');
+        sh.style.setProperty('--rz',(-50+Math.random()*100)+'deg');
+        sh.style.setProperty('--d',(8+Math.random()*9)+'s');
+        sh.style.animationDelay=(-Math.random()*14)+'s';
+        layer.appendChild(sh);
+      }
+      for(let i=0;i<10;i++){
+        const g=document.createElement('span');
+        g.className='swq-mirror-glow';
+        g.style.left=(-5+i*11+Math.random()*6)+'%';
+        g.style.top=(4+Math.random()*88)+'%';
+        g.style.animationDelay=(-Math.random()*9)+'s';
+        layer.appendChild(g);
+      }
+      for(let i=0;i<8;i++){
+        const rr=document.createElement('span');
+        rr.className='swq-mirror-ripple';
+        rr.style.left=(4+Math.random()*92)+'%';
+        rr.style.top=(12+Math.random()*82)+'%';
+        rr.style.animationDelay=(-Math.random()*9)+'s';
+        layer.appendChild(rr);
+      }
+      for(let i=0;i<5;i++){
+        const b=document.createElement('span');
+        b.className='swq-mirror-beam';
+        b.style.left=(5+i*21+Math.random()*7)+'%';
+        b.style.animationDelay=(-Math.random()*8)+'s';
+        layer.appendChild(b);
+      }
+      for(let i=0;i<3;i++){
+        const w=document.createElement('span');
+        w.className='swq-mirror-wave';
+        w.style.top=(28+i*23)+'%';
+        w.style.animationDelay=(-i*2.1)+'s';
+        layer.appendChild(w);
+      }
+      for(let i=0;i<26;i++){
+        const p=document.createElement('span');
+        p.className='swq-mirror-speck';
+        p.style.left=(Math.random()*100)+'%';
+        p.style.top=(40+Math.random()*60)+'%';
+        p.style.setProperty('--d',(4+Math.random()*5)+'s');
+        p.style.animationDelay=(-Math.random()*7)+'s';
+        layer.appendChild(p);
+      }
+      document.body.appendChild(layer);
+    }else if(layer)layer.remove();
+  }
+
+  function swqSyncChess(){
+    let layer=document.getElementById('swqChessLayer');
+    let burst=document.getElementById('swqChessBurstLayer');
+    if(S.settings.theme==='Ajedrez'){
+      if(!layer){
+        layer=document.createElement('div');
+        layer.id='swqChessLayer';
+        layer.className='swq-chess-layer';
+        const board=document.createElement('div');
+        board.className='swq-chess-board-glow';
+        layer.appendChild(board);
+        const scan=document.createElement('div');
+        scan.className='swq-chess-scan';
+        layer.appendChild(scan);
+        const pieces=['♟','♞','♜','♝','♛','♚'];
+        for(let i=0;i<22;i++){
+          const p=document.createElement('span');
+          p.className='swq-chess-fall';
+          p.textContent=pieces[i%pieces.length];
+          p.style.left=(2+Math.random()*96)+'%';
+          p.style.setProperty('--dx',(-80+Math.random()*160)+'px');
+          p.style.setProperty('--d',(7+Math.random()*7)+'s');
+          p.style.setProperty('--delay',(-Math.random()*12)+'s');
+          layer.appendChild(p);
+        }
+        document.body.appendChild(layer);
+      }
+      if(!burst){
+        burst=document.createElement('div');
+        burst.id='swqChessBurstLayer';
+        burst.className='swq-chess-burst-layer';
+        document.body.appendChild(burst);
+      }
+    }else{
+      if(layer)layer.remove();
+      if(burst)burst.remove();
+    }
+  }
+
+  function swqSpawnChessBurst(x,y){
+    if(S.settings.theme!=='Ajedrez')return;
+    swqSyncChess();
+    const host=document.getElementById('swqChessBurstLayer');
+    if(!host)return;
+    const pieces=['♟','♞','♜','♝','♛','♚'];
+    const core=document.createElement('span');
+    core.className='swq-chess-burst-core';
+    core.style.left=x+'px';
+    core.style.top=y+'px';
+    host.appendChild(core);
+    setTimeout(()=>core.remove(),520);
+    for(let i=0;i<14;i++){
+      const p=document.createElement('span');
+      p.className='swq-chess-burst';
+      p.textContent=pieces[Math.floor(Math.random()*pieces.length)];
+      const a=Math.random()*Math.PI*2;
+      const d=42+Math.random()*108;
+      p.style.left=x+'px';
+      p.style.top=y+'px';
+      p.style.setProperty('--dx',Math.cos(a)*d+'px');
+      p.style.setProperty('--dy',Math.sin(a)*d+'px');
+      p.style.setProperty('--rot',(-220+Math.random()*440)+'deg');
+      p.style.setProperty('--d',(0.62+Math.random()*0.45)+'s');
+      host.appendChild(p);
+      setTimeout(()=>p.remove(),1200);
+    }
+  }
+
+  function swqSpawnImpactBurst(x,y){
+    const flash=document.createElement('div');
+    flash.className='swq-impact-flash';
+    flash.style.left=x+'px';
+    flash.style.top=y+'px';
+    document.body.appendChild(flash);
+    setTimeout(()=>flash.remove(),440);
+
+    const wave=document.createElement('div');
+    wave.className='swq-impact-wave';
+    wave.style.left=x+'px';
+    wave.style.top=y+'px';
+    document.body.appendChild(wave);
+    setTimeout(()=>wave.remove(),700);
+
+    const inner=document.createElement('div');
+    inner.className='swq-impact-wave inner';
+    inner.style.left=x+'px';
+    inner.style.top=y+'px';
+    document.body.appendChild(inner);
+    setTimeout(()=>inner.remove(),520);
+
+    for(let i=0;i<10;i++){
+      const ray=document.createElement('span');
+      ray.className='swq-impact-ray';
+      ray.style.left=x+'px';
+      ray.style.top=y+'px';
+      ray.style.setProperty('--ang',(i*36+Math.random()*12)+'deg');
+      document.body.appendChild(ray);
+      setTimeout(()=>ray.remove(),620);
+    }
+
+    for(let i=0;i<20;i++){
+      const sp=document.createElement('span');
+      sp.className='swq-impact-spark';
+      const a=(Math.PI*2*i/20)+Math.random()*.18;
+      const d=30+Math.random()*78;
+      sp.style.left=x+'px';
+      sp.style.top=y+'px';
+      sp.style.setProperty('--sx',Math.cos(a)*d+'px');
+      sp.style.setProperty('--sy',Math.sin(a)*d+'px');
+      document.body.appendChild(sp);
+      setTimeout(()=>sp.remove(),850);
+    }
+  }
+
+  function swqApplyQuickTheme(k){
+    try{
+      if(typeof THEMES==='undefined'||!THEMES[k])return;
+      if(k!=='Aqua'&&!S.purchases?.['theme_'+k]){
+        toast('🔒 Ese estilo todavía no está desbloqueado.');
+        return;
+      }
+      S.settings.theme=k;
+      save();
+      if(typeof applyTheme==='function')applyTheme();
+      try{eclipseCartoonStars();}catch(e){}
+      swqSyncLeviathan();
+      swqSyncImpactTheme();
+      swqSyncEspejoAbisal();
+      swqSyncChess();
+      closeModal();
+      render();
+      setTimeout(()=>{try{
+        swqSyncLeviathan();
+        swqSyncImpactTheme();
+        swqSyncEspejoAbisal();
+        swqSyncChess();
+        swqInjectQuickThemeButton();
+      }catch(e){}},60);
+    }catch(e){console.warn('SWQ quick theme v5',e)}
+  }
+
+  function swqInitUpdate3(){
+    try{
+      swqPatchTicket25();
+      swqEnsureChessTheme();
+      swqInjectVisualsV5();
+      swqSyncLeviathan();
+      swqSyncImpactTheme();
+      swqSyncEspejoAbisal();
+      swqSyncChess();
+      swqPatchTicket25();
+      window.swqApplyQuickTheme=swqApplyQuickTheme;
+      window.swqQuickTheme=swqQuickTheme;
+      if(!window.__swqChessClickHook20260918_2){
+        document.addEventListener('click',e=>{
+          if(S.settings.theme!=='Ajedrez')return;
+          const btn=e.target?.closest?.('button');
+          if(!btn||btn.disabled)return;
+          const r=btn.getBoundingClientRect();
+          swqSpawnChessBurst(r.left+r.width/2,r.top+r.height/2);
+        },true);
+        window.__swqChessClickHook20260918_2=true;
+      }
+      if(!window.__swqImpactExtraClickHook20260918_2){
+        /* An extra Impacto burst is only for the theme's visual click effect. */
+        window.__swqImpactExtraClickHook20260918_2=true;
+      }
+      swqInjectQuickThemeButton();
+      try{render();}catch(e){}
+    }catch(e){console.warn('SWQ update3',e)}
+  }
+
+  swqInitUpdate3();
+  setTimeout(swqInitUpdate3,900);
+  setInterval(()=>{try{
+    swqPatchTicket25();
+    swqEnsureChessTheme();
+    swqSyncLeviathan();
+    swqSyncImpactTheme();
+    swqSyncEspejoAbisal();
+    swqSyncChess();
+    swqInjectQuickThemeButton();
+    window.swqApplyQuickTheme=swqApplyQuickTheme;
+    window.swqQuickTheme=swqQuickTheme;
+  }catch(e){}},5000);
 
 })();
