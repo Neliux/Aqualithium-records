@@ -1,4 +1,4 @@
-/* Swim Quest · actualización 2026-09-17 v2
+/* Swim Quest · actualización 2026-09-18 v3
    - Deduplicación local/remota de entrenamientos.
    - Dificultad basada principalmente en % de la media semanal.
    - Nuevo nivel Brutal.
@@ -11,10 +11,10 @@
 */
 (function(){
   'use strict';
-  if(window.__SWQ_FINAL_FIXES_20260917_2__)return;
-  window.__SWQ_FINAL_FIXES_20260917_2__=true;
+  if(window.__SWQ_FINAL_FIXES_20260918_1__)return;
+  window.__SWQ_FINAL_FIXES_20260918_1__=true;
 
-  const VERSION='20260917-2';
+  const VERSION='20260918-1';
   let updatingProfilePanel=false;
   let roadTimer=null,planeTimer=null,roadLayer=null;
   let timeCategory=localStorage.getItem('SWIM_QUEST_TIME_CATEGORY')||'50';
@@ -435,7 +435,6 @@ body.theme-carretera .app{position:relative;z-index:2}
   function swqEnsureConsumables(){
     S.consumables=S.consumables||{};
     if(!Number.isFinite(Number(S.consumables.cloroPremium)))S.consumables.cloroPremium=0;
-    if(!Number.isFinite(Number(S.consumables.bebidaIsotonica)))S.consumables.bebidaIsotonica=0;
     if(!Number.isFinite(Number(S.consumables.fichaNadador)))S.consumables.fichaNadador=0;
   }
   function swqInflateShopPrices(){
@@ -459,11 +458,26 @@ body.theme-carretera .app{position:relative;z-index:2}
       }
     }catch(e){console.warn('SWQ XP gems',e)}
   }
+  function swqRemoveBebidaIsotonica(){
+    try{
+      if(Array.isArray(SHOP))for(let i=SHOP.length-1;i>=0;i--)if(SHOP[i]?.id==='bebidaIsotonica')SHOP.splice(i,1);
+      if(S?.consumables)delete S.consumables.bebidaIsotonica;
+    }catch(e){console.warn('SWQ remove isotonic',e)}
+  }
+
+  function swqPatchCloroShopText(){
+    try{
+      const it=SHOP?.find?.(x=>x.id==='cloroPremium');
+      if(it){it.name='Cloro Premium';it.desc='Consumible. Potencia en un 40% el XP del próximo entrenamiento. El efecto se consume al finalizar esa sesión.';}
+    }catch(e){console.warn('SWQ cloro text',e)}
+  }
+
   function swqEnsureNewShopItems(){
     try{
       if(typeof THEMES!=='undefined'&&!THEMES.Impacto)THEMES.Impacto={a:'#ff7a18',b:'#17110d',emoji:'💥',desc:'Impactos naranja, negro y amarillo con destellos y orbes de energía que caen lentamente.'};
       if(typeof SHOP!=='undefined'&&!SHOP.some(x=>x.id==='theme_Impacto'))SHOP.push({id:'theme_Impacto',icon:'💥',name:'Impacto Naranja',price:620,desc:'Estética naranja y negra con destellos, chispas y orbes de energía.',buy:()=>S.purchases.theme_Impacto=true});
-      if(typeof SHOP!=='undefined'&&!SHOP.some(x=>x.id==='bebidaIsotonica'))SHOP.push({id:'bebidaIsotonica',icon:'🥤',name:'Bebida Isotónica',price:220,desc:'Consumible. +25% de XP en tu siguiente entrenamiento.',buy:()=>{swqEnsureConsumables();S.consumables.bebidaIsotonica=(S.consumables.bebidaIsotonica||0)+1;}});
+      if(typeof THEMES!=='undefined'&&!THEMES.EspejoAbisal)THEMES.EspejoAbisal={a:'#bfe9ff',b:'#101827',emoji:'🪞',desc:'Océano de cristal oscuro: fragmentos de espejo, reflejos líquidos y ondas de luz lentas.'};
+      if(typeof SHOP!=='undefined'&&!SHOP.some(x=>x.id==='theme_EspejoAbisal'))SHOP.push({id:'theme_EspejoAbisal',icon:'🪞',name:'Espejo Abisal',price:590,desc:'Océano de cristal oscuro con reflejos líquidos y fragmentos flotantes.',buy:()=>S.purchases.theme_EspejoAbisal=true});
       if(typeof SHOP!=='undefined'&&!SHOP.some(x=>x.id==='fichaNadador'))SHOP.push({id:'fichaNadador',icon:'🎟️',name:'Ficha del Nadador',price:260,desc:'Consumible. +50% de monedas en tu siguiente entrenamiento.',buy:()=>{swqEnsureConsumables();S.consumables.fichaNadador=(S.consumables.fichaNadador||0)+1;}});
     }catch(e){console.warn('SWQ new shop items',e)}
   }
@@ -490,7 +504,7 @@ body.theme-carretera .app{position:relative;z-index:2}
               try{
                 if(!Array.isArray(S.trainings)||S.trainings.length<=beforeCount){S.consumables.cloroPremium=oldCloro;S.consumables.bebidaIsotonica=oldIso;S.consumables.fichaNadador=oldCoin;return;}
                 const e=S.trainings[S.trainings.length-1],baseXp=Math.max(0,Number(e.xp)||0);
-                const desiredXp=Math.round(baseXp*(hadCloro?2.50:1)*(hadIso?1.25:1)),extraXp=Math.max(0,desiredXp-baseXp);
+                const desiredXp=Math.round(baseXp*(hadCloro?1.40:1)*(hadIso?1.25:1)),extraXp=Math.max(0,desiredXp-baseXp);
                 e.xp=desiredXp;if(extraXp>0&&typeof gainXP==='function')gainXP(extraXp);
                 const baseCoins=Math.max(0,Number(e.coins)||0),desiredCoins=hadCoin?Math.round(baseCoins*1.50):baseCoins,extraCoins=Math.max(0,desiredCoins-baseCoins);
                 e.coins=desiredCoins;if(extraCoins)S.coins+=extraCoins;
@@ -592,11 +606,11 @@ body.theme-carretera .app{position:relative;z-index:2}
         "body.theme-impacto .btn.primary{background:linear-gradient(135deg,#ff9a24,#e64d15)!important;color:#fff8ea!important;border-color:#ffc86b!important}",
         "body.theme-impacto .nav{background:rgba(7,6,5,.96)!important;border-top-color:rgba(255,144,45,.24)!important}",
         ".swq-impact-layer{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}",
-        ".swq-impact-spark{position:absolute;width:4px;height:4px;border-radius:50%;background:#ffd45c;box-shadow:0 0 9px rgba(255,150,35,.9);animation:swqImpactSpark .62s ease-out forwards}",
+        ".swq-impact-spark{position:absolute;width:5px;height:5px;border-radius:50%;background:#ffd45c;box-shadow:0 0 9px rgba(255,150,35,.9);animation:swqImpactSpark .62s ease-out forwards}",
         ".swq-impact-orb{position:absolute;width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff1a4 0 6%,#ff9c24 22%,#d44512 54%,#0c0907 72%,#000 100%);box-shadow:0 0 22px rgba(255,105,15,.46);animation:swqImpactFall var(--fall,11s) linear forwards}",
         "@keyframes swqImpactSpark{from{transform:translate(0,0) scale(1);opacity:1}to{transform:translate(var(--sx,0),var(--sy,0)) scale(.2);opacity:0}}",
         "@keyframes swqImpactFall{from{transform:translateY(-12vh) rotate(0deg) scale(.78);opacity:0}10%{opacity:.95}88%{transform:translateY(108vh) rotate(300deg) scale(1);opacity:1}100%{transform:translateY(118vh) rotate(360deg) scale(.75);opacity:0}}",
-        ".swq-impact-flash{position:fixed;width:28px;height:28px;border-radius:50%;pointer-events:none;z-index:100;background:radial-gradient(circle,#fff7cf 0 9%,#ffc247 20%,#ff6a17 39%,transparent 72%);transform:translate(-50%,-50%) scale(.35);animation:swqImpactFlash .34s ease-out forwards;filter:blur(.1px)}",
+        ".swq-impact-flash{position:fixed;width:68px;height:68px;border-radius:50%;pointer-events:none;z-index:100;background:radial-gradient(circle,#fff7cf 0 9%,#ffc247 20%,#ff6a17 39%,transparent 72%);transform:translate(-50%,-50%) scale(.35);animation:swqImpactFlash .34s ease-out forwards;filter:blur(.1px)}",
         "@keyframes swqImpactFlash{0%{opacity:.95;transform:translate(-50%,-50%) scale(.35)}55%{opacity:.85;transform:translate(-50%,-50%) scale(1.45)}100%{opacity:0;transform:translate(-50%,-50%) scale(2.25)}}"
       ].join("");
       document.head.appendChild(s);
@@ -615,7 +629,7 @@ body.theme-carretera .app{position:relative;z-index:2}
   }
   function swqSpawnImpactBurst(x,y){
     const flash=document.createElement('div');flash.className='swq-impact-flash';flash.style.left=x+'px';flash.style.top=y+'px';document.body.appendChild(flash);setTimeout(()=>flash.remove(),420);
-    for(let i=0;i<7;i++){const sp=document.createElement('span');sp.className='swq-impact-spark';const a=(Math.PI*2*i/7)+Math.random()*.2,d=18+Math.random()*32;sp.style.left=x+'px';sp.style.top=y+'px';sp.style.setProperty('--sx',Math.cos(a)*d+'px');sp.style.setProperty('--sy',Math.sin(a)*d+'px');document.body.appendChild(sp);setTimeout(()=>sp.remove(),800);}
+    for(let i=0;i<16;i++){const sp=document.createElement('span');sp.className='swq-impact-spark';const a=(Math.PI*2*i/7)+Math.random()*.2,d=26+Math.random()*58;sp.style.left=x+'px';sp.style.top=y+'px';sp.style.setProperty('--sx',Math.cos(a)*d+'px');sp.style.setProperty('--sy',Math.sin(a)*d+'px');document.body.appendChild(sp);setTimeout(()=>sp.remove(),800);}
   }
   let swqImpactTimer=null;
   function swqSpawnImpactOrb(){
@@ -629,12 +643,50 @@ body.theme-carretera .app{position:relative;z-index:2}
     let layer=document.getElementById('swqImpactLayer');
     if(S.settings.theme==='Impacto'){
       if(!layer){layer=document.createElement('div');layer.id='swqImpactLayer';layer.className='swq-impact-layer';document.body.appendChild(layer);}
-      if(!swqImpactTimer)swqImpactTimer=setInterval(()=>{if(Math.random()<.38)swqSpawnImpactOrb()},13000);
+      if(!swqImpactTimer)swqImpactTimer=setInterval(()=>{if(Math.random()<.75)swqSpawnImpactOrb()},6500);
     }else{
       if(swqImpactTimer){clearInterval(swqImpactTimer);swqImpactTimer=null}
       if(layer)layer.remove();
     }
   }
+  function swqThemeName(k){
+    try{const it=SHOP?.find?.(x=>x.id==='theme_'+k);return it?.name||k.replace(/([a-z])([A-Z])/g,'$1 $2');}catch(e){return k}
+  }
+  function swqApplyQuickTheme(k){
+    try{
+      if(typeof THEMES==='undefined'||!THEMES[k])return;
+      if(k!=='Aqua'&&!S.purchases?.['theme_'+k]){toast('🔒 Ese estilo todavía no está desbloqueado.');return;}
+      S.settings.theme=k;save();if(typeof applyTheme==='function')applyTheme();closeModal();render();
+    }catch(e){console.warn('SWQ quick theme',e)}
+  }
+  function swqQuickTheme(){
+    try{
+      const keys=['Aqua',...Object.keys(THEMES).filter(k=>k!=='Aqua'&&S.purchases?.['theme_'+k])];
+      const unique=[...new Set(keys)];
+      modal('<div class="kicker">🎨 ESTILO</div><h2>Cambiar estilo</h2><p class="sub">Elige un estilo que ya tengas desbloqueado.</p><div class="grid g2" style="margin-top:10px">'+unique.map(k=>'<button class="btn '+(S.settings.theme===k?'primary':'secondary')+'" style="min-height:54px;text-align:left" onclick="swqApplyQuickTheme('+JSON.stringify(k)+')">'+esc(THEMES[k]?.emoji||'🎨')+' '+esc(swqThemeName(k))+(S.settings.theme===k?' · ACTUAL':'')+'</button>').join('')+'</div><button class="btn secondary" style="margin-top:10px" onclick="closeModal()">Cerrar</button>');
+    }catch(e){console.warn('SWQ quick theme modal',e)}
+  }
+  function swqInjectQuickThemeButton(){
+    try{
+      const root=document.getElementById('screen');if(!root||document.getElementById('swqQuickThemeButton'))return;
+      const first=root.querySelector('.card');if(!first)return;
+      const b=document.createElement('button');b.id='swqQuickThemeButton';b.className='btn secondary swq-quick-theme';b.textContent='🎨 Cambiar estilo';b.onclick=swqQuickTheme;b.style.marginTop='10px';b.style.borderColor='rgba(116,220,255,.42)';b.style.background='linear-gradient(145deg,rgba(23,55,73,.96),rgba(6,16,24,.98))';
+      first.appendChild(b);
+    }catch(e){}
+  }
+
+  function swqSyncEspejoAbisal(){
+    let layer=document.getElementById('swqEspejoAbisalLayer');
+    if(S.settings.theme==='EspejoAbisal'){
+      if(layer)return;
+      layer=document.createElement('div');layer.id='swqEspejoAbisalLayer';layer.className='swq-mirror-layer';
+      for(let i=0;i<16;i++){const sh=document.createElement('span');sh.className='swq-mirror-shard';sh.style.left=(4+Math.random()*92)+'%';sh.style.top=(8+Math.random()*82)+'%';sh.style.setProperty('--sx',(70+Math.random()*130)+'px');sh.style.setProperty('--sy',(-45+Math.random()*90)+'px');sh.style.setProperty('--sd',(10+Math.random()*8)+'s');sh.style.setProperty('--ang',(-35+Math.random()*70)+'deg');sh.style.animationDelay=(-Math.random()*12)+'s';layer.appendChild(sh);}
+      for(let i=0;i<5;i++){const g=document.createElement('span');g.className='swq-mirror-glow';g.style.left=(5+i*21+Math.random()*8)+'%';g.style.top=(10+Math.random()*70)+'%';g.style.animationDelay=(-Math.random()*8)+'s';layer.appendChild(g);}
+      for(let i=0;i<4;i++){const rr=document.createElement('span');rr.className='swq-mirror-ripple';rr.style.left=(8+Math.random()*84)+'%';rr.style.top=(24+Math.random()*60)+'%';rr.style.animationDelay=(-Math.random()*8)+'s';layer.appendChild(rr);}
+      document.body.appendChild(layer);
+    }else if(layer)layer.remove();
+  }
+
   function swqInflateSecretShop(){
     try{
       if(typeof buySecret!=='function'||window.__swqSecretPriceWrap20260917_2)return;
@@ -685,11 +737,11 @@ body.theme-carretera .app{position:relative;z-index:2}
       if(S.settings.theme!=='Carretera')return;
       clearRoadLayer();createRoadLayer();
       roadTimer=setInterval(()=>{if(!document.hidden){spawnRoadCar();if(Math.random()<.38)spawnRoadCar();}},760);
-      planeTimer=setInterval(()=>{if(!document.hidden&&Math.random()<.24)spawnRoadPlane()},12000);
+      planeTimer=setInterval(()=>{if(!document.hidden&&Math.random()<.14)spawnRoadPlane()},18000);
     }catch(e){console.warn('SWQ Carretera update',e)}
   }
   function swqInitUpdate2(){
-    swqEnsureNewShopItems();swqEnsureConsumables();swqInflateShopPrices();swqPatchXPGems();swqPatchCloroAndTrainingXP();swqPatchProgression();swqPatchFishMotivation();swqPatchPearExtra();swqPatchThemeText();swqInflateSecretShop();
+    swqEnsureNewShopItems();swqRemoveBebidaIsotonica();swqEnsureConsumables();swqInflateShopPrices();swqPatchXPGems();swqPatchCloroShopText();swqPatchCloroAndTrainingXP();swqPatchProgression();swqPatchFishMotivation();swqPatchPearExtra();swqPatchThemeText();swqInflateSecretShop();
     if(typeof applyTheme==='function')try{applyTheme();}catch(e){}
     if(S.settings.theme==='Carretera')swqCarreteraUpdate();
     if(typeof document!=='undefined'&&!window.__swqImpactClickHook20260917_2){
@@ -700,10 +752,10 @@ body.theme-carretera .app{position:relative;z-index:2}
       },true);
       window.__swqImpactClickHook20260917_2=true;
     }
-    swqImproveAccountConnection();swqSyncLeviathan();swqSyncImpactTheme();
+    swqImproveAccountConnection();swqSyncLeviathan();swqSyncImpactTheme();swqSyncEspejoAbisal();swqInjectQuickThemeButton();
     try{save();}catch(e){}try{render();}catch(e){}
   }
   swqInitUpdate2();setTimeout(swqInitUpdate2,1200);
-  setInterval(()=>{try{swqInflateShopPrices();swqPatchXPGems();swqEnsureConsumables();swqPatchPearExtra();swqSyncLeviathan();swqSyncImpactTheme();swqPatchFishMotivation();}catch(e){}},5000);
+  setInterval(()=>{try{swqRemoveBebidaIsotonica();swqInflateShopPrices();swqPatchXPGems();swqEnsureConsumables();swqPatchCloroShopText();swqPatchPearExtra();swqSyncLeviathan();swqSyncImpactTheme();swqSyncEspejoAbisal();swqPatchFishMotivation();swqInjectQuickThemeButton();}catch(e){}},5000);
 
 })();
