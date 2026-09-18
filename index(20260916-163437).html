@@ -783,7 +783,7 @@ function difficultyInfo(e, avgMetersOverride=null){
  const xpPerMeter=meters?xp/meters:1;
  const xpFactor=Math.max(.90,Math.min(1.15,xpPerMeter/1.05));
  const effectiveRatio=(difficultyPoints/base)*(.92+.08*xpFactor);
- if(meters>=6000)return {...DIFFICULTIES[5],points:Math.round(difficultyPoints)};
+ if(meters>=6000)return {...DIFFICULTIES[4],points:Math.round(difficultyPoints)};
  let idx=effectiveRatio<1.20?0:effectiveRatio<1.80?1:effectiveRatio<2.50?2:3;
  if(idx>=4 && meters<2000)idx=3;
  return {...DIFFICULTIES[idx],points:Math.round(difficultyPoints)};
@@ -1470,7 +1470,7 @@ const ACHIEVEMENTS=[
  {id:"counter2",icon:"🌊",title:"El océano empieza aquí",desc:"Acumula 10.000 metros totales.",reward:{coins:180,xp:750},ok:()=>totalMeters()>=10000},
  {id:"counter3",icon:"🐟",title:"¿Dónde aprendiste eso?",desc:"Utiliza al menos cinco estilos de natación diferentes en tus entrenamientos.",reward:{coins:150,xp:600},ok:()=>{const u=new Set();for(const e of S.trainings)for(const s of e.series||[])if(s.style)u.add(s.style);return u.size>=5;}},
  {id:"freqLost",icon:"📻",title:"Frecuencia Perdida",desc:"Completa 5 entrenamientos usando el estilo 80s.",reward:{music:"frecuenciaPerdida",coins:200,xp:1000},ok:()=>S.trainings.filter(e=>e.theme==="Retro80s").length>=5},
- {id:"whoLeftThis",icon:"🐝",title:"¿Quién dejó esto aquí?",desc:"Completa 5 entrenamientos. Nadie sabe qué tiene que ver esto con la abeja.",reward:{theme:"Bee",coins:220,xp:900},ok:()=>S.trainings.length>=5},
+ {id:"whoLeftThis",icon:"🐝",title:"¿Quién dejó esto aquí?",desc:"Registra una marca de tiempo en 200 m mariposa.",reward:{theme:"Bee",coins:500,xp:900},ok:()=>S.trainings.some(e=>(e.series||[]).some(s=>s.style==="mariposa"&&Number(s.distance)===200&&Number(s.reps)===1&&Number(s.time)>0))},
  {id:"bubble_master",icon:"🫧",title:"Atrapaburbujas",desc:"Consigue 250 puntos en una partida de Atrapa las burbujas en dificultad Difícil o Extremo.",reward:{theme:"Bubble",coins:180,xp:800},ok:()=>Number(S.minigame?.bestHard||0)>=250}
 ];
 ACHIEVEMENTS[13].ok=()=>{
