@@ -682,6 +682,7 @@ body.theme-carretera .app{position:relative;z-index:2}
       layer=document.createElement('div');
       layer.id='swqEspejoAbisalLayer';
       layer.className='swq-mirror-layer';
+      /* Solo 9 entidades: 6 fragmentos, 2 brillos y 1 onda. */
       for(let i=0;i<6;i++){
         const sh=document.createElement('span');
         sh.className='swq-mirror-shard';
@@ -899,16 +900,4 @@ body.theme-carretera .app{position:relative;z-index:2}
     window.swqQuickTheme=swqQuickTheme;
   }catch(e){}},5000);
 
-})();      "/* --- Espejo Abisal: modo de bajo consumo --- */",
-      "body.theme-espejoabisal::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(circle at 22% 18%,rgba(44,225,255,.11),transparent 28%),radial-gradient(circle at 78% 72%,rgba(119,66,255,.13),transparent 32%);animation:none!important;filter:none!important;will-change:auto!important}",
-      "body.theme-espejoabisal::after{content:none!important;display:none!important}",
-      "body.theme-espejoabisal .topbar,body.theme-espejoabisal .nav{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}",
-      "body.theme-espejoabisal .card,body.theme-espejoabisal .hero,body.theme-espejoabisal .stat,body.theme-espejoabisal .list-item,body.theme-espejoabisal .series,body.theme-espejoabisal .shop-item{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:inset 0 0 22px rgba(0,240,255,.025),0 10px 28px rgba(0,0,0,.28)!important}",
-      "body.theme-espejoabisal .btn{background:rgba(12,28,46,.48)!important;border:1px solid rgba(126,243,255,.38)!important;color:#efffff!important;text-shadow:0 0 5px rgba(151,250,255,.95),0 0 13px rgba(91,220,255,.68),0 0 22px rgba(150,91,255,.42)!important;box-shadow:inset 0 0 12px rgba(102,235,255,.055),0 4px 16px rgba(0,0,0,.22)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}",
-      "body.theme-espejoabisal .btn::after{content:none!important;animation:none!important;display:none!important}",
-      "body.theme-espejoabisal .btn.primary{background:linear-gradient(135deg,rgba(64,220,235,.52),rgba(104,82,225,.48),rgba(202,86,247,.42))!important;color:#fff!important;text-shadow:0 0 6px #fff,0 0 15px rgba(105,242,255,.95),0 0 25px rgba(216,110,255,.72)!important}",
-      ".swq-mirror-layer{contain:layout paint;perspective:none}",
-      ".swq-mirror-shard{will-change:transform;filter:none!important;box-shadow:0 0 12px rgba(0,231,255,.12),inset 0 0 14px rgba(255,255,255,.07)}",
-      ".swq-mirror-shard::after{animation-duration:6.5s}",
-      ".swq-mirror-glow{filter:none!important;animation:none!important;opacity:.42}",
-      ".swq-mirror-ripple{box-shadow:0 0 14px rgba(70,235,255,.08),inset 0 0 12px rgba(142,92,255,.04)}",
+})();
