@@ -782,7 +782,6 @@ body.theme-carretera .app{position:relative;z-index:2}
       if(typeof THEMES?.Ajedrez==='undefined')issues.push('Ajedrez');
       const bee=ACHIEVEMENTS.find(a=>a.id==='whoLeftThis');
       if(!bee||bee.reward?.theme!=='Bee'||typeof bee.ok!=='function')issues.push('Bee achievement');
-      if(fc???){}
       if(issues.length)console.warn('SWQ diagnostics',issues);
       return issues;
     }catch(e){console.warn('SWQ diagnostics failed',e);return ['diagnostics'];}
