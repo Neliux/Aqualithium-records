@@ -11,10 +11,10 @@
 */
 (function(){
   'use strict';
-  if(window.__SWQ_FINAL_FIXES_20260918_6__)return;
-  window.__SWQ_FINAL_FIXES_20260918_6__=true;
+  if(window.__SWQ_FINAL_FIXES_20260918_7__)return;
+  window.__SWQ_FINAL_FIXES_20260918_7__=true;
 
-  const VERSION='20260918-6';
+  const VERSION='20260918-7';
   let updatingProfilePanel=false;
   let roadTimer=null,planeTimer=null,roadLayer=null;
   let timeCategory=localStorage.getItem('SWIM_QUEST_TIME_CATEGORY')||'50';
@@ -757,7 +757,7 @@ body.theme-carretera .app{position:relative;z-index:2}
   /* Global performance budget for styles with many animated entities. */
   function swqInstallEntityBudget(){
     try{
-      if(window.__swqEntityBudget20260918_6)return;
+      if(window.__swqEntityBudget20260918_7)return;
       const caps={Leviatan:8,Ajedrez:8,Impacto:5,Bomba:5,CobaltoCobre:7,Carretera:5,CianNeon:6,Eclipse:6,Bee:6,Glacial:7};
       const originalSpawn=spawnThemeParticle;
       spawnThemeParticle=function(){
@@ -767,7 +767,7 @@ body.theme-carretera .app{position:relative;z-index:2}
         if(host&&host.childElementCount>=cap)return;
         return originalSpawn.apply(this,arguments);
       };
-      window.__swqEntityBudget20260918_6=true;
+      window.__swqEntityBudget20260918_7=true;
     }catch(e){console.warn('SWQ entity budget',e)}
   }
 
@@ -781,7 +781,7 @@ body.theme-carretera .app{position:relative;z-index:2}
       if(!Array.isArray(ACHIEVEMENTS))issues.push('ACHIEVEMENTS');
       if(typeof THEMES?.Ajedrez==='undefined')issues.push('Ajedrez');
       const bee=ACHIEVEMENTS.find(a=>a.id==='whoLeftThis');
-      if(!bee||bee.reward?.theme!=='Bee')issues.push('Bee achievement');
+      if(!bee||bee.reward?.theme!=='Bee'||typeof bee.ok!=='function')issues.push('Bee achievement');
       if(fc???){}
       if(issues.length)console.warn('SWQ diagnostics',issues);
       return issues;
