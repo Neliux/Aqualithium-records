@@ -665,6 +665,7 @@ body.theme-carretera .app{position:relative;z-index:2}
       const originalRestart=window.restartThemeParticles;
       if(typeof originalRestart==='function'){
         window.restartThemeParticles=function(){
+          if(typeof themeParticleTimer!=='undefined'&&themeParticleTimer)clearInterval(themeParticleTimer); themeParticleTimer=null;
           if(window.__swqThemeParticleTimer)clearInterval(window.__swqThemeParticleTimer);
           const theme=S?.settings?.theme;
           const delay=heavy[theme]||3000;
