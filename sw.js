@@ -1,10 +1,10 @@
-const CACHE='swim-quest-final-20260918-5';
+const CACHE='swim-quest-final-20260918-7';
 const ASSETS=['./','./index.html','./manifest.webmanifest','./swim-quest-icon-192.png','./swim-quest-icon-512.png','./workout-clan-fix.js','./final-fixes.js','./index(20260916-163437).html'];
 function patchGame(text){
   if(!text||!text.includes('<html'))return text;
   let out=text.replace('if(x.count>5){','if(x.count>25){');
   if(!out.includes('src="./final-fixes.js')){
-    out=out.replace('</body>','<script src="./workout-clan-fix.js?v=20260917-1"></script><script src="./final-fixes.js?v=20260918-5"></script></body>');
+    out=out.replace('</body>','<script src="./workout-clan-fix.js?v=20260917-1"></script><script src="./final-fixes.js?v=20260918-7"></script></body>');
   }
   return out;
 }
