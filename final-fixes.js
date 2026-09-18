@@ -502,7 +502,7 @@ body.theme-carretera .app{position:relative;z-index:2}
             try{result=previousSaveTraining.apply(this,arguments);}catch(err){S.consumables.cloroPremium=oldCloro;S.consumables.fichaNadador=oldCoin;throw err;}
             setTimeout(async()=>{
               try{
-                if(!Array.isArray(S.trainings)||S.trainings.length<=beforeCount){S.consumables.cloroPremium=oldCloro;S.consumables.bebidaIsotonica=oldIso;S.consumables.fichaNadador=oldCoin;return;}
+                if(!Array.isArray(S.trainings)||S.trainings.length<=beforeCount){S.consumables.cloroPremium=oldCloro;S.consumables.fichaNadador=oldCoin;return;}
                 const e=S.trainings[S.trainings.length-1],baseXp=Math.max(0,Number(e.xp)||0);
                 const desiredXp=Math.round(baseXp*(hadCloro?1.40:1)),extraXp=Math.max(0,desiredXp-baseXp);
                 e.xp=desiredXp;if(extraXp>0&&typeof gainXP==='function')gainXP(extraXp);
