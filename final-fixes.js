@@ -11,10 +11,10 @@
 */
 (function(){
   'use strict';
-  if(window.__SWQ_FINAL_FIXES_20260918_3__)return;
+  if(window.__SWQ_FINAL_FIXES_20260918_4__)return;
   window.__SWQ_FINAL_FIXES_20260918_3__=true;
 
-  const VERSION='20260918-3';
+  const VERSION='20260918-4';
   let updatingProfilePanel=false;
   let roadTimer=null,planeTimer=null,roadLayer=null;
   let timeCategory=localStorage.getItem('SWIM_QUEST_TIME_CATEGORY')||'50';
@@ -619,15 +619,15 @@ body.theme-carretera .app{position:relative;z-index:2}
     if(S.settings.theme==='Leviatan'){
       if(layer)return;
       layer=document.createElement('div');layer.id='swqLeviathanLayer';layer.className='swq-lev-layer';
-      for(let i=0;i<24;i++){const b=document.createElement('span');b.className='swq-lev-bubble';b.style.left=(Math.random()*100)+'%';b.style.top=(78+Math.random()*24)+'%';b.style.setProperty('--s',(4+Math.random()*12)+'px');b.style.setProperty('--x',(-70+Math.random()*140)+'px');b.style.setProperty('--d',(7+Math.random()*8)+'s');b.style.animationDelay=(-Math.random()*12)+'s';layer.appendChild(b);}
-      for(let i=0;i<4;i++){const g=document.createElement('span');g.className='swq-lev-glow';g.style.left=(8+i*26+Math.random()*7)+'%';g.style.top=(8+Math.random()*64)+'%';g.style.animationDelay=(-Math.random()*7)+'s';layer.appendChild(g);}
-      for(let i=0;i<3;i++){const w=document.createElement('span');w.className='swq-lev-wave';w.style.top=(40+i*17)+'%';w.style.animationDelay=(-i*2.7)+'s';layer.appendChild(w);}
+      for(let i=0;i<10;i++){const b=document.createElement('span');b.className='swq-lev-bubble';b.style.left=(Math.random()*100)+'%';b.style.top=(78+Math.random()*24)+'%';b.style.setProperty('--s',(4+Math.random()*12)+'px');b.style.setProperty('--x',(-70+Math.random()*140)+'px');b.style.setProperty('--d',(7+Math.random()*8)+'s');b.style.animationDelay=(-Math.random()*12)+'s';layer.appendChild(b);}
+      for(let i=0;i<2;i++){const g=document.createElement('span');g.className='swq-lev-glow';g.style.left=(8+i*26+Math.random()*7)+'%';g.style.top=(8+Math.random()*64)+'%';g.style.animationDelay=(-Math.random()*7)+'s';layer.appendChild(g);}
+      for(let i=0;i<1;i++){const w=document.createElement('span');w.className='swq-lev-wave';w.style.top=(40+i*17)+'%';w.style.animationDelay=(-i*2.7)+'s';layer.appendChild(w);}
       document.body.appendChild(layer);
     }else if(layer)layer.remove();
   }
   function swqSpawnImpactBurst(x,y){
     const flash=document.createElement('div');flash.className='swq-impact-flash';flash.style.left=x+'px';flash.style.top=y+'px';document.body.appendChild(flash);setTimeout(()=>flash.remove(),420);
-    for(let i=0;i<16;i++){const sp=document.createElement('span');sp.className='swq-impact-spark';const a=(Math.PI*2*i/16)+Math.random()*.2,d=26+Math.random()*58;sp.style.left=x+'px';sp.style.top=y+'px';sp.style.setProperty('--sx',Math.cos(a)*d+'px');sp.style.setProperty('--sy',Math.sin(a)*d+'px');document.body.appendChild(sp);setTimeout(()=>sp.remove(),800);}
+    for(let i=0;i<8;i++){const sp=document.createElement('span');sp.className='swq-impact-spark';const a=(Math.PI*2*i/16)+Math.random()*.2,d=26+Math.random()*58;sp.style.left=x+'px';sp.style.top=y+'px';sp.style.setProperty('--sx',Math.cos(a)*d+'px');sp.style.setProperty('--sy',Math.sin(a)*d+'px');document.body.appendChild(sp);setTimeout(()=>sp.remove(),800);}
   }
   let swqImpactTimer=null;
   function swqSpawnImpactOrb(){
@@ -641,12 +641,44 @@ body.theme-carretera .app{position:relative;z-index:2}
     let layer=document.getElementById('swqImpactLayer');
     if(S.settings.theme==='Impacto'){
       if(!layer){layer=document.createElement('div');layer.id='swqImpactLayer';layer.className='swq-impact-layer';document.body.appendChild(layer);}
-      if(!swqImpactTimer)swqImpactTimer=setInterval(()=>{if(Math.random()<.75)swqSpawnImpactOrb()},6500);
+      if(!swqImpactTimer)swqImpactTimer=setInterval(()=>{if(Math.random()<.55)swqSpawnImpactOrb()},10000);
     }else{
       if(swqImpactTimer){clearInterval(swqImpactTimer);swqImpactTimer=null}
       if(layer)layer.remove();
     }
   }
+  /* Performance guard: keep entity-heavy themes lightweight on mobile. */
+  function swqInstallEntityBudget(){
+    try{
+      if(window.__swqEntityBudget20260918)return;
+      const heavy={Leviatan:1800,Ajedrez:2400,Impacto:10000,Bomba:10000,CobaltoCobre:1500,Carretera:2200,CianNeon:2200,Eclipse:1800,Bee:1800,Glacial:1600};
+      const originalSpawn=window.spawnThemeParticle;
+      if(typeof originalSpawn==='function'){
+        window.spawnThemeParticle=function(){
+          const host=document.getElementById('themeParticles');
+          const theme=S?.settings?.theme;
+          const cap=({Leviatan:8,Ajedrez:8,Impacto:5,Bomba:5,CobaltoCobre:7,Carretera:5,CianNeon:6,Eclipse:6,Bee:6,Glacial:7})[theme]||10;
+          if(host&&host.childElementCount>=cap)return;
+          return originalSpawn.apply(this,arguments);
+        };
+      }
+      const originalRestart=window.restartThemeParticles;
+      if(typeof originalRestart==='function'){
+        window.restartThemeParticles=function(){
+          if(window.__swqThemeParticleTimer)clearInterval(window.__swqThemeParticleTimer);
+          const theme=S?.settings?.theme;
+          const delay=heavy[theme]||3000;
+          window.__swqThemeParticleTimer=setInterval(()=>{
+            if(document.hidden)return;
+            try{window.spawnThemeParticle?.();}catch(e){}
+          },delay);
+          try{restartLeviathanEvent();}catch(e){}
+        };
+      }
+      window.__swqEntityBudget20260918=true;
+    }catch(e){console.warn('SWQ entity budget',e)}
+  }
+
   function swqThemeName(k){
     try{const it=SHOP?.find?.(x=>x.id==='theme_'+k);return it?.name||k.replace(/([a-z])([A-Z])/g,'$1 $2');}catch(e){return k}
   }
@@ -689,7 +721,7 @@ body.theme-carretera .app{position:relative;z-index:2}
         scan.className='swq-chess-scan';
         layer.appendChild(scan);
         const pieces=['♟','♞','♜','♝','♛','♚'];
-        for(let i=0;i<22;i++){
+        for(let i=0;i<8;i++){
           const p=document.createElement('span');
           p.className='swq-chess-fall';
           p.textContent=pieces[i%pieces.length];
@@ -725,7 +757,7 @@ body.theme-carretera .app{position:relative;z-index:2}
     core.style.top=y+'px';
     host.appendChild(core);
     setTimeout(()=>core.remove(),520);
-    for(let i=0;i<14;i++){
+    for(let i=0;i<6;i++){
       const p=document.createElement('span');
       p.className='swq-chess-burst';
       p.textContent=pieces[Math.floor(Math.random()*pieces.length)];
@@ -814,6 +846,7 @@ body.theme-carretera .app{position:relative;z-index:2}
   }
 
   function swqInitUpdate3(){
+    swqInstallEntityBudget();
     try{
       swqPatchTicket25();
       swqEnsureChessTheme();
