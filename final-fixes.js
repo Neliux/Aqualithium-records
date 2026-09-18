@@ -1,4 +1,4 @@
-/* Swim Quest · actualización 2026-09-18 v3
+/* Swim Quest · actualización 2026-09-18 v4
    - Deduplicación local/remota de entrenamientos.
    - Dificultad basada principalmente en % de la media semanal.
    - Nuevo nivel Brutal.
@@ -296,8 +296,8 @@ body.theme-carretera .app{position:relative;z-index:2}
   function syncRoadTheme(){
     if(S.settings.theme==='Carretera'){
       createRoadLayer();
-      if(!roadTimer)roadTimer=setInterval(()=>{if(!document.hidden){spawnRoadCar();if(Math.random()<.24)spawnRoadCar()}},1250);
-      if(!planeTimer)planeTimer=setInterval(()=>{if(!document.hidden&&Math.random()<.75)spawnRoadPlane()},4500);
+      if(!roadTimer)roadTimer=setInterval(()=>{if(!document.hidden){spawnRoadCar();if(Math.random()<.10)spawnRoadCar()}},1700);
+      if(!planeTimer)planeTimer=setInterval(()=>{if(!document.hidden&&Math.random()<.14)spawnRoadPlane()},18000);
     }else clearRoadLayer();
   }
 
@@ -629,7 +629,7 @@ body.theme-carretera .app{position:relative;z-index:2}
   }
   function swqSpawnImpactBurst(x,y){
     const flash=document.createElement('div');flash.className='swq-impact-flash';flash.style.left=x+'px';flash.style.top=y+'px';document.body.appendChild(flash);setTimeout(()=>flash.remove(),420);
-    for(let i=0;i<16;i++){const sp=document.createElement('span');sp.className='swq-impact-spark';const a=(Math.PI*2*i/7)+Math.random()*.2,d=26+Math.random()*58;sp.style.left=x+'px';sp.style.top=y+'px';sp.style.setProperty('--sx',Math.cos(a)*d+'px');sp.style.setProperty('--sy',Math.sin(a)*d+'px');document.body.appendChild(sp);setTimeout(()=>sp.remove(),800);}
+    for(let i=0;i<16;i++){const sp=document.createElement('span');sp.className='swq-impact-spark';const a=(Math.PI*2*i/16)+Math.random()*.2,d=26+Math.random()*58;sp.style.left=x+'px';sp.style.top=y+'px';sp.style.setProperty('--sx',Math.cos(a)*d+'px');sp.style.setProperty('--sy',Math.sin(a)*d+'px');document.body.appendChild(sp);setTimeout(()=>sp.remove(),800);}
   }
   let swqImpactTimer=null;
   function swqSpawnImpactOrb(){
@@ -668,7 +668,7 @@ body.theme-carretera .app{position:relative;z-index:2}
   }
   function swqInjectQuickThemeButton(){
     try{
-      const root=document.getElementById('screen');if(!root||document.getElementById('swqQuickThemeButton'))return;
+      const root=document.getElementById('screen');if(page!=='profile'||!root||document.getElementById('swqQuickThemeButton'))return;
       const first=root.querySelector('.card');if(!first)return;
       const b=document.createElement('button');b.id='swqQuickThemeButton';b.className='btn secondary swq-quick-theme';b.textContent='🎨 Cambiar estilo';b.onclick=swqQuickTheme;b.style.marginTop='10px';b.style.borderColor='rgba(116,220,255,.42)';b.style.background='linear-gradient(145deg,rgba(23,55,73,.96),rgba(6,16,24,.98))';
       first.appendChild(b);
