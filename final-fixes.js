@@ -1,4 +1,4 @@
-/* Swim Quest · actualización 2026-09-18 v5
+/* Swim Quest · actualización 2026-09-18 v7
    - Deduplicación local/remota de entrenamientos.
    - Dificultad basada principalmente en % de la media semanal.
    - Nuevo nivel Brutal.
@@ -11,10 +11,10 @@
 */
 (function(){
   'use strict';
-  if(window.__SWQ_FINAL_FIXES_20260918_4__)return;
-  window.__SWQ_FINAL_FIXES_20260918_3__=true;
+  if(window.__SWQ_FINAL_FIXES_20260918_2__)return;
+  window.__SWQ_FINAL_FIXES_20260918_5__=true;
 
-  const VERSION='20260918-4';
+  const VERSION='20260918-2';
   let updatingProfilePanel=false;
   let roadTimer=null,planeTimer=null,roadLayer=null;
   let timeCategory=localStorage.getItem('SWIM_QUEST_TIME_CATEGORY')||'50';
@@ -476,7 +476,7 @@ body.theme-carretera .app{position:relative;z-index:2}
     try{
       if(typeof THEMES!=='undefined'&&!THEMES.Impacto)THEMES.Impacto={a:'#ff7a18',b:'#17110d',emoji:'💥',desc:'Impactos naranja, negro y amarillo con destellos y orbes de energía que caen lentamente.'};
       if(typeof SHOP!=='undefined'&&!SHOP.some(x=>x.id==='theme_Impacto'))SHOP.push({id:'theme_Impacto',icon:'💥',name:'Impacto Naranja',price:620,desc:'Estética naranja y negra con destellos, chispas y orbes de energía.',buy:()=>S.purchases.theme_Impacto=true});
-      if(typeof SHOP!=='undefined'&&!SHOP.some(x=>x.id==='fichaNadador'))SHOP.push({id:'fichaNadador',icon:'🎟️',name:'Ficha del Nadador',price:260,desc:'Consumible. +25% de monedas en tu siguiente entrenamiento.',buy:()=>{swqEnsureConsumables();S.consumables.fichaNadador=(S.consumables.fichaNadador||0)+1;}});
+      if(typeof SHOP!=='undefined'&&!SHOP.some(x=>x.id==='fichaNadador'))SHOP.push({id:'fichaNadador',icon:'🎟️',name:'Ficha del Nadador',price:260,desc:'Consumible. +30% de monedas en tu siguiente entrenamiento.',buy:()=>{swqEnsureConsumables();S.consumables.fichaNadador=(S.consumables.fichaNadador||0)+1;}});
     }catch(e){console.warn('SWQ new shop items',e)}
   }
   function swqPatchCloroAndTrainingXP(){
@@ -504,7 +504,7 @@ body.theme-carretera .app{position:relative;z-index:2}
                 const e=S.trainings[S.trainings.length-1],baseXp=Math.max(0,Number(e.xp)||0);
                 const desiredXp=Math.round(baseXp*(hadCloro?1.40:1)),extraXp=Math.max(0,desiredXp-baseXp);
                 e.xp=desiredXp;if(extraXp>0&&typeof gainXP==='function')gainXP(extraXp);
-                const baseCoins=Math.max(0,Number(e.coins)||0),desiredCoins=hadCoin?Math.round(baseCoins*1.25):baseCoins,extraCoins=Math.max(0,desiredCoins-baseCoins);
+                const baseCoins=Math.max(0,Number(e.coins)||0),desiredCoins=hadCoin?Math.round(baseCoins*1.30):baseCoins,extraCoins=Math.max(0,desiredCoins-baseCoins);
                 e.coins=desiredCoins;if(extraCoins)S.coins+=extraCoins;
                 S.consumables.cloroPremium=Math.max(0,oldCloro-(hadCloro?1:0));S.consumables.fichaNadador=Math.max(0,oldCoin-(hadCoin?1:0));
                 try{save();}catch(e){}try{render();}catch(e){}
@@ -627,7 +627,7 @@ body.theme-carretera .app{position:relative;z-index:2}
   }
   function swqSpawnImpactBurst(x,y){
     const flash=document.createElement('div');flash.className='swq-impact-flash';flash.style.left=x+'px';flash.style.top=y+'px';document.body.appendChild(flash);setTimeout(()=>flash.remove(),420);
-    for(let i=0;i<8;i++){const sp=document.createElement('span');sp.className='swq-impact-spark';const a=(Math.PI*2*i/16)+Math.random()*.2,d=26+Math.random()*58;sp.style.left=x+'px';sp.style.top=y+'px';sp.style.setProperty('--sx',Math.cos(a)*d+'px');sp.style.setProperty('--sy',Math.sin(a)*d+'px');document.body.appendChild(sp);setTimeout(()=>sp.remove(),800);}
+    for(let i=0;i<16;i++){const sp=document.createElement('span');sp.className='swq-impact-spark';const a=(Math.PI*2*i/16)+Math.random()*.2,d=26+Math.random()*58;sp.style.left=x+'px';sp.style.top=y+'px';sp.style.setProperty('--sx',Math.cos(a)*d+'px');sp.style.setProperty('--sy',Math.sin(a)*d+'px');document.body.appendChild(sp);setTimeout(()=>sp.remove(),800);}
   }
   let swqImpactTimer=null;
   function swqSpawnImpactOrb(){
@@ -647,36 +647,20 @@ body.theme-carretera .app{position:relative;z-index:2}
       if(layer)layer.remove();
     }
   }
-  /* Performance guard: keep entity-heavy themes lightweight on mobile. */
+  /* Global performance budget for entity-heavy styles. */
   function swqInstallEntityBudget(){
     try{
-      if(window.__swqEntityBudget20260918)return;
-      const heavy={Leviatan:1800,Ajedrez:2400,Impacto:10000,Bomba:10000,CobaltoCobre:1500,Carretera:2200,CianNeon:2200,Eclipse:1800,Bee:1800,Glacial:1600};
-      const originalSpawn=window.spawnThemeParticle;
-      if(typeof originalSpawn==='function'){
-        window.spawnThemeParticle=function(){
-          const host=document.getElementById('themeParticles');
-          const theme=S?.settings?.theme;
-          const cap=({Leviatan:8,Ajedrez:8,Impacto:5,Bomba:5,CobaltoCobre:7,Carretera:5,CianNeon:6,Eclipse:6,Bee:6,Glacial:7})[theme]||10;
-          if(host&&host.childElementCount>=cap)return;
-          return originalSpawn.apply(this,arguments);
-        };
-      }
-      const originalRestart=window.restartThemeParticles;
-      if(typeof originalRestart==='function'){
-        window.restartThemeParticles=function(){
-          if(typeof themeParticleTimer!=='undefined'&&themeParticleTimer)clearInterval(themeParticleTimer); themeParticleTimer=null;
-          if(window.__swqThemeParticleTimer)clearInterval(window.__swqThemeParticleTimer);
-          const theme=S?.settings?.theme;
-          const delay=heavy[theme]||3000;
-          window.__swqThemeParticleTimer=setInterval(()=>{
-            if(document.hidden)return;
-            try{window.spawnThemeParticle?.();}catch(e){}
-          },delay);
-          try{restartLeviathanEvent();}catch(e){}
-        };
-      }
-      window.__swqEntityBudget20260918=true;
+      if(window.__swqEntityBudget20260918_5)return;
+      const caps={Leviatan:8,Ajedrez:8,Impacto:5,Bomba:5,CobaltoCobre:7,Carretera:5,CianNeon:6,Eclipse:6,Bee:6,Glacial:7};
+      const originalSpawn=spawnThemeParticle;
+      spawnThemeParticle=function(){
+        const host=document.getElementById('themeParticles');
+        const theme=S?.settings?.theme;
+        const cap=caps[theme]||10;
+        if(host&&host.childElementCount>=cap)return;
+        return originalSpawn.apply(this,arguments);
+      };
+      window.__swqEntityBudget20260918_5=true;
     }catch(e){console.warn('SWQ entity budget',e)}
   }
 
@@ -694,7 +678,7 @@ body.theme-carretera .app{position:relative;z-index:2}
     try{
       const keys=['Aqua',...Object.keys(THEMES).filter(k=>k!=='Aqua'&&S.purchases?.['theme_'+k])];
       const unique=[...new Set(keys)];
-      modal('<div class="kicker">🎨 ESTILO</div><h2>Cambiar estilo</h2><p class="sub">Elige un estilo que ya tengas desbloqueado.</p><div class="grid g2" style="margin-top:10px">'+unique.map(k=>'<button class="btn '+(S.settings.theme===k?'primary':'secondary')+'" style="min-height:54px;text-align:left" data-theme="'+esc(k)+'" onclick="swqApplyQuickTheme(this.dataset.theme)">'+esc(THEMES[k]?.emoji||'🎨')+' '+esc(swqThemeName(k))+(S.settings.theme===k?' · ACTUAL':'')+'</button>').join('')+'</div><button class="btn secondary" style="margin-top:10px" onclick="closeModal()">Cerrar</button>');
+      modal('<div class="kicker">🎨 ESTILO</div><h2>Cambiar estilo</h2><p class="sub">Elige un estilo que ya tengas desbloqueado.</p><div class="grid g2" style="margin-top:10px">'+unique.map(k=>'<button class="btn '+(S.settings.theme===k?'primary':'secondary')+'" style="min-height:54px;text-align:left" onclick="swqApplyQuickTheme('+JSON.stringify(k)+')">'+esc(THEMES[k]?.emoji||'🎨')+' '+esc(swqThemeName(k))+(S.settings.theme===k?' · ACTUAL':'')+'</button>').join('')+'</div><button class="btn secondary" style="margin-top:10px" onclick="closeModal()">Cerrar</button>');
     }catch(e){console.warn('SWQ quick theme modal',e)}
   }
   function swqInjectQuickThemeButton(){
@@ -705,7 +689,6 @@ body.theme-carretera .app{position:relative;z-index:2}
       first.appendChild(b);
     }catch(e){}
   }
-
 
   function swqSyncChess(){
     let layer=document.getElementById('swqChessLayer');
@@ -722,7 +705,7 @@ body.theme-carretera .app{position:relative;z-index:2}
         scan.className='swq-chess-scan';
         layer.appendChild(scan);
         const pieces=['♟','♞','♜','♝','♛','♚'];
-        for(let i=0;i<8;i++){
+        for(let i=0;i<10;i++){
           const p=document.createElement('span');
           p.className='swq-chess-fall';
           p.textContent=pieces[i%pieces.length];
@@ -847,15 +830,15 @@ body.theme-carretera .app{position:relative;z-index:2}
   }
 
   function swqInitUpdate3(){
-    swqInstallEntityBudget();
     try{
-      swqPatchTicket25();
+      swqInstallEntityBudget();
+      swqPatchTicket30();
       swqEnsureChessTheme();
       swqInjectVisualsV5();
       swqSyncLeviathan();
       swqSyncImpactTheme();
       swqSyncChess();
-      swqPatchTicket25();
+      swqPatchTicket30();
       window.swqApplyQuickTheme=swqApplyQuickTheme;
       window.swqQuickTheme=swqQuickTheme;
       if(!window.__swqChessClickHook20260918_2){
@@ -877,10 +860,12 @@ body.theme-carretera .app{position:relative;z-index:2}
     }catch(e){console.warn('SWQ update3',e)}
   }
 
+  try{swqEnsureNewShopItems();swqPatchCloroShopText();swqPatchCloroAndTrainingXP();swqPatchProgression();swqPatchXPGems();swqEnsureChessTheme();swqPatchTicket30();swqInstallEntityBudget();}catch(e){console.warn('SWQ restored systems',e)}
+
   swqInitUpdate3();
   setTimeout(swqInitUpdate3,900);
   setInterval(()=>{try{
-    swqPatchTicket25();
+    swqPatchTicket30();
     swqEnsureChessTheme();
     swqSyncLeviathan();
     swqSyncImpactTheme();
