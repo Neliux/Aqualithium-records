@@ -476,8 +476,6 @@ body.theme-carretera .app{position:relative;z-index:2}
     try{
       if(typeof THEMES!=='undefined'&&!THEMES.Impacto)THEMES.Impacto={a:'#ff7a18',b:'#17110d',emoji:'💥',desc:'Impactos naranja, negro y amarillo con destellos y orbes de energía que caen lentamente.'};
       if(typeof SHOP!=='undefined'&&!SHOP.some(x=>x.id==='theme_Impacto'))SHOP.push({id:'theme_Impacto',icon:'💥',name:'Impacto Naranja',price:620,desc:'Estética naranja y negra con destellos, chispas y orbes de energía.',buy:()=>S.purchases.theme_Impacto=true});
-      if(typeof THEMES!=='undefined'&&!THEMES.EspejoAbisal)THEMES.EspejoAbisal={a:'#bfe9ff',b:'#101827',emoji:'🪞',desc:'Océano de cristal oscuro: fragmentos de espejo, reflejos líquidos y ondas de luz lentas.'};
-      if(typeof SHOP!=='undefined'&&!SHOP.some(x=>x.id==='theme_EspejoAbisal'))SHOP.push({id:'theme_EspejoAbisal',icon:'🪞',name:'Espejo Abisal',price:590,desc:'Océano de cristal oscuro con reflejos líquidos y fragmentos flotantes.',buy:()=>S.purchases.theme_EspejoAbisal=true});
       if(typeof SHOP!=='undefined'&&!SHOP.some(x=>x.id==='fichaNadador'))SHOP.push({id:'fichaNadador',icon:'🎟️',name:'Ficha del Nadador',price:260,desc:'Consumible. +25% de monedas en tu siguiente entrenamiento.',buy:()=>{swqEnsureConsumables();S.consumables.fichaNadador=(S.consumables.fichaNadador||0)+1;}});
     }catch(e){console.warn('SWQ new shop items',e)}
   }
@@ -675,45 +673,7 @@ body.theme-carretera .app{position:relative;z-index:2}
     }catch(e){}
   }
 
-  function swqSyncEspejoAbisal(){
-    let layer=document.getElementById('swqEspejoAbisalLayer');
-    if(S.settings.theme==='EspejoAbisal'){
-      if(layer)return;
-      layer=document.createElement('div');
-      layer.id='swqEspejoAbisalLayer';
-      layer.className='swq-mirror-layer';
-      /* Solo 9 entidades: 6 fragmentos, 2 brillos y 1 onda. */
-      for(let i=0;i<6;i++){
-        const sh=document.createElement('span');
-        sh.className='swq-mirror-shard';
-        sh.style.left=(6+Math.random()*88)+'%';
-        sh.style.top=(8+Math.random()*84)+'%';
-        sh.style.setProperty('--w',(34+Math.random()*58)+'px');
-        sh.style.setProperty('--h',(52+Math.random()*86)+'px');
-        sh.style.setProperty('--sx',(-85+Math.random()*170)+'px');
-        sh.style.setProperty('--sy',(-65+Math.random()*130)+'px');
-        sh.style.setProperty('--rx',(-22+Math.random()*44)+'deg');
-        sh.style.setProperty('--ry',(-28+Math.random()*56)+'deg');
-        sh.style.setProperty('--rz',(-40+Math.random()*80)+'deg');
-        sh.style.setProperty('--d',(10+Math.random()*4)+'s');
-        sh.style.animationDelay=(-Math.random()*10)+'s';
-        layer.appendChild(sh);
-      }
-      for(let i=0;i<2;i++){
-        const g=document.createElement('span');
-        g.className='swq-mirror-glow';
-        g.style.left=(12+i*56+Math.random()*8)+'%';
-        g.style.top=(18+Math.random()*58)+'%';
-        layer.appendChild(g);
-      }
-      const rr=document.createElement('span');
-      rr.className='swq-mirror-ripple';
-      rr.style.left=(30+Math.random()*40)+'%';
-      rr.style.top=(38+Math.random()*30)+'%';
-      layer.appendChild(rr);
-      document.body.appendChild(layer);
-    }else if(layer)layer.remove();
-  }
+
   function swqSyncChess(){
     let layer=document.getElementById('swqChessLayer');
     let burst=document.getElementById('swqChessBurstLayer');
@@ -841,14 +801,12 @@ body.theme-carretera .app{position:relative;z-index:2}
       try{eclipseCartoonStars();}catch(e){}
       swqSyncLeviathan();
       swqSyncImpactTheme();
-      swqSyncEspejoAbisal();
       swqSyncChess();
       closeModal();
       render();
       setTimeout(()=>{try{
         swqSyncLeviathan();
         swqSyncImpactTheme();
-        swqSyncEspejoAbisal();
         swqSyncChess();
         swqInjectQuickThemeButton();
       }catch(e){}},60);
@@ -862,7 +820,6 @@ body.theme-carretera .app{position:relative;z-index:2}
       swqInjectVisualsV5();
       swqSyncLeviathan();
       swqSyncImpactTheme();
-      swqSyncEspejoAbisal();
       swqSyncChess();
       swqPatchTicket25();
       window.swqApplyQuickTheme=swqApplyQuickTheme;
@@ -893,7 +850,6 @@ body.theme-carretera .app{position:relative;z-index:2}
     swqEnsureChessTheme();
     swqSyncLeviathan();
     swqSyncImpactTheme();
-    swqSyncEspejoAbisal();
     swqSyncChess();
     swqInjectQuickThemeButton();
     window.swqApplyQuickTheme=swqApplyQuickTheme;
