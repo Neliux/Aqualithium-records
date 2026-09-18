@@ -11,10 +11,10 @@
 */
 (function(){
   'use strict';
-  if(window.__SWQ_FINAL_FIXES_20260918_5__)return;
-  window.__SWQ_FINAL_FIXES_20260918_5__=true;
+  if(window.__SWQ_FINAL_FIXES_20260918_6__)return;
+  window.__SWQ_FINAL_FIXES_20260918_6__=true;
 
-  const VERSION='20260918-5';
+  const VERSION='20260918-6';
   let updatingProfilePanel=false;
   let roadTimer=null,planeTimer=null,roadLayer=null;
   let timeCategory=localStorage.getItem('SWIM_QUEST_TIME_CATEGORY')||'50';
@@ -193,29 +193,40 @@
 
   function patchAchievementRules(){
     try{
-      const rare=ACHIEVEMENTS.find(a=>a.id==='counter2'||/mar empieza|oc[eé]ano empieza/i.test(a.title||''));
-      if(rare){
-        rare.id='counter2';rare.icon='🌙';rare.title='Eres raro..';rare.desc='Nada 5.000 metros de espalda acumulados.';rare.ok=()=>validBackMeters()>=5000;
+      const bee=ACHIEVEMENTS.find(a=>a.id==='whoLeftThis');
+      if(bee){
+        bee.icon='🐝';
+        bee.title='¿Quién dejó esto aquí?';
+        bee.desc='Registra una marca de tiempo en 200 m mariposa.';
+        bee.reward={...(bee.reward||{}),theme:'Bee',coins:500,xp:900};
+        bee.ok=()=>S.trainings.some(e=>(e.series||[]).some(s=>s.style==='mariposa'&&num(s.distance)===200&&num(s.reps)===1&&num(s.time)>0));
       }
-      const demon=ACHIEVEMENTS.find(a=>a.id==='demon');if(demon)demon.ok=()=>S.trainings.some(e=>difficultyByPercent(e,S.profile?.avgMeters).key==='demoniaco');
-      const maso=ACHIEVEMENTS.find(a=>a.id==='maso');if(maso){maso.title='Masoquista';maso.desc='Completa un entrenamiento de 450% o más de tu promedio semanal.';maso.ok=()=>S.trainings.some(e=>difficultyByPercent(e,S.profile?.avgMeters).key==='masoquista');}
+      const demon=ACHIEVEMENTS.find(a=>a.id==='demon');
+      if(demon)demon.ok=()=>S.trainings.some(e=>difficultyByPercent(e,S.profile?.avgMeters).key==='demoniaco');
+      const maso=ACHIEVEMENTS.find(a=>a.id==='maso');
+      if(maso){
+        maso.title='Masoquista';
+        maso.desc='Completa un entrenamiento de 450% o más de tu promedio semanal.';
+        maso.ok=()=>S.trainings.some(e=>difficultyByPercent(e,S.profile?.avgMeters).key==='masoquista');
+      }
     }catch(e){console.warn('SWQ achievement patch',e)}
   }
-
   function repairAchievements(){
     if(!Array.isArray(S.achievements))S.achievements=[];
     const before=[...S.achievements],seen=new Set(),keep=[];let changed=false;
     for(const id of before){
-      if(seen.has(id))continue;seen.add(id);
-      const a=ACHIEVEMENTS.find(x=>x.id===id);
-      if(!a||a.secret){keep.push(id);continue;}
-      let ok=true;try{ok=!!a.ok();}catch(e){ok=true;}
-      if(ok)keep.push(id);else changed=true;
+      if(seen.has(id))continue;
+      seen.add(id);
+      /* Unlocked achievements are permanent: changing an achievement's rule must never erase progress. */
+      keep.push(id);
     }
-    if(changed){S.achievements=keep;try{save();}catch(e){}}
+    if(keep.length!==before.length){
+      changed=true;
+      S.achievements=keep;
+      try{save();}catch(e){}
+    }
     return changed;
   }
-
   function injectMainCSS(){
     if(document.getElementById('swq-main-fixes-'+VERSION))return;
     const s=document.createElement('style');s.id='swq-main-fixes-'+VERSION;s.textContent=`
@@ -387,10 +398,39 @@ body.theme-carretera .app{position:relative;z-index:2}
     }catch(e){console.warn('SWQ repairAll',e)}
   }
 
+  let swqMutationRepairQueued=false;
   function onRenderMutation(){
-    try{injectProfilePanel();syncRoadTheme();patchPearMobile();enforceButterfly();}catch(e){}
+    if(swqMutationRepairQueued)return;
+    swqMutationRepairQueued=true;
+    const run=()=>{
+      swqMutationRepairQueued=false;
+      try{
+        injectProfilePanel();
+        syncRoadTheme();
+        patchPearMobile();
+        enforceButterfly();
+        swqTrimVisualLayers();
+      }catch(e){}
+    };
+    if(window.requestAnimationFrame)requestAnimationFrame(run);else setTimeout(run,50);
   }
 
+  function swqTrimVisualLayers(){
+    try{
+      const limits={
+        themeParticles:10,
+        swqLeviathanLayer:10,
+        swqChessLayer:10,
+        swqChessBurstLayer:8,
+        swqImpactLayer:5
+      };
+      for(const [id,limit] of Object.entries(limits)){
+        const host=document.getElementById(id);
+        if(!host)continue;
+        while(host.childElementCount>limit)host.firstElementChild?.remove();
+      }
+    }catch(e){}
+  }
   injectMainCSS();
   patchAchievementRules();
   patchPearDialogue();
@@ -468,7 +508,7 @@ body.theme-carretera .app{position:relative;z-index:2}
   function swqPatchCloroShopText(){
     try{
       const it=SHOP?.find?.(x=>x.id==='cloroPremium');
-      if(it){it.name='Cloro Premium';it.desc='Consumible. Potencia en un 40% el XP del próximo entrenamiento. El efecto se consume al finalizar esa sesión.';}
+      if(it){it.name='Cloro Premium';it.desc='Consumible. Potencia en un 70% el XP del próximo entrenamiento. El efecto se consume al finalizar esa sesión.';}
     }catch(e){console.warn('SWQ cloro text',e)}
   }
 
@@ -482,42 +522,110 @@ body.theme-carretera .app{position:relative;z-index:2}
   function swqPatchCloroAndTrainingXP(){
     try{
       swqEnsureConsumables();
-      if(!window.__swqTrainingXPPatched20260917_2){
+
+      if(!window.__swqTrainingRewardsPatched20260918_6){
         const baseTrainingXP=trainingXP;
-        trainingXP=function(e,state=null){const raw=baseTrainingXP(e,state);return Math.round(Math.max(0,Number(raw)||0)*0.90);};
-        window.__swqTrainingXPPatched20260917_2=true;
+        trainingXP=function(e,state=null){
+          const raw=Math.max(0,Number(baseTrainingXP(e,state))||0);
+          return Math.round(raw*1.25);
+        };
+
+        trainingCoins=function(e){
+          const rawXp=Math.max(0,Number(baseTrainingXP(e,null))||0);
+          return Math.max(25,Math.round(rawXp*.132*trainingCoinMultiplier()*1.15));
+        };
+
+        if(typeof draftXP==='function'){
+          const baseDraftXP=draftXP;
+          draftXP=function(){
+            const hasCloro=Number(S.consumables?.cloroPremium||0)>0;
+            let raw=Math.max(0,Number(baseDraftXP())||0);
+            if(hasCloro)raw/=1.20; /* remove the old preview-only Cloro multiplier */
+            return Math.round(raw*1.25*(hasCloro?1.70:1));
+          };
+        }
+
+        if(typeof draftCoins==='function'){
+          const baseDraftXP=typeof draftXP==='function'?draftXP:null;
+          const baseDraftPreview=typeof baseDraftXP==='function'?baseDraftXP:null;
+          draftCoins=function(){
+            const hasCloro=Number(S.consumables?.cloroPremium||0)>0;
+            const hasTicket=Number(S.consumables?.fichaNadador||0)>0;
+            /* Coins are boosted independently by +15%; the new +25% XP boost does not compound into coins. */
+            let raw=0;
+            try{
+              const originalPreview=typeof baseDraftPreview==='function'?baseDraftPreview():0;
+              raw=Math.max(0,Number(originalPreview)||0);
+            }catch(e){}
+            if(hasCloro)raw/=1.25;
+            if(hasCloro)raw/=1.70;
+            const coinBase=Math.max(25,Math.round(raw*.132*trainingCoinMultiplier()*1.15));
+            return hasTicket?Math.max(25,Math.round(coinBase*1.45)):coinBase;
+          };
+        }
+
+        window.__swqTrainingRewardsPatched20260918_6=true;
       }
-      if(!window.__swqSaveTrainingBoosts20260917_2){
+
+      if(!window.__swqSaveTrainingBoosts20260918_6){
         const previousSaveTraining=window.saveTraining;
         if(typeof previousSaveTraining==='function'){
           window.saveTraining=function(){
             swqEnsureConsumables();
-            const hadCloro=Number(S.consumables.cloroPremium||0)>0,hadCoin=Number(S.consumables.fichaNadador||0)>0;
+            const hadCloro=Number(S.consumables.cloroPremium||0)>0;
+            const hadCoin=Number(S.consumables.fichaNadador||0)>0;
             const beforeCount=Array.isArray(S.trainings)?S.trainings.length:0;
-            const oldCloro=Number(S.consumables.cloroPremium||0),oldCoin=Number(S.consumables.fichaNadador||0);
-            if(hadCloro)S.consumables.cloroPremium=0;if(hadCoin)S.consumables.fichaNadador=0;
+            const oldCloro=Number(S.consumables.cloroPremium||0);
+            const oldCoin=Number(S.consumables.fichaNadador||0);
+
+            /* Let the underlying save create the workout with the permanent global bonuses only. */
+            if(hadCloro)S.consumables.cloroPremium=0;
+            if(hadCoin)S.consumables.fichaNadador=0;
+
             let result;
-            try{result=previousSaveTraining.apply(this,arguments);}catch(err){S.consumables.cloroPremium=oldCloro;S.consumables.fichaNadador=oldCoin;throw err;}
+            try{result=previousSaveTraining.apply(this,arguments);}
+            catch(err){
+              S.consumables.cloroPremium=oldCloro;
+              S.consumables.fichaNadador=oldCoin;
+              throw err;
+            }
+
             setTimeout(async()=>{
               try{
-                if(!Array.isArray(S.trainings)||S.trainings.length<=beforeCount){S.consumables.cloroPremium=oldCloro;S.consumables.fichaNadador=oldCoin;return;}
-                const e=S.trainings[S.trainings.length-1],baseXp=Math.max(0,Number(e.xp)||0);
-                const desiredXp=Math.round(baseXp*(hadCloro?1.40:1)),extraXp=Math.max(0,desiredXp-baseXp);
-                e.xp=desiredXp;if(extraXp>0&&typeof gainXP==='function')gainXP(extraXp);
-                const baseCoins=Math.max(0,Number(e.coins)||0),desiredCoins=hadCoin?Math.round(baseCoins*1.30):baseCoins,extraCoins=Math.max(0,desiredCoins-baseCoins);
-                e.coins=desiredCoins;if(extraCoins)S.coins+=extraCoins;
-                S.consumables.cloroPremium=Math.max(0,oldCloro-(hadCloro?1:0));S.consumables.fichaNadador=Math.max(0,oldCoin-(hadCoin?1:0));
-                try{save();}catch(e){}try{render();}catch(e){}
+                if(!Array.isArray(S.trainings)||S.trainings.length<=beforeCount){
+                  S.consumables.cloroPremium=oldCloro;
+                  S.consumables.fichaNadador=oldCoin;
+                  return;
+                }
+
+                const e=S.trainings[S.trainings.length-1];
+                const baseXp=Math.max(0,Number(e.xp)||0);
+                const desiredXp=Math.round(baseXp*(hadCloro?1.70:1));
+                const extraXp=Math.max(0,desiredXp-baseXp);
+                e.xp=desiredXp;
+                if(extraXp>0&&typeof gainXP==='function')gainXP(extraXp);
+
+                const baseCoins=Math.max(0,Number(e.coins)||0);
+                const desiredCoins=hadCoin?Math.round(baseCoins*1.45):baseCoins;
+                const extraCoins=Math.max(0,desiredCoins-baseCoins);
+                e.coins=desiredCoins;
+                if(extraCoins)S.coins+=extraCoins;
+
+                S.consumables.cloroPremium=Math.max(0,oldCloro-(hadCloro?1:0));
+                S.consumables.fichaNadador=Math.max(0,oldCoin-(hadCoin?1:0));
+
+                try{save();}catch(e){}
+                try{render();}catch(e){}
                 if(authUser&&typeof syncTrainingToCloud==='function')try{await syncTrainingToCloud(e);}catch(err){console.warn('SWQ boosted workout sync',err)}
                 if(authUser&&typeof syncProfileToCloud==='function')try{await syncProfileToCloud();}catch(err){console.warn('SWQ boosted profile sync',err)}
               }catch(err){console.warn('SWQ training boosts',err)}
             },30);
             return result;
           };
-          window.__swqSaveTrainingBoosts20260917_2=true;
+          window.__swqSaveTrainingBoosts20260918_6=true;
         }
       }
-    }catch(e){console.warn('SWQ Cloro/XP patch',e)}
+    }catch(e){console.warn('SWQ training reward patch',e)}
   }
   function swqPatchProgression(){
     try{
@@ -650,7 +758,7 @@ body.theme-carretera .app{position:relative;z-index:2}
   /* Global performance budget for styles with many animated entities. */
   function swqInstallEntityBudget(){
     try{
-      if(window.__swqEntityBudget20260918_5)return;
+      if(window.__swqEntityBudget20260918_6)return;
       const caps={Leviatan:8,Ajedrez:8,Impacto:5,Bomba:5,CobaltoCobre:7,Carretera:5,CianNeon:6,Eclipse:6,Bee:6,Glacial:7};
       const originalSpawn=spawnThemeParticle;
       spawnThemeParticle=function(){
@@ -660,7 +768,7 @@ body.theme-carretera .app{position:relative;z-index:2}
         if(host&&host.childElementCount>=cap)return;
         return originalSpawn.apply(this,arguments);
       };
-      window.__swqEntityBudget20260918_5=true;
+      window.__swqEntityBudget20260918_6=true;
     }catch(e){console.warn('SWQ entity budget',e)}
   }
 
@@ -767,7 +875,7 @@ body.theme-carretera .app{position:relative;z-index:2}
       if(it){
         it.name='Ficha del Nadador';
         it.icon='🎟️';
-        it.desc='Consumible. +30% de monedas en tu siguiente entrenamiento.';
+        it.desc='Consumible. +45% de monedas en tu siguiente entrenamiento.';
       }
     }catch(e){console.warn('SWQ ticket 30',e)}
   }
