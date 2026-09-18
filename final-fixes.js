@@ -297,7 +297,7 @@ body.theme-carretera .app{position:relative;z-index:2}
     if(S.settings.theme==='Carretera'){
       createRoadLayer();
       if(!roadTimer)roadTimer=setInterval(()=>{if(!document.hidden){spawnRoadCar();if(Math.random()<.10)spawnRoadCar()}},1700);
-      if(!planeTimer)planeTimer=setInterval(()=>{if(!document.hidden&&Math.random()<.14)spawnRoadPlane()},18000);
+      if(!planeTimer)planeTimer=setInterval(()=>{if(!document.hidden&&Math.random()<.10)spawnRoadPlane()},24000);
     }else clearRoadLayer();
   }
 
@@ -647,7 +647,7 @@ body.theme-carretera .app{position:relative;z-index:2}
       if(layer)layer.remove();
     }
   }
-  /* Global performance budget for entity-heavy styles. */
+  /* Global performance budget for styles with many animated entities. */
   function swqInstallEntityBudget(){
     try{
       if(window.__swqEntityBudget20260918_5)return;
@@ -690,7 +690,152 @@ body.theme-carretera .app{position:relative;z-index:2}
     }catch(e){}
   }
 
-  function swqSyncChess(){
+    function swqInflateSecretShop(){
+    try{
+      if(typeof buySecret!=='function'||window.__swqSecretPriceWrap20260917_2)return;
+      const baseBuySecret=window.buySecret;
+      window.buySecret=function(id,price,name){
+        if(id==='hitman'){
+          if(Number(S.coins||0)<220){toast('🪙 Te faltan 220 monedas.');return;}
+          const wasOwned=!!S.purchases.sicario;baseBuySecret(id,price,name);
+          if(!wasOwned&&S.purchases.sicario){S.coins=Math.max(0,Number(S.coins||0)-20);try{save();render();}catch(e){}if(authUser&&typeof syncProfileToCloud==='function')syncProfileToCloud();}
+          return;
+        }
+        return baseBuySecret(id,Math.ceil(Number(price||0)*1.10),name);
+      };
+      window.__swqSecretPriceWrap20260917_2=true;
+    }catch(e){console.warn('SWQ secret shop',e)}
+  }
+  function swqImproveAccountConnection(){
+    if(window.__swqAccountRepair20260917_2)return;
+    window.__swqAccountRepair20260917_2=true;
+    async function verify(tries=3){
+      for(let i=0;i<tries;i++){
+        try{
+          if(!supabaseClient&&typeof initSupabase==='function')await initSupabase();
+          if(!supabaseClient)throw new Error('Supabase no disponible');
+          const sess=await supabaseClient.auth.getSession();
+          if(sess?.data?.session?.user){
+            authUser=sess.data.session.user;
+            if(typeof syncCurrentAccount==='function')await syncCurrentAccount();
+            await new Promise(r=>setTimeout(r,180));
+            if(typeof syncCurrentAccount==='function'&&!remoteSyncBusy)await syncCurrentAccount();
+            S.level=levelFromXP(S.xp);try{save();}catch(e){} if(authUser&&S.profile&&typeof syncProfileToCloud==='function')await syncProfileToCloud();
+            return true;
+          }
+        }catch(e){if(i===tries-1)console.warn('SWQ account verify',e)}
+        await new Promise(r=>setTimeout(r,350*(i+1)));
+      }
+      return false;
+    }
+    const baseSignIn=window.signInReal;
+    if(typeof baseSignIn==='function')window.signInReal=async function(){const out=await baseSignIn.apply(this,arguments);setTimeout(()=>verify(3),250);return out;};
+    const baseSignUp=window.signUpReal;
+    if(typeof baseSignUp==='function')window.signUpReal=async function(){const out=await baseSignUp.apply(this,arguments);setTimeout(()=>verify(3),500);return out;};
+    window.addEventListener('online',()=>setTimeout(()=>verify(2),200));
+    setTimeout(()=>verify(2),1800);
+  }
+  function swqCarreteraUpdate(){
+    try{
+      if(S.settings.theme!=='Carretera')return;
+      clearRoadLayer();createRoadLayer();
+      roadTimer=setInterval(()=>{if(!document.hidden){spawnRoadCar();if(Math.random()<.15)spawnRoadCar();}},1250);
+      planeTimer=setInterval(()=>{if(!document.hidden&&Math.random()<.14)spawnRoadPlane()},18000);
+    }catch(e){console.warn('SWQ Carretera update',e)}
+  }
+  function swqInitUpdate2(){
+    swqEnsureNewShopItems();swqRemoveBebidaIsotonica();swqEnsureConsumables();swqInflateShopPrices();swqPatchXPGems();swqPatchCloroShopText();swqPatchCloroAndTrainingXP();swqPatchProgression();swqPatchFishMotivation();swqPatchPearExtra();swqPatchThemeText();swqInflateSecretShop();
+    if(typeof applyTheme==='function')try{applyTheme();}catch(e){}
+    if(S.settings.theme==='Carretera')swqCarreteraUpdate();
+    if(typeof document!=='undefined'&&!window.__swqImpactClickHook20260917_2){
+      document.addEventListener('click',e=>{
+        if(S.settings.theme!=='Impacto')return;
+        const btn=e.target?.closest?.('button');if(!btn||btn.disabled)return;
+        const r=btn.getBoundingClientRect();swqSpawnImpactBurst(r.left+r.width/2,r.top+r.height/2);
+      },true);
+      window.__swqImpactClickHook20260917_2=true;
+    }
+    try{save();}catch(e){}try{render();}catch(e){}
+  }
+  swqInitUpdate2();setTimeout(swqInitUpdate2,1200);
+
+
+  /* === UPDATE 2026-09-18 v7: restored full game fixes, chess, ticket 30%, Impacto performance === */
+  function swqPatchTicket30(){
+    try{
+      const it=SHOP?.find?.(x=>x.id==='fichaNadador');
+      if(it){
+        it.name='Ficha del Nadador';
+        it.icon='🎟️';
+        it.desc='Consumible. +30% de monedas en tu siguiente entrenamiento.';
+      }
+    }catch(e){console.warn('SWQ ticket 30',e)}
+  }
+
+  function swqEnsureChessTheme(){
+    try{
+      if(typeof THEMES!=='undefined'&&!THEMES.Ajedrez){
+        THEMES.Ajedrez={
+          a:'#e8f0ff',b:'#1a1730',emoji:'♟️',
+          desc:'Tablero nocturno eléctrico: cuadrícula animada, piezas cayendo, destellos y piezas que salen disparadas al pulsar botones.'
+        };
+      }
+      if(typeof SHOP!=='undefined'&&!SHOP.some(x=>x.id==='theme_Ajedrez')){
+        SHOP.push({
+          id:'theme_Ajedrez',
+          icon:'♟️',
+          name:'Ajedrez',
+          price:720,
+          desc:'Tablero nocturno con piezas cayendo, líneas luminosas y ráfagas de piezas al pulsar botones.',
+          buy:()=>{S.purchases.theme_Ajedrez=true;}
+        });
+      }
+    }catch(e){console.warn('SWQ chess theme',e)}
+  }
+
+  function swqInjectVisualsV5(){
+    if(document.getElementById('swq-v5-visuals'))return;
+    const s=document.createElement('style');
+    s.id='swq-v5-visuals';
+    s.textContent=[
+      /* --- Espejo Abisal: nueva identidad visual --- */
+
+      /* --- Ajedrez: 4 efectos principales --- */
+      "body.theme-ajedrez{background-color:#070713!important;background-image:linear-gradient(45deg,rgba(255,255,255,.055) 25%,transparent 25%,transparent 75%,rgba(255,255,255,.055) 75%),linear-gradient(45deg,rgba(255,255,255,.055) 25%,transparent 25%,transparent 75%,rgba(255,255,255,.055) 75%),radial-gradient(circle at 50% 10%,rgba(78,220,255,.16),transparent 26%),radial-gradient(circle at 80% 78%,rgba(255,81,195,.13),transparent 30%),linear-gradient(160deg,#111126,#06060f 55%,#020205)!important;background-size:74px 74px,74px 74px,100% 100%,100% 100%,100% 100%;background-position:0 0,37px 37px,0 0,0 0,0 0!important;color:#f8f8ff!important;overflow-x:hidden!important}",
+      "body.theme-ajedrez::before{content:'';position:fixed;inset:-14%;z-index:-2;pointer-events:none;background:repeating-linear-gradient(90deg,rgba(105,221,255,.07) 0 2px,transparent 2px 74px),repeating-linear-gradient(0deg,rgba(255,105,210,.06) 0 2px,transparent 2px 74px);transform:rotate(-8deg) scale(1.16);animation:swqChessGrid 13s linear infinite}",
+      "body.theme-ajedrez::after{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(115deg,transparent 0 42%,rgba(98,235,255,.16) 49%,transparent 57%),linear-gradient(290deg,transparent 0 46%,rgba(255,105,213,.12) 51%,transparent 56%);background-size:260% 260%,220% 220%;animation:swqChessScan 8s linear infinite;mix-blend-mode:screen}",
+      "body.theme-ajedrez .app{position:relative;z-index:3}",
+      "body.theme-ajedrez .topbar{background:linear-gradient(180deg,rgba(7,7,20,.94),rgba(10,10,28,.74),transparent)!important;border-bottom-color:rgba(118,230,255,.22)!important}",
+      "body.theme-ajedrez .wallet,body.theme-ajedrez .card,body.theme-ajedrez .hero,body.theme-ajedrez .stat,body.theme-ajedrez .list-item,body.theme-ajedrez .series,body.theme-ajedrez .shop-item{background:linear-gradient(145deg,rgba(17,19,43,.91),rgba(8,8,21,.90))!important;border-color:rgba(130,228,255,.25)!important;box-shadow:inset 0 0 26px rgba(77,218,255,.045),0 16px 42px rgba(0,0,0,.42),0 0 22px rgba(255,81,191,.035)!important;backdrop-filter:blur(8px)}",
+      "body.theme-ajedrez .btn{background:linear-gradient(145deg,rgba(30,34,70,.96),rgba(12,13,31,.98))!important;color:#f7fbff!important;border-color:rgba(118,224,255,.42)!important;box-shadow:inset 0 0 14px rgba(100,219,255,.08),0 7px 23px rgba(0,0,0,.34),0 0 16px rgba(255,87,195,.05)!important;position:relative;overflow:hidden}",
+      "body.theme-ajedrez .btn.primary{background:linear-gradient(135deg,#52e9ff,#7e67ff 52%,#ff66c9)!important;color:#080a18!important;border-color:#d2fdff!important;box-shadow:0 0 26px rgba(77,223,255,.20),0 0 34px rgba(255,91,198,.12)!important}",
+      "body.theme-ajedrez .nav{background:rgba(5,5,14,.95)!important;border-top-color:rgba(121,225,255,.22)!important;backdrop-filter:blur(10px)}",
+      ".swq-chess-layer{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}",
+      ".swq-chess-board-glow{position:absolute;inset:8%;border:1px solid rgba(117,228,255,.16);box-shadow:0 0 90px rgba(86,222,255,.07),inset 0 0 80px rgba(255,89,197,.05);transform:rotate(-3deg);animation:swqChessBoardPulse 5.5s ease-in-out infinite}",
+      ".swq-chess-fall{position:absolute;top:-12vh;font-size:clamp(18px,4vw,38px);font-weight:900;color:rgba(239,247,255,.76);text-shadow:0 0 10px rgba(88,228,255,.55),0 0 22px rgba(255,98,199,.25);animation:swqChessFall var(--d,8s) linear infinite;animation-delay:var(--delay,0s);filter:drop-shadow(0 3px 4px rgba(0,0,0,.45))}",
+      ".swq-chess-scan{position:absolute;inset:-20%;background:linear-gradient(180deg,transparent 0 44%,rgba(95,234,255,.12) 50%,transparent 56%);filter:blur(2px);animation:swqChessScanBand 6.5s ease-in-out infinite}",
+      ".swq-chess-burst-layer{position:fixed;inset:0;z-index:120;pointer-events:none;overflow:hidden}",
+      ".swq-chess-burst{position:absolute;font-size:20px;font-weight:900;transform:translate(-50%,-50%) scale(.4);opacity:1;text-shadow:0 0 10px rgba(105,231,255,.95),0 0 22px rgba(255,100,204,.66);animation:swqChessBurst var(--d,.78s) cubic-bezier(.16,.75,.18,1) forwards}",
+      ".swq-chess-burst-core{position:absolute;width:22px;height:22px;border-radius:50%;border:2px solid rgba(228,255,255,.80);box-shadow:0 0 20px rgba(90,225,255,.6),0 0 38px rgba(255,88,198,.22);transform:translate(-50%,-50%) scale(.2);animation:swqChessCore .45s ease-out forwards}",
+      "@keyframes swqChessGrid{from{transform:rotate(-8deg) translate3d(-2%,0,0) scale(1.16)}to{transform:rotate(-8deg) translate3d(2%,-3%,0) scale(1.18)}}",
+      "@keyframes swqChessScan{0%{background-position:-110% 0,110% 100%}100%{background-position:110% 100%,-110% 0}}",
+      "@keyframes swqChessBoardPulse{0%,100%{transform:rotate(-3deg) scale(.985);opacity:.46}50%{transform:rotate(-1deg) scale(1.02);opacity:.88}}",
+      "@keyframes swqChessFall{0%{transform:translate3d(0,-8vh,0) rotate(-12deg) scale(.72);opacity:0}10%{opacity:.76}52%{transform:translate3d(var(--dx,12px),62vh,0) rotate(170deg) scale(1)}88%{opacity:.48}100%{transform:translate3d(calc(var(--dx,12px)*-1),118vh,0) rotate(330deg) scale(.82);opacity:0}}",
+      "@keyframes swqChessScanBand{0%,100%{transform:translateY(-48vh) rotate(-2deg);opacity:.08}50%{transform:translateY(48vh) rotate(2deg);opacity:.62}}",
+      "@keyframes swqChessBurst{0%{transform:translate(-50%,-50%) translate3d(0,0,0) rotate(0deg) scale(.35);opacity:1}16%{opacity:1}100%{transform:translate(-50%,-50%) translate3d(var(--dx,0),var(--dy,0),0) rotate(var(--rot,220deg)) scale(.85);opacity:0}}",
+      "@keyframes swqChessCore{0%{transform:translate(-50%,-50%) scale(.2);opacity:.9}100%{transform:translate(-50%,-50%) scale(3.2);opacity:0}}",
+
+      /* --- Impacto: efecto extra de onda expansiva --- */
+      ".swq-impact-wave{position:fixed;width:86px;height:86px;border:3px solid rgba(255,225,125,.88);border-radius:50%;pointer-events:none;z-index:121;transform:translate(-50%,-50%) scale(.16);box-shadow:0 0 18px rgba(255,120,25,.72),inset 0 0 20px rgba(255,210,95,.22);animation:swqImpactWave .62s cubic-bezier(.12,.72,.18,1) forwards}",
+      ".swq-impact-wave.inner{width:38px;height:38px;border-width:2px;border-color:rgba(255,116,35,.94);animation-duration:.42s}",
+      ".swq-impact-ray{position:fixed;width:3px;height:54px;border-radius:999px;background:linear-gradient(180deg,#fff7cf,#ff8c1f,transparent);pointer-events:none;z-index:122;transform-origin:50% 100%;animation:swqImpactRay .50s ease-out forwards;filter:drop-shadow(0 0 8px rgba(255,120,25,.78))}",
+      "@keyframes swqImpactWave{0%{transform:translate(-50%,-50%) scale(.16);opacity:1}58%{opacity:.74}100%{transform:translate(-50%,-50%) scale(3.15);opacity:0}}",
+      "@keyframes swqImpactRay{from{transform:translate(-50%,-100%) rotate(var(--ang,0deg)) scaleY(.35);opacity:1}to{transform:translate(-50%,-100%) rotate(var(--ang,0deg)) translateY(-42px) scaleY(1.35);opacity:0}}"
+    ].join('');
+    document.head.appendChild(s);
+  }
+
+    function swqSyncChess(){
     let layer=document.getElementById('swqChessLayer');
     let burst=document.getElementById('swqChessBurstLayer');
     if(S.settings.theme==='Ajedrez'){
@@ -780,7 +925,7 @@ body.theme-carretera .app{position:relative;z-index:2}
     document.body.appendChild(inner);
     setTimeout(()=>inner.remove(),520);
 
-    for(let i=0;i<10;i++){
+    for(let i=0;i<4;i++){
       const ray=document.createElement('span');
       ray.className='swq-impact-ray';
       ray.style.left=x+'px';
@@ -790,7 +935,7 @@ body.theme-carretera .app{position:relative;z-index:2}
       setTimeout(()=>ray.remove(),620);
     }
 
-    for(let i=0;i<20;i++){
+    for(let i=0;i<8;i++){
       const sp=document.createElement('span');
       sp.className='swq-impact-spark';
       const a=(Math.PI*2*i/20)+Math.random()*.18;
@@ -859,8 +1004,6 @@ body.theme-carretera .app{position:relative;z-index:2}
       try{render();}catch(e){}
     }catch(e){console.warn('SWQ update3',e)}
   }
-
-  try{swqEnsureNewShopItems();swqPatchCloroShopText();swqPatchCloroAndTrainingXP();swqPatchProgression();swqPatchXPGems();swqEnsureChessTheme();swqPatchTicket30();swqInstallEntityBudget();}catch(e){console.warn('SWQ restored systems',e)}
 
   swqInitUpdate3();
   setTimeout(swqInitUpdate3,900);
