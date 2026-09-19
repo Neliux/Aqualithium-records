@@ -1985,9 +1985,9 @@ body.theme-carretera .app{position:relative;z-index:2}
 
   /* Ruleta Normal: recompensa mayor, manteniendo VIP intacta. */
   try{
-    const baseOpenShopRoulette=window.openShopRoulette;
+    const baseOpenShopRoulette=openShopRoulette;
     if(typeof baseOpenShopRoulette==='function'&&!window.__swqNormalRouletteBoost20260919){
-      window.openShopRoulette=function(kind){
+      openShopRoulette=function(kind){
         if(kind!=='normal')return baseOpenShopRoulette.apply(this,arguments);
         const vip=false,styles=(typeof nonAchievementThemesForRoulette==='function'?nonAchievementThemesForRoulette():[]),music=null;
         let coins=100+Math.floor(Math.random()*201); // 100–300
@@ -2011,13 +2011,13 @@ body.theme-carretera .app{position:relative;z-index:2}
 
   /* Recompensa diaria: prioridad en XP. 4% de tema se conserva. */
   try{
-    const baseDailyRewardInfo=window.dailyRewardInfo;
+    const baseDailyRewardInfo=dailyRewardInfo;
     if(typeof baseDailyRewardInfo==='function'&&!window.__swqDailyRewardBoost20260919){
-      window.dailyRewardInfo=function(){
+      dailyRewardInfo=function(){
         const out=baseDailyRewardInfo.apply(this,arguments);
         try{
           const d=S.dailyReward||{}, today=(typeof localDateKey==='function'?localDateKey():"");
-          if(d.date===today&&d.kind==="coinsxp"&&!d.__swqBoosted20260919){
+          if(d.date===today&&d.kind==="coinsxp"&&!d.claimed&&!d.__swqBoosted20260919){
             d.coins=60+Math.floor(Math.random()*181); // 60–240
             d.xp=250+Math.floor(Math.random()*551);   // 250–800
             d.__swqBoosted20260919=true;
@@ -2035,8 +2035,8 @@ body.theme-carretera .app{position:relative;z-index:2}
   /* Rango: todos los niveles requeridos pasan a 90% del umbral anterior.
      Se redondea hacia arriba porque el nivel es entero y nunca se aumenta el requisito. */
   try{
-    if(Array.isArray(window.RANKS)){
-      window.RANKS.forEach(r=>{
+    if(typeof RANKS!=='undefined'&&Array.isArray(RANKS)){
+      RANKS.forEach(r=>{
         const original=Number(r.lv);
         if(!Number.isFinite(original)||original<1)return;
         if(!r.__swqOriginalLv)r.__swqOriginalLv=original;
@@ -2058,4 +2058,31 @@ body.theme-carretera .app{position:relative;z-index:2}
   }catch(e){console.warn('SWQ bee direction fix',e)}
 
   try{save();render();}catch(e){}
+  /* cloudGameState debe devolver un objeto, no una Promise, porque syncProfileToCloud() lo inserta directamente en jsonb. */
+  try{
+    if(typeof cloudGameState==='function'){
+      cloudGameState=function(){
+        return {
+          purchases:S.purchases||{},
+          consumables:S.consumables||{},
+          inventory:S.inventory||{},
+          activeConsumables:S.activeConsumables||{},
+          shopUnlocks:S.shopUnlocks||{},
+          rankRewardsClaimed:Array.isArray(S.rankRewardsClaimed)?S.rankRewardsClaimed:[],
+          rankRewardCoins:Number(S.rankRewardCoins||0),
+          rankRewardXP:Number(S.rankRewardXP||0),
+          itemBonusCoins:Number(S.itemBonusCoins||0),
+          itemBonusXP:Number(S.itemBonusXP||0),
+          achievements:Array.isArray(S.achievements)?S.achievements:[],
+          claimed:Array.isArray(S.claimed)?S.claimed:[],
+          shield:Number(S.shield||0),
+          levelRewardedThrough:Number(S.levelRewardedThrough||1),
+          levelRewardCoins:Number(S.levelRewardCoins||0),
+          monthlyShieldUntil:S.monthlyShieldUntil||"",
+          dailyReward:S.dailyReward||{date:"",claimed:false,coins:0,xp:0,kind:"coinsxp",themeKey:""}
+        };
+      };
+    }
+  }catch(e){console.warn('SWQ cloud state repair',e)}
+
 })();
