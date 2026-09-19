@@ -2032,19 +2032,6 @@ body.theme-carretera .app{position:relative;z-index:2}
     }
   }catch(e){console.warn('SWQ daily reward boost',e)}
 
-  /* Rango: todos los niveles requeridos pasan a 90% del umbral anterior.
-     Se redondea hacia arriba porque el nivel es entero y nunca se aumenta el requisito. */
-  try{
-    if(typeof RANKS!=='undefined'&&Array.isArray(RANKS)){
-      RANKS.forEach(r=>{
-        const original=Number(r.lv);
-        if(!Number.isFinite(original)||original<1)return;
-        if(!r.__swqOriginalLv)r.__swqOriginalLv=original;
-        r.lv=Math.max(1,Math.ceil(Number(r.__swqOriginalLv)*0.90));
-      });
-    }
-  }catch(e){console.warn('SWQ rank threshold reduction',e)}
-
   /* Abejas: invertir la dirección del vuelo para corregir el sentido. */
   try{
     const css=document.getElementById('swq-visual-repair-css');
