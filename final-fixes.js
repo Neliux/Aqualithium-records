@@ -1193,6 +1193,10 @@ body.theme-carretera .app{position:relative;z-index:2}
       S.activeConsumables=S.activeConsumables||{};
       S.shopUnlocks=S.shopUnlocks||{};
       S.rankRewardsClaimed=Array.isArray(S.rankRewardsClaimed)?S.rankRewardsClaimed:[];
+      if(!Number.isFinite(Number(S.rankRewardCoins)))S.rankRewardCoins=0;
+      if(!Number.isFinite(Number(S.rankRewardXP)))S.rankRewardXP=0;
+      if(!Number.isFinite(Number(S.itemBonusCoins)))S.itemBonusCoins=0;
+      if(!Number.isFinite(Number(S.itemBonusXP)))S.itemBonusXP=0;
       S.dailyReward=S.dailyReward||{date:'',claimed:false,coins:0,xp:0,kind:'coinsxp',themeKey:''};
       if(!S.__swqLegacyConsumablesMigrated){
         ['cloroPremium','fichaNadador'].forEach(k=>{
@@ -1286,8 +1290,8 @@ body.theme-carretera .app{position:relative;z-index:2}
         if(!next)break;
         S.rankRewardsClaimed.push(next.c);
         changed=true;
-        if(next.coins){S.coins+=next.coins;events.push('+'+fmt(next.coins)+' 🪙');}
-        if(next.xp){S.xp+=next.xp;S.level=levelFromXP(S.xp);events.push('+'+fmt(next.xp)+' XP');}
+        if(next.coins){S.rankRewardCoins+=next.coins;S.coins+=next.coins;events.push('+'+fmt(next.coins)+' 🪙');}
+        if(next.xp){S.rankRewardXP+=next.xp;S.xp+=next.xp;S.level=levelFromXP(S.xp);events.push('+'+fmt(next.xp)+' XP');}
         if(next.give){swqGiveConsumable(next.give,1);events.push(SWQ_CONSUMABLES[next.give].icon+' '+SWQ_CONSUMABLES[next.give].name);}
         if(next.giveMany)next.giveMany.forEach(k=>{swqGiveConsumable(k,1);events.push(SWQ_CONSUMABLES[k].icon+' '+SWQ_CONSUMABLES[k].name);});
         if(next.randomConsumable){const k=swqRewardRandomConsumable();events.push('🎁 '+(k==='recuperador'?'Recuperador de racha':SWQ_CONSUMABLES[k].name));}
@@ -1445,7 +1449,7 @@ body.theme-carretera .app{position:relative;z-index:2}
       }
       if(k==='xp500'||k==='xp1500'||k==='xpJuan'){
         if(swqInventoryCount(k)<=0){toast('🎒 No tienes ese cristal.');return;}
-        S.inventory[k]--;gainXP(k==='xp500'?500:k==='xp1500'?1500:13000);save();render();
+        const bonus=k==='xp500'?500:k==='xp1500'?1500:13000;S.inventory[k]--;S.itemBonusXP+=bonus;gainXP(bonus);save();render();
         toast(SWQ_CONSUMABLES[k].icon+' '+SWQ_CONSUMABLES[k].name+' utilizado.',3000);return;
       }
       if(k==='rouletteNormal'||k==='rouletteVip'){swqOpenStoredRoulette(k);return;}
@@ -1665,6 +1669,27 @@ body.theme-carretera .app{position:relative;z-index:2}
     }
 
     swqSyncLeviatan=swqSyncLeviatanV9;swqSyncChess=swqSyncChessV9;
+
+    const baseRebuildProfileV9=rebuildProfile;
+    if(!window.__swqRebuildProfileV9Wrapped){
+      rebuildProfile=function(){
+        const out=baseRebuildProfileV9.apply(this,arguments);
+        S.xp+=Number(S.rankRewardXP||0)+Number(S.itemBonusXP||0);
+        S.coins+=Number(S.rankRewardCoins||0)+Number(S.itemBonusCoins||0);
+        S.level=levelFromXP(S.xp);save();return out;
+      };
+      window.__swqRebuildProfileV9Wrapped=true;
+    }
+    const baseRecalcAllV9=recalcAll;
+    if(!window.__swqRecalcAllV9Wrapped){
+      recalcAll=function(){
+        const out=baseRecalcAllV9.apply(this,arguments);
+        S.xp+=Number(S.rankRewardXP||0)+Number(S.itemBonusXP||0);
+        S.coins+=Number(S.rankRewardCoins||0)+Number(S.itemBonusCoins||0);
+        S.level=levelFromXP(S.xp);save();return out;
+      };
+      window.__swqRecalcAllV9Wrapped=true;
+    }
 
     const baseEquipThemeV9=equipTheme;
     equipTheme=function(theme){if(SWQ_NEW_STYLES[theme]&&!S.purchases['theme_'+theme]){toast('🔒 Compra primero el estilo '+SWQ_NEW_STYLES[theme].name+' en la tienda.');return;}return baseEquipThemeV9.apply(this,arguments);};
