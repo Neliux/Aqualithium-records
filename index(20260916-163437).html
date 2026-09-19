@@ -1578,7 +1578,7 @@ function dailyRewardInfo(){
  if(d.date!==today||typeof d.kind!=="string"){
   const themes=["Cosmos","Abismo","Solar","Glacial","Esmeralda","Leviatan","Sangriento","Rosadito","CianNeon","Carbon","Eclipse","Carretera","CobaltoCobre"].filter(k=>!S.purchases["theme_"+k]);
   if(themes.length&&Math.random()<.04){const themeKey=themes[Math.floor(Math.random()*themes.length)];S.dailyReward={date:today,claimed:false,coins:0,xp:0,kind:"theme",themeKey};}
-  else{S.dailyReward={date:today,claimed:false,coins:20+Math.floor(Math.random()*131),xp:10+Math.floor(Math.random()*91),kind:"coinsxp",themeKey:""};}
+  else{S.dailyReward={date:today,claimed:false,coins:30+Math.floor(Math.random()*151),xp:80+Math.floor(Math.random()*221),kind:"coinsxp",themeKey:""};}
   save();
  }
  const r=S.dailyReward;return {claimed:!!r.claimed,reward:{coins:Number(r.coins||0),xp:Number(r.xp||0),kind:r.kind||"coinsxp",themeKey:r.themeKey||"",label:r.kind==="theme"?`${THEMES[r.themeKey]?.emoji||"✨"} ${r.themeKey}`:`${fmt(r.coins)} 🪙 + ${fmt(r.xp)} XP`}};
@@ -1830,7 +1830,7 @@ function openShopRoulette(kind){
  const vip=kind==="vip",styles=nonAchievementThemesForRoulette(),music=shopMusicCandidates();
  let coins,xp,style=null,musicPrize=null;
  if(vip){coins=350+Math.floor(Math.random()*151);xp=700+Math.floor(Math.random()*1101);if(styles.length&&Math.random()<.20)style=styles[Math.floor(Math.random()*styles.length)];if(music.length&&Math.random()<.07)musicPrize=music[Math.floor(Math.random()*music.length)];}
- else{coins=50+Math.floor(Math.random()*131);xp=100+Math.floor(Math.random()*551);if(styles.length&&Math.random()<.02)style=styles[Math.floor(Math.random()*styles.length)];}
+ else{coins=80+Math.floor(Math.random()*181);xp=350+Math.floor(Math.random()*851);if(styles.length&&Math.random()<.02)style=styles[Math.floor(Math.random()*styles.length)];}
  S.coins+=coins;const levelEvent=gainXP(xp);const extras=[];if(style){S.purchases["theme_"+style]=true;extras.push(`🎨 ${THEMES[style]?.emoji||"✨"} ${style}`)}if(musicPrize){S.purchases[musicPrize.id]=true;extras.push(`🎵 ${MUSIC_TRACKS[musicPrize.key].name}`)}save();if(authUser)syncProfileToCloud();tone("coin");
  const title=vip?"🎰 RULETA VIP":"🎰 RULETA NORMAL",accent=vip?"#ffd166":"#42ddff",detail=extras.length?`<div class="pill" style="margin-top:9px">${extras.join(" · ")}</div>`:"";
  modal(`<div class="shop-roulette-panel reveal" style="text-align:center"><div class="kicker">${title}</div><div class="roulette-frame"><div class="roulette-pointer">▼</div><div class="roulette-wheel ${vip?'vip':'normal'}"><div class="roulette-glow"></div><div class="roulette-spark s1"></div><div class="roulette-spark s2"></div><div class="roulette-spark s3"></div><div class="roulette-spark s4"></div><div class="roulette-text">${vip?'👑':'🎰'}</div></div></div><h2 style="color:${accent}">¡Premio!</h2><div class="roulette-prize-grid" style="margin-top:10px"><div class="roulette-prize"><div class="kicker">MONEDAS</div><h3>+${fmt(coins)} 🪙</h3></div><div class="roulette-prize"><div class="kicker">EXPERIENCIA</div><h3>+${fmt(xp)} XP</h3></div></div>${detail}${levelEvent?.levels?`<div class="pill" style="margin-top:8px">⬆️ LV ${S.level}</div>`:""}<button class="btn primary" style="margin-top:12px" onclick="closeModal();render()">Aceptar</button></div>`);
