@@ -18,7 +18,7 @@
   }
   window.__SWQ_FINAL_FIXES_20260919_1__=true;
 
-  const VERSION='20260919-9';
+  const VERSION='20260919-10';
   let updatingProfilePanel=false;
   let roadTimer=null,planeTimer=null,roadLayer=null;
   let timeCategory=localStorage.getItem('SWIM_QUEST_TIME_CATEGORY')||'50';
@@ -1317,6 +1317,28 @@ body.theme-carretera .app{position:relative;z-index:2}
       return out.join('');
     }
 
+    if(!window.__swqRankRevealV9Wrapped){
+      const baseRankRevealV9=rankReveal;
+      rankReveal=function(r){
+        try{
+          const rewardResult=swqGrantRankMilestones(false);
+          const events=Array.isArray(rewardResult?.events)?rewardResult.events:[];
+          const i=RANKS.findIndex(x=>x.c===r.c),tier=i<7?"low":i<14?"mid":i<19?"high":"legend";
+          tone("rank");
+          const flair={tiburon:"🦈 ¡El depredador entra en escena!",megalodon:"🦈 ¡La mordida de un gigante!",kraken:"🦑 ¡Las profundidades despiertan!",leviatan:"🌊 ¡Una bestia legendaria emerge!",poseidon:"🔱 ¡El dios del océano te reconoce!",coach:"👑 ¡Has alcanzado la cima absoluta!"}[r.c]||"✨ Nuevo rango desbloqueado";
+          const rewardBlock=events.length
+            ? `<div class="swq-rank-reward"><div class="kicker">🎁 RECOMPENSAS DEL RANGO</div><div class="sub" style="margin-top:5px">Se añadieron automáticamente a tu progreso:</div>${events.map(x=>`<div class="pill" style="margin-top:7px">✅ ${esc(x)}</div>`).join("")}</div>`
+            : "";
+          modal(`<div class="rank-promo reveal"><div class="rank-promo-glow"></div><div class="kicker">✨ NUEVO RANGO</div><div class="rank-promo-stage"><div class="rank-promo-ring ring-a"></div><div class="rank-promo-ring ring-b"></div><div class="rank-promo-ring ring-c"></div><div class="badge ${r.c}${auraClass()}" data-tier="${tier}"><span class="rank-glyph ${r.c}">${rankArt(r.c)||r.icon}</span></div></div><h1>${r.n}</h1><p class="sub">${flair}</p><p class="sub">${r.d}</p><div class="pill">LV ${r.lv} · ${fmt(r.m)} m · ${r.t} entrenamientos${r.record35?" · récord < 35 s":""}</div>${rewardBlock}<button class="btn primary" style="margin-top:14px" onclick="closeModal()">¡Vamos!</button></div>`);
+          save();
+        }catch(e){
+          console.warn("SWQ rank reward reveal",e);
+          return baseRankRevealV9.apply(this,arguments);
+        }
+      };
+      window.__swqRankRevealV9Wrapped=true;
+    }
+
     function swqInstallV9CSS(){
       if(document.getElementById('swq-v9-css'))return;
       const s=document.createElement('style');s.id='swq-v9-css';
@@ -1945,13 +1967,14 @@ body.theme-carretera .app{position:relative;z-index:2}
       layer.appendChild(el);
       setTimeout(()=>el.remove(),8000);
     }else{
-      el.className='swq-vr-bee';
+      const rightToLeft=Math.random()<0.75;
+      el.className='swq-vr-bee '+(rightToLeft?'swq-vr-bee-rtl':'swq-vr-bee-ltr');
       el.textContent='🐝';
       el.style.top=(18+Math.random()*62)+'%';
       el.style.setProperty('--dy',(-24+Math.random()*48)+'px');
-      el.style.animation='swqVrBeeFly '+(6.2+Math.random()*1.8)+'s linear forwards';
+      el.style.animation=(rightToLeft?'swqVrBeeFlyReverse':'swqVrBeeFlyForward')+' '+(4.4+Math.random()*1.6)+'s linear forwards';
       layer.appendChild(el);
-      setTimeout(()=>el.remove(),9000);
+      setTimeout(()=>el.remove(),7200);
     }
   }
 
@@ -2014,9 +2037,13 @@ body.theme-carretera .app{position:relative;z-index:2}
     const style=document.getElementById('swq-visual-repair-css');
     if(style){
       style.textContent += [
-        '.swq-vr-bee{left:auto!important;right:-70px!important}',
-        '@keyframes swqVrBeeFlyReverse{0%{opacity:0;transform:translate3d(0,0,0) rotate(7deg)}10%{opacity:.94}42%{transform:translate3d(-45vw,var(--dy),0) rotate(-7deg)}72%{transform:translate3d(-82vw,calc(var(--dy) * .55),0) rotate(5deg)}100%{opacity:0;transform:translate3d(-118vw,calc(var(--dy) * .2),0) rotate(-4deg)}}',
-        '.swq-vr-bee{animation-name:swqVrBeeFlyReverse!important}'
+        '.swq-vr-bee-rtl{left:auto!important;right:-70px!important}',
+        '.swq-vr-bee-ltr{left:-70px!important;right:auto!important}',
+        '@keyframes swqVrBeeFlyReverse{0%{opacity:0;transform:translate3d(0,0,0) scaleX(-1) rotate(7deg)}10%{opacity:.94}42%{transform:translate3d(-45vw,var(--dy),0) scaleX(-1) rotate(-7deg)}72%{transform:translate3d(-82vw,calc(var(--dy) * .55),0) scaleX(-1) rotate(5deg)}100%{opacity:0;transform:translate3d(-118vw,calc(var(--dy) * .2),0) scaleX(-1) rotate(-4deg)}}',
+        '@keyframes swqVrBeeFlyForward{0%{opacity:0;transform:translate3d(0,0,0) scaleX(1) rotate(-7deg)}10%{opacity:.94}42%{transform:translate3d(45vw,var(--dy),0) scaleX(1) rotate(7deg)}72%{transform:translate3d(82vw,calc(var(--dy) * .55),0) scaleX(1) rotate(-5deg)}100%{opacity:0;transform:translate3d(118vw,calc(var(--dy) * .2),0) scaleX(1) rotate(4deg)}}',
+        '.swq-vr-bee{left:auto!important;right:auto!important}',
+        '.swq-vr-bee-rtl{animation-name:swqVrBeeFlyReverse!important}',
+        '.swq-vr-bee-ltr{animation-name:swqVrBeeFlyForward!important}'
       ].join('');
     }
   }catch(e){console.warn('SWQ Bee repair',e)}
