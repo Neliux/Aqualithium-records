@@ -842,6 +842,7 @@ async function syncCurrentAccount(){
   }
   if(profile){
    S.remote={userId:authUser.id,publicPlayerId:profile.public_player_id,username:profile.username};
+   if((switchingAccount||!localHasProgress)&&profile.game_state)applyCloudGameState(profile.game_state);
    const wr=await supabaseClient.from("workouts").select("id,workout_date,name,meters,xp_earned,coins_earned,details,created_at").eq("user_id",authUser.id).order("workout_date",{ascending:true});
    if(!wr.error&&wr.data){
     const remoteTrainings=wr.data.map((w,i)=>({id:"cloud_"+w.id,number:i+1,date:w.workout_date,name:w.name||"",durationMin:Number(w.details?.durationMin||0),series:Array.isArray(w.details?.series)?w.details.series:[],xp:Number(w.xp_earned||0),coins:Number(w.coins_earned||0),difficulty:w.details?.difficulty||"normal"}));
@@ -862,7 +863,48 @@ async function syncCurrentAccount(){
   }
  }catch(e){console.warn("No se pudo sincronizar la cuenta",e)}finally{remoteSyncBusy=false}
 }
-async function syncProfileToCloud(){if(!supabaseClient||!authUser||!S.profile)return;try{const row={id:authUser.id,username:S.profile.name,level:S.level,xp:S.xp,coins:S.coins,meters:totalMeters(),rank:currentRank().r.n,updated_at:new Date().toISOString()};const {data,error}=await supabaseClient.from("profiles").upsert(row,{onConflict:"id"}).select("public_player_id").single();if(!error&&data){S.remote={...(S.remote||{}),userId:authUser.id,publicPlayerId:data.public_player_id,username:S.profile.name};save()}}catch(e){console.warn("sync profile",e)}}
+async function cloudGameState(){
+ return {
+  purchases:S.purchases||{},
+  consumables:S.consumables||{},
+  inventory:S.inventory||{},
+  activeConsumables:S.activeConsumables||{},
+  shopUnlocks:S.shopUnlocks||{},
+  rankRewardsClaimed:Array.isArray(S.rankRewardsClaimed)?S.rankRewardsClaimed:[],
+  rankRewardCoins:Number(S.rankRewardCoins||0),
+  rankRewardXP:Number(S.rankRewardXP||0),
+  itemBonusCoins:Number(S.itemBonusCoins||0),
+  itemBonusXP:Number(S.itemBonusXP||0),
+  achievements:Array.isArray(S.achievements)?S.achievements:[],
+  claimed:Array.isArray(S.claimed)?S.claimed:[],
+  shield:Number(S.shield||0),
+  levelRewardedThrough:Number(S.levelRewardedThrough||1),
+  levelRewardCoins:Number(S.levelRewardCoins||0),
+  monthlyShieldUntil:S.monthlyShieldUntil||"",
+  dailyReward:S.dailyReward||{date:"",claimed:false,coins:0,xp:0,kind:"coinsxp",themeKey:""}
+ };
+}
+function applyCloudGameState(gs){
+ if(!gs||typeof gs!=="object")return;
+ if(gs.purchases&&typeof gs.purchases==="object")S.purchases=gs.purchases;
+ if(gs.consumables&&typeof gs.consumables==="object")S.consumables=gs.consumables;
+ if(gs.inventory&&typeof gs.inventory==="object")S.inventory=gs.inventory;
+ if(gs.activeConsumables&&typeof gs.activeConsumables==="object")S.activeConsumables=gs.activeConsumables;
+ if(gs.shopUnlocks&&typeof gs.shopUnlocks==="object")S.shopUnlocks=gs.shopUnlocks;
+ if(Array.isArray(gs.rankRewardsClaimed))S.rankRewardsClaimed=gs.rankRewardsClaimed;
+ if(Number.isFinite(Number(gs.rankRewardCoins)))S.rankRewardCoins=Number(gs.rankRewardCoins);
+ if(Number.isFinite(Number(gs.rankRewardXP)))S.rankRewardXP=Number(gs.rankRewardXP);
+ if(Number.isFinite(Number(gs.itemBonusCoins)))S.itemBonusCoins=Number(gs.itemBonusCoins);
+ if(Number.isFinite(Number(gs.itemBonusXP)))S.itemBonusXP=Number(gs.itemBonusXP);
+ if(Array.isArray(gs.achievements))S.achievements=gs.achievements;
+ if(Array.isArray(gs.claimed))S.claimed=gs.claimed;
+ if(Number.isFinite(Number(gs.shield)))S.shield=Number(gs.shield);
+ if(Number.isFinite(Number(gs.levelRewardedThrough)))S.levelRewardedThrough=Math.max(1,Number(gs.levelRewardedThrough));
+ if(Number.isFinite(Number(gs.levelRewardCoins)))S.levelRewardCoins=Number(gs.levelRewardCoins);
+ if(typeof gs.monthlyShieldUntil==="string")S.monthlyShieldUntil=gs.monthlyShieldUntil;
+ if(gs.dailyReward&&typeof gs.dailyReward==="object")S.dailyReward=gs.dailyReward;
+}
+function syncProfileToCloud(){if(!supabaseClient||!authUser||!S.profile)return;try{const row={id:authUser.id,username:S.profile.name,level:S.level,xp:S.xp,coins:S.coins,meters:totalMeters(),rank:currentRank().r.n,game_state:cloudGameState(),updated_at:new Date().toISOString()};const {data,error}=await supabaseClient.from("profiles").upsert(row,{onConflict:"id"}).select("public_player_id").single();if(!error&&data){S.remote={...(S.remote||{}),userId:authUser.id,publicPlayerId:data.public_player_id,username:S.profile.name};save()}}catch(e){console.warn("sync profile",e)}}
 async function syncTrainingToCloud(e,allowDuplicate=false){if(!supabaseClient||!authUser||!e)return;try{if(!allowDuplicate){const existing=await supabaseClient.from("workouts").select("id").eq("user_id",authUser.id).eq("workout_date",e.date).eq("name",e.name||"").eq("meters",totalMeters([e])).eq("xp_earned",e.xp||0).limit(1);if(existing.data?.length)return}await supabaseClient.from("workouts").insert({user_id:authUser.id,workout_date:e.date,name:e.name||null,meters:totalMeters([e]),xp_earned:e.xp||0,coins_earned:e.coins||0,details:{durationMin:e.durationMin||0,series:e.series||[],difficulty:e.difficulty||"normal",theme:e.theme||"Aqua"}});await syncProfileToCloud()}catch(e){console.warn("sync workout",e)}}
 
 function clone(o){return JSON.parse(JSON.stringify(o))}
