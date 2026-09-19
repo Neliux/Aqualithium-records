@@ -14,7 +14,7 @@
   if(window.__SWQ_FINAL_FIXES_20260919_1__)return;
   window.__SWQ_FINAL_FIXES_20260919_1__=true;
 
-  const VERSION='20260919-6';
+  const VERSION='20260919-7';
   let updatingProfilePanel=false;
   let roadTimer=null,planeTimer=null,roadLayer=null;
   let timeCategory=localStorage.getItem('SWIM_QUEST_TIME_CATEGORY')||'50';
