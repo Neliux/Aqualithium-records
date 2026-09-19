@@ -12,9 +12,9 @@
 (function(){
   'use strict';
   if(window.__SWQ_FINAL_FIXES_20260919_1__)return;
-  window.__SWQ_FINAL_FIXES_20260918_7__=true;
+  window.__SWQ_FINAL_FIXES_20260919_1__=true;
 
-  const VERSION='20260919-5';
+  const VERSION='20260919-6';
   let updatingProfilePanel=false;
   let roadTimer=null,planeTimer=null,roadLayer=null;
   let timeCategory=localStorage.getItem('SWIM_QUEST_TIME_CATEGORY')||'50';
