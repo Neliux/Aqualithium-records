@@ -18,7 +18,7 @@
   }
   window.__SWQ_FINAL_FIXES_20260919_1__=true;
 
-  const VERSION='20260919-10';
+  const VERSION='20260919-11';
   let updatingProfilePanel=false;
   let roadTimer=null,planeTimer=null,roadLayer=null;
   let timeCategory=localStorage.getItem('SWIM_QUEST_TIME_CATEGORY')||'50';
@@ -1323,16 +1323,47 @@ body.theme-carretera .app{position:relative;z-index:2}
       const baseRankRevealV9=rankReveal;
       rankReveal=function(r){
         try{
+          swqEnsureV9State();
+          const queued=Array.isArray(S.__swqLastRankRewardEvents)?S.__swqLastRankRewardEvents.slice():[];
           const rewardResult=swqGrantRankMilestones(false);
-          const events=Array.isArray(rewardResult?.events)?rewardResult.events:[];
-          const i=RANKS.findIndex(x=>x.c===r.c),tier=i<7?"low":i<14?"mid":i<19?"high":"legend";
-          tone("rank");
-          const flair={tiburon:"🦈 ¡El depredador entra en escena!",megalodon:"🦈 ¡La mordida de un gigante!",kraken:"🦑 ¡Las profundidades despiertan!",leviatan:"🌊 ¡Una bestia legendaria emerge!",poseidon:"🔱 ¡El dios del océano te reconoce!",coach:"👑 ¡Has alcanzado la cima absoluta!"}[r.c]||"✨ Nuevo rango desbloqueado";
-          const rewardBlock=events.length
-            ? `<div class="swq-rank-reward"><div class="kicker">🎁 RECOMPENSAS DEL RANGO</div><div class="sub" style="margin-top:5px">Se añadieron automáticamente a tu progreso:</div>${events.map(x=>`<div class="pill" style="margin-top:7px">✅ ${esc(x)}</div>`).join("")}</div>`
-            : "";
-          modal(`<div class="rank-promo reveal"><div class="rank-promo-glow"></div><div class="kicker">✨ NUEVO RANGO</div><div class="rank-promo-stage"><div class="rank-promo-ring ring-a"></div><div class="rank-promo-ring ring-b"></div><div class="rank-promo-ring ring-c"></div><div class="badge ${r.c}${auraClass()}" data-tier="${tier}"><span class="rank-glyph ${r.c}">${rankArt(r.c)||r.icon}</span></div></div><h1>${r.n}</h1><p class="sub">${flair}</p><p class="sub">${r.d}</p><div class="pill">LV ${r.lv} · ${fmt(r.m)} m · ${r.t} entrenamientos${r.record35?" · récord < 35 s":""}</div>${rewardBlock}<button class="btn primary" style="margin-top:14px" onclick="closeModal()">¡Vamos!</button></div>`);
-          save();
+          const events=Array.isArray(rewardResult?.events)&&rewardResult.events.length
+            ? rewardResult.events
+            : queued;
+          S.__swqLastRankRewardEvents=[];
+          baseRankRevealV9.apply(this,arguments);
+          setTimeout(()=>{
+            try{
+              const host=document.querySelector('#modal .rank-promo');
+              if(!host||host.querySelector('.swq-rank-reward'))return;
+              const reward=SWQ_RANK_REWARDS.find(x=>x.c===r?.c);
+              const fallback=[];
+              if(reward?.coins)fallback.push('+'+fmt(reward.coins)+' 🪙');
+              if(reward?.xp)fallback.push('+'+fmt(reward.xp)+' XP');
+              if(reward?.give){
+                const it=SWQ_CONSUMABLES[reward.give];
+                if(it)fallback.push(it.icon+' '+it.name);
+              }
+              if(reward?.giveMany)reward.giveMany.forEach(k=>{
+                const it=SWQ_CONSUMABLES[k];
+                if(it)fallback.push(it.icon+' '+it.name);
+              });
+              if(reward?.randomConsumable)fallback.push('🎁 Consumible aleatorio');
+              if(reward?.unlockStyle){
+                const it=SWQ_NEW_STYLES[reward.unlockStyle];
+                if(it)fallback.push('🎨 '+it.name+' disponible en la tienda');
+              }
+              if(reward?.unlockConsumable)fallback.push('🔁 Ficha de Repetición disponible en la tienda');
+              if(reward?.pear==='poseidon')fallback.push('🍐 Nuevo diálogo especial de Pera');
+              if(reward?.pear==='coach')fallback.push('🍐 Diálogo final especial de Pera');
+              const list=events.length?events:fallback;
+              if(!list.length)return;
+              const btn=host.querySelector('button.btn.primary');
+              const box=document.createElement('div');
+              box.className='swq-rank-reward';
+              box.innerHTML='<div class="kicker">🎁 RECOMPENSA DEL RANGO</div>'+swqRankRewardLabel(list);
+              if(btn)host.insertBefore(box,btn);else host.appendChild(box);
+            }catch(e){console.warn('SWQ rank reward card',e)}
+          },80);
         }catch(e){
           console.warn("SWQ rank reward reveal",e);
           return baseRankRevealV9.apply(this,arguments);
