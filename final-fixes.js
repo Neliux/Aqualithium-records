@@ -264,10 +264,10 @@ body.theme-carretera .app{position:relative;z-index:2}
 .swq-road-light.l1{left:13%}.swq-road-light.l2{right:13%}.swq-road-light.l3{left:30%;top:67%;height:16%}.swq-road-light.l4{right:30%;top:67%;height:16%}
 .swq-road-car,.swq-road-plane{position:absolute;will-change:transform;filter:drop-shadow(0 4px 8px rgba(0,0,0,.7));font-size:30px;white-space:nowrap}
 .swq-road-car{animation:swqCarDrive var(--dur,5.5s) linear forwards}.swq-road-car.reverse{animation-name:swqCarDriveReverse}.swq-road-car.fast{font-size:36px}
-.swq-road-plane{font-size:22px;animation:swqPlaneFly var(--dur,8s) linear forwards;opacity:.75;text-shadow:0 0 7px rgba(156,207,255,.55)}
+.swq-road-plane{font-size:22px;animation:swqPlaneFly var(--dur,8s) linear forwards;opacity:.75;text-shadow:0 0 7px rgba(156,207,255,.55);will-change:transform}.swq-road-plane.reverse{animation-name:swqPlaneFlyReverse}
 @keyframes swqCarDrive{from{transform:translateX(-18vw)}to{transform:translateX(118vw) translateY(-3vh)}}
 @keyframes swqCarDriveReverse{from{transform:translateX(118vw) scaleX(-1)}to{transform:translateX(-18vw) scaleX(-1)}}
-@keyframes swqPlaneFly{from{transform:translateX(-15vw) translateY(0) scale(.85)}to{transform:translateX(118vw) translateY(-7vh) scale(1.05)}}
+@keyframes swqPlaneFly{from{transform:translateX(-15vw) translateY(0) scale(.85) scaleX(1)}to{transform:translateX(118vw) translateY(-7vh) scale(1.05) scaleX(1)}}@keyframes swqPlaneFlyReverse{from{transform:translateX(118vw) translateY(0) scale(.9) scaleX(-1)}to{transform:translateX(-15vw) translateY(-7vh) scale(1.05) scaleX(-1)}}
 .swq-time-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:9px}
 .swq-time-tab{min-height:40px;border:1px solid #294867;border-radius:11px;background:#0b1725;color:#91abc1;font-weight:1000}.swq-time-tab.active{background:linear-gradient(135deg,#42ddff,#765cff);color:#06111e;border-color:#8eeeff;box-shadow:0 0 18px rgba(66,221,255,.18)}
 .swq-time-best{margin-top:9px;padding:10px 11px;border:1px solid rgba(255,214,86,.25);border-radius:13px;background:linear-gradient(135deg,rgba(255,214,86,.09),rgba(66,221,255,.04))}
@@ -304,8 +304,10 @@ body.theme-carretera .app{position:relative;z-index:2}
   }
   function spawnRoadPlane(){
     if(S.settings.theme!=='Carretera'||!roadLayer)return;
-    const el=document.createElement('span');el.className='swq-road-plane';el.textContent=Math.random()<.5?'✈️':'🛫';
-    el.style.top=(10+Math.random()*25)+'%';el.style.setProperty('--dur',(8+Math.random()*7)+'s');
+    const reverse=Math.random()<.28;
+    const el=document.createElement('span');el.className='swq-road-plane'+(reverse?' reverse':'');
+    el.textContent=Math.random()<.60?'🚁':(Math.random()<.5?'✈️':'🛫');
+    el.style.top=(10+Math.random()*25)+'%';el.style.setProperty('--dur',(7.0+Math.random()*5.5)+'s');
     roadLayer.appendChild(el);setTimeout(()=>el.remove(),17000);
   }
   function syncRoadTheme(){
@@ -1525,18 +1527,44 @@ body.theme-carretera .app{position:relative;z-index:2}
       window.__swqGainXPV9Wrapped=true;
     }
 
-    function swqShowRankRewardCard(info){
-      if(!info?.events?.length)return;
-      const host=document.querySelector('#modal .rank-promo');if(!host)return;
+    function swqShowRankRewardCard(info,r,attempt=0){
+      const host=document.querySelector('#modal .rank-promo');
+      if(!host){
+        if(attempt<5)setTimeout(()=>swqShowRankRewardCard(info,r,attempt+1),70);
+        return;
+      }
+      if(host.querySelector('.swq-rank-reward'))return;
+      const reward=SWQ_RANK_REWARDS.find(x=>x.c===r?.c);
+      const fallback=[];
+      if(reward?.coins)fallback.push('+'+fmt(reward.coins)+' 🪙');
+      if(reward?.xp)fallback.push('+'+fmt(reward.xp)+' XP');
+      if(reward?.give){
+        const it=SWQ_CONSUMABLES[reward.give];
+        if(it)fallback.push(it.icon+' '+it.name);
+      }
+      if(reward?.giveMany)reward.giveMany.forEach(k=>{
+        const it=SWQ_CONSUMABLES[k];
+        if(it)fallback.push(it.icon+' '+it.name);
+      });
+      if(reward?.randomConsumable)fallback.push('🎁 Consumible aleatorio');
+      if(reward?.unlockStyle){
+        const it=SWQ_NEW_STYLES[reward.unlockStyle];
+        if(it)fallback.push('🎨 '+it.name+' disponible en la tienda');
+      }
+      if(reward?.unlockConsumable)fallback.push('🔁 Ficha de Repetición disponible en la tienda');
+      if(reward?.pear==='poseidon')fallback.push('🍐 Nuevo diálogo especial de Pera');
+      if(reward?.pear==='coach')fallback.push('🍐 Diálogo final especial de Pera');
+      const list=Array.isArray(info?.events)&&info.events.length?info.events:fallback;
+      if(!list.length)return;
       const btn=host.querySelector('button.btn.primary');
       const box=document.createElement('div');box.className='swq-rank-reward';
-      box.innerHTML='<div class="kicker">🎁 RECOMPENSA DEL RANGO</div>'+swqRankRewardLabel(info.events);
+      box.innerHTML='<div class="kicker">🎁 RECOMPENSA DEL RANGO</div>'+swqRankRewardLabel(list);
       if(btn)host.insertBefore(box,btn);else host.appendChild(box);
     }
 
     const baseRankRevealV9=rankReveal;
     if(!window.__swqRankRevealV9Wrapped){
-      rankReveal=function(r){swqEnsureV9State();const queued={events:Array.isArray(S.__swqLastRankRewardEvents)?S.__swqLastRankRewardEvents.slice():[]};const info=swqGrantRankMilestones(false);const merged={events:info.events?.length?info.events:queued.events};S.__swqLastRankRewardEvents=[];baseRankRevealV9.apply(this,arguments);setTimeout(()=>swqShowRankRewardCard(merged),35);};
+      rankReveal=function(r){swqEnsureV9State();const queued={events:Array.isArray(S.__swqLastRankRewardEvents)?S.__swqLastRankRewardEvents.slice():[]};const info=swqGrantRankMilestones(false);const merged={events:info.events?.length?info.events:queued.events};S.__swqLastRankRewardEvents=[];baseRankRevealV9.apply(this,arguments);setTimeout(()=>swqShowRankRewardCard(merged,r),80);};
       window.__swqRankRevealV9Wrapped=true;
     }
 
