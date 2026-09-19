@@ -863,7 +863,7 @@ async function syncCurrentAccount(){
   }
  }catch(e){console.warn("No se pudo sincronizar la cuenta",e)}finally{remoteSyncBusy=false}
 }
-async function cloudGameState(){
+function cloudGameState(){
  return {
   purchases:S.purchases||{},
   consumables:S.consumables||{},
