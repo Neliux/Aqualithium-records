@@ -12,9 +12,13 @@
 (function(){
   'use strict';
   if(window.__SWQ_FINAL_FIXES_20260919_1__)return;
+  if(typeof window.render!=='function'){
+    console.warn('Aqualithium final-fixes: interfaz base aún no está lista; se omite esta carga.');
+    return;
+  }
   window.__SWQ_FINAL_FIXES_20260919_1__=true;
 
-  const VERSION='20260919-8';
+  const VERSION='20260919-9';
   let updatingProfilePanel=false;
   let roadTimer=null,planeTimer=null,roadLayer=null;
   let timeCategory=localStorage.getItem('SWIM_QUEST_TIME_CATEGORY')||'50';
