@@ -1,4 +1,4 @@
-/* Swim Quest · actualización 2026-09-18 v8
+/* Aqualithium · actualización 2026-09-19 v9
    - Deduplicación local/remota de entrenamientos.
    - Dificultad basada principalmente en % de la media semanal.
    - Nuevo nivel Brutal.
@@ -11,10 +11,10 @@
 */
 (function(){
   'use strict';
-  if(window.__SWQ_FINAL_FIXES_20260918_7__)return;
+  if(window.__SWQ_FINAL_FIXES_20260919_1__)return;
   window.__SWQ_FINAL_FIXES_20260918_7__=true;
 
-  const VERSION='20260918-7';
+  const VERSION='20260919-1';
   let updatingProfilePanel=false;
   let roadTimer=null,planeTimer=null,roadLayer=null;
   let timeCategory=localStorage.getItem('SWIM_QUEST_TIME_CATEGORY')||'50';
@@ -1138,5 +1138,545 @@ body.theme-carretera .app{position:relative;z-index:2}
     window.swqApplyQuickTheme=swqApplyQuickTheme;
     window.swqQuickTheme=swqQuickTheme;
   }catch(e){}},5000);
+
+  /* === UPDATE 2026-09-19 v9: progression, inventory, five new styles, Pera rank dialogues === */
+  try{
+    if(window.__swqUpdate20260919_1__)throw new Error('__SWQ_ALREADY_APPLIED__');
+    window.__swqUpdate20260919_1__=true;
+
+    const SWQ_NEW_STYLES={
+      Prisma:{rank:'venus',rankIndex:9,price:950,icon:'🌈',name:'Prisma',desc:'Fondo oscuro con una franja de luz prismática muy discreta que se desplaza lentamente.'},
+      Saturno:{rank:'saturno',rankIndex:12,price:1100,icon:'🪐',name:'Saturno',desc:'Fondo oscuro, planeta central y anillos orbitantes con partículas mínimas.'},
+      Tinta:{rank:'neptuno',rankIndex:14,price:1300,icon:'🖋️',name:'Tinta',desc:'Azul petróleo y negro con una nube de tinta que se mueve suavemente.'},
+      MareaLunar:{rank:'leviatan',rankIndex:19,price:1600,icon:'🌙',name:'Marea Lunar',desc:'Océano oscuro, luna tenue y una onda horizontal lenta.'},
+      Pizarra:{rank:'poseidon',rankIndex:20,price:1900,icon:'◼️',name:'Pizarra',desc:'Grafito oscuro con cuadrícula tenue y bordes limpios, casi estático.'}
+    };
+    const SWQ_CONSUMABLES={
+      cloroPremium:{name:'Cloro Premium',icon:'🧴',desc:'+70% de XP en el próximo entrenamiento.',kind:'next'},
+      fichaNadador:{name:'Ficha del Nadador',icon:'🎟️',desc:'+45% de monedas en el próximo entrenamiento.',kind:'next'},
+      xp500:{name:'Cristal XP 500',icon:'💠',desc:'+500 XP al usarlo.',kind:'instant'},
+      xp1500:{name:'Cristal XP 1500',icon:'🔷',desc:'+1.500 XP al usarlo.',kind:'instant'},
+      xpJuan:{name:'Cristal de Ascensión',icon:'🔮',desc:'+13.000 XP al usarlo.',kind:'instant'},
+      rouletteNormal:{name:'Ruleta Normal',icon:'🎰',desc:'Se guarda y se abre manualmente.',kind:'roulette'},
+      rouletteVip:{name:'Ruleta VIP',icon:'👑',desc:'Se guarda y se abre manualmente.',kind:'roulette'},
+      fichaRepeticion:{name:'Ficha de Repetición',icon:'🔁',desc:'Permite reclamar una segunda recompensa diaria.',kind:'daily'}
+    };
+
+    const SWQ_RANK_REWARDS=[
+      {c:'bronce',coins:100},
+      {c:'plata',coins:200},
+      {c:'oro',coins:350},
+      {c:'platino',coins:500,xp:250},
+      {c:'diamante',coins:700,xp:400},
+      {c:'esmeralda',coins:900,xp:600,give:'cloroPremium'},
+      {c:'zafiro',coins:1100,xp:800,give:'fichaNadador'},
+      {c:'amatista',coins:1350,xp:1000,give:'cloroPremium'},
+      {c:'mercurio',coins:1600,xp:1250},
+      {c:'venus',coins:1900,xp:1500,unlockStyle:'Prisma'},
+      {c:'marte',coins:2250,xp:1750,randomConsumable:true},
+      {c:'jupiter',coins:2600,xp:2000},
+      {c:'saturno',coins:3000,xp:2300,unlockStyle:'Saturno'},
+      {c:'urano',coins:3500,xp:2700,give:'fichaNadador'},
+      {c:'neptuno',coins:4000,xp:3100,unlockStyle:'Tinta'},
+      {c:'orca',coins:4500,xp:3500,give:'cloroPremium'},
+      {c:'tiburon',coins:5000,xp:4000},
+      {c:'kraken',coins:6000,xp:5000,randomConsumable:true},
+      {c:'megalodon',coins:7500,xp:6000,giveMany:['cloroPremium','fichaNadador']},
+      {c:'leviatan',coins:9000,xp:7500,unlockStyle:'MareaLunar'},
+      {c:'poseidon',coins:12000,xp:10000,unlockStyle:'Pizarra',unlockConsumable:'fichaRepeticion',pear:'poseidon'},
+      {c:'coach',coins:20000,xp:15000,giveMany:['cloroPremium','fichaNadador'],pear:'coach'}
+    ];
+
+    function swqEnsureV9State(){
+      S.consumables=S.consumables||{};
+      S.inventory=S.inventory||{};
+      S.activeConsumables=S.activeConsumables||{};
+      S.shopUnlocks=S.shopUnlocks||{};
+      S.rankRewardsClaimed=Array.isArray(S.rankRewardsClaimed)?S.rankRewardsClaimed:[];
+      S.dailyReward=S.dailyReward||{date:'',claimed:false,coins:0,xp:0,kind:'coinsxp',themeKey:''};
+      if(!Number.isFinite(Number(S.dailyReward.repeatUsed)))S.dailyReward.repeatUsed=0;
+
+      Object.keys(SWQ_CONSUMABLES).forEach(k=>{
+        if(!Number.isFinite(Number(S.inventory[k])))S.inventory[k]=0;
+      });
+      ['cloroPremium','fichaNadador'].forEach(k=>{
+        if(!Number.isFinite(Number(S.activeConsumables[k])))S.activeConsumables[k]=0;
+      });
+
+      ['cloroPremium','fichaNadador'].forEach(k=>{
+        const old=Number(S.consumables[k]||0);
+        if(old>0){
+          S.inventory[k]+=old;
+          S.consumables[k]=0;
+        }else if(!Number.isFinite(Number(S.consumables[k])))S.consumables[k]=0;
+      });
+
+      for(const key of Object.keys(SWQ_NEW_STYLES)){
+        const t=SWQ_NEW_STYLES[key];
+        if(typeof THEMES[key]==='undefined'){
+          THEMES[key]={a:'#7fc7ff',b:'#1f2a5f',emoji:t.icon,desc:t.desc};
+        }
+        const id='theme_'+key;
+        let it=SHOP?.find?.(x=>x.id===id);
+        if(!it){
+          SHOP.push({id,icon:t.icon,name:t.name,price:t.price,desc:t.desc,buy:()=>{S.purchases[id]=true;}});
+        }else{
+          it.icon=t.icon;it.name=t.name;it.price=t.price;it.desc=t.desc;
+        }
+      }
+
+      const repId='fichaRepeticion';
+      let rep=SHOP?.find?.(x=>x.id===repId);
+      if(!rep){
+        SHOP.push({id:repId,icon:'🔁',name:'Ficha de Repetición',price:750,desc:'Consumible. Úsala después de cobrar la recompensa diaria para poder reclamar una segunda vez ese mismo día.',buy:()=>{S.inventory.fichaRepeticion++;}});
+      }else{
+        rep.icon='🔁';rep.name='Ficha de Repetición';rep.price=750;rep.desc='Consumible. Úsala después de cobrar la recompensa diaria para poder reclamar una segunda vez ese mismo día.';
+      }
+
+      if(typeof SHOP!=='undefined'){
+        const patchItem=(id,fn)=>{const x=SHOP.find(i=>i.id===id);if(x)fn(x);};
+        patchItem('cloroPremium',x=>{x.desc='Consumible. +70% de XP en el próximo entrenamiento. Se guarda en el inventario.';x.buy=()=>{S.inventory.cloroPremium++;};});
+        patchItem('fichaNadador',x=>{x.desc='Consumible. +45% de monedas en el próximo entrenamiento. Se guarda en el inventario.';x.buy=()=>{S.inventory.fichaNadador++;};});
+        patchItem('xp500',x=>{x.desc='Consumible. Se guarda en el inventario y otorga 500 XP al usarlo.';x.buy=()=>{S.inventory.xp500++;};});
+        patchItem('xp1500',x=>{x.desc='Consumible. Se guarda en el inventario y otorga 1.500 XP al usarlo.';x.buy=()=>{S.inventory.xp1500++;};});
+        patchItem('xpJuan',x=>{x.name='Cristal de Ascensión';x.desc='Consumible. Se guarda en el inventario y otorga 13.000 XP al usarlo.';x.buy=()=>{S.inventory.xpJuan++;};});
+        patchItem('rouletteNormal',x=>{x.desc='Consumible. Se guarda en el inventario y se abre cuando tú decidas.';x.buy=()=>{S.inventory.rouletteNormal++;};});
+        patchItem('rouletteVip',x=>{x.desc='Consumible. Se guarda en el inventario y se abre cuando tú decidas.';x.buy=()=>{S.inventory.rouletteVip++;};});
+      }
+
+      const rankIndex=currentRank().i;
+      for(const key of Object.keys(SWQ_NEW_STYLES)){
+        if(rankIndex>=SWQ_NEW_STYLES[key].rankIndex)S.shopUnlocks['theme_'+key]=true;
+      }
+      if(rankIndex>=RANKS.findIndex(r=>r.c==='poseidon'))S.shopUnlocks.fichaRepeticion=true;
+    }
+
+    function swqInventoryCount(k){return Math.max(0,Number(S.inventory?.[k]||0));}
+    function swqGiveConsumable(k,n=1){
+      swqEnsureV9State();
+      S.inventory[k]=Math.max(0,Number(S.inventory[k]||0)+Math.max(0,Number(n)||0));
+    }
+
+    function swqRewardRandomConsumable(){
+      const pool=['cloroPremium','fichaNadador','recuperador'];
+      const k=pool[Math.floor(Math.random()*pool.length)];
+      if(k==='recuperador')S.shield=Math.max(0,Number(S.shield||0)+1);
+      else swqGiveConsumable(k,1);
+      return k;
+    }
+
+    function swqUnlockStyle(key){
+      swqEnsureV9State();
+      if(SWQ_NEW_STYLES[key])S.shopUnlocks['theme_'+key]=true;
+    }
+
+    function swqGrantRankMilestones(showToast=false){
+      swqEnsureV9State();
+      let changed=false,events=[];
+      let guard=0;
+      while(guard++<30){
+        const idx=currentRank().i;
+        let next=null;
+        for(const reward of SWQ_RANK_REWARDS){
+          const ri=RANKS.findIndex(r=>r.c===reward.c);
+          if(ri<=idx&&!S.rankRewardsClaimed.includes(reward.c)){next=reward;break;}
+        }
+        if(!next)break;
+        S.rankRewardsClaimed.push(next.c);
+        changed=true;
+        if(next.coins){S.coins+=next.coins;events.push('+'+fmt(next.coins)+' 🪙');}
+        if(next.xp){S.xp+=next.xp;S.level=levelFromXP(S.xp);events.push('+'+fmt(next.xp)+' XP');}
+        if(next.give){swqGiveConsumable(next.give,1);events.push(SWQ_CONSUMABLES[next.give].icon+' '+SWQ_CONSUMABLES[next.give].name);}
+        if(next.giveMany)next.giveMany.forEach(k=>{swqGiveConsumable(k,1);events.push(SWQ_CONSUMABLES[k].icon+' '+SWQ_CONSUMABLES[k].name);});
+        if(next.randomConsumable){const k=swqRewardRandomConsumable();events.push('🎁 '+(k==='recuperador'?'Recuperador de racha':SWQ_CONSUMABLES[k].name));}
+        if(next.unlockStyle){swqUnlockStyle(next.unlockStyle);events.push('🎨 '+SWQ_NEW_STYLES[next.unlockStyle].name+' disponible en la tienda');}
+        if(next.unlockConsumable){S.shopUnlocks[next.unlockConsumable]=true;events.push('🔁 Ficha de Repetición disponible en la tienda');}
+        S.level=levelFromXP(S.xp);
+      }
+      swqEnsureV9State();
+      if(changed)save();
+      if(changed&&showToast)toast('🎁 Recompensas de rango actualizadas: '+events.join(' · '),5000);
+      return {changed,events};
+    }
+
+    function swqRankRewardLabel(){
+      const out=[];
+      const rewards=arguments.length?arguments[0]:null;
+      const list=rewards||[];
+      for(const r of list)out.push('<div class="pill" style="margin-top:6px">'+esc(r)+'</div>');
+      return out.join('');
+    }
+
+    function swqInstallV9CSS(){
+      if(document.getElementById('swq-v9-css'))return;
+      const s=document.createElement('style');s.id='swq-v9-css';
+      s.textContent=[
+        '.swq-inventory-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}',
+        '.swq-inventory-item{padding:10px;border:1px solid #294867;border-radius:14px;background:linear-gradient(145deg,#0d2237,#07121f)}',
+        '.swq-inventory-item .count{font-size:17px;font-weight:1000;margin-top:2px}',
+        '.swq-inventory-item .btn{margin-top:7px;min-height:39px;font-size:11px}',
+        '.swq-inventory-active{border-color:rgba(97,239,170,.45);box-shadow:0 0 18px rgba(97,239,170,.07)}',
+        '.swq-rank-reward{margin-top:11px;padding:11px;border-radius:15px;background:linear-gradient(145deg,rgba(66,221,255,.10),rgba(118,92,255,.08));border:1px solid rgba(97,212,255,.28)}',
+        '.swq-locked-shop{opacity:.62;filter:saturate(.65)}',
+        '.swq-use-note{font-size:10px;color:var(--muted);margin-top:5px;line-height:1.35}',
+        '@media(max-width:560px){.swq-inventory-grid{grid-template-columns:1fr}}',
+
+        'body.theme-leviatan #swqLeviatanLayer{position:fixed!important;inset:0!important;z-index:46!important;pointer-events:none!important;overflow:hidden!important}',
+        '.swq-lev-front-fish{position:absolute;font-size:22px;filter:drop-shadow(0 0 9px rgba(130,246,255,.55));animation:swqLevFrontFish 7.8s linear forwards}',
+        '@keyframes swqLevFrontFish{0%{opacity:0;transform:translateX(-18vw) scaleX(-1) translateY(0)}10%{opacity:.88}50%{opacity:.92;transform:translateX(48vw) scaleX(-1) translateY(var(--bob,0px))}100%{opacity:0;transform:translateX(118vw) scaleX(-1) translateY(calc(var(--bob,0px)*-.7))}}',
+
+        'body.theme-ajedrez{background-color:#090914!important;background-image:linear-gradient(45deg,#14142c 25%,transparent 25%,transparent 75%,#14142c 75%),linear-gradient(45deg,#14142c 25%,transparent 25%,transparent 75%,#14142c 75%)!important;background-size:56px 56px!important;background-position:0 0,28px 28px!important}',
+        'body.theme-ajedrez .swq-chess-layer{z-index:45!important}',
+        '.swq-chess-layer .swq-chess-board-glow,.swq-chess-layer .swq-chess-scan{display:none!important}',
+        '.swq-chess-fall{font-size:clamp(18px,3.6vw,32px)!important;text-shadow:0 0 9px rgba(120,226,255,.46),0 0 17px rgba(255,95,194,.20)!important}',
+        '.swq-chess-burst-layer{z-index:120!important}',
+
+        'body.theme-bee #themeParticles{z-index:45!important}',
+        '.swq-bee-honey{position:absolute;top:-28px;font-size:18px;animation:swqBeeHoney 5.8s linear forwards;filter:drop-shadow(0 0 8px rgba(255,212,59,.42))}',
+        '.swq-bee-fly{position:absolute;top:var(--top,25%);font-size:20px;animation:swqBeeFly var(--dur,6.8s) linear forwards;filter:drop-shadow(0 3px 7px rgba(255,211,50,.40))}',
+        '@keyframes swqBeeHoney{0%{opacity:0;transform:translateY(-20px) rotate(-6deg)}10%{opacity:.85}100%{opacity:0;transform:translateY(112vh) rotate(18deg)}}',
+        '@keyframes swqBeeFly{0%{opacity:0;transform:translateX(-14vw) translateY(0) rotate(-4deg)}12%{opacity:.9}50%{transform:translateX(50vw) translateY(12px) rotate(5deg)}100%{opacity:0;transform:translateX(118vw) translateY(-10px) rotate(-2deg)}}',
+
+        'body.theme-carbon{background:radial-gradient(circle at 50% -10%,#3c3212 0,#171719 38%,#050607 100%)!important;color:#fffbe8!important}',
+        'body.theme-carbon .card{background:linear-gradient(180deg,rgba(35,34,30,.97),rgba(10,10,10,.99));border-color:rgba(255,214,86,.26);box-shadow:inset 0 0 24px rgba(255,214,86,.035),0 15px 42px rgba(0,0,0,.42)}',
+        'body.theme-carbon .hero{background:linear-gradient(145deg,rgba(61,52,24,.96),rgba(10,10,9,.99));border-color:rgba(255,221,103,.34)}',
+        'body.theme-carbon .btn.primary{background:linear-gradient(135deg,#e5bd4d,#655017);color:#fff8d8;border-color:#f6d96d}',
+        '.swq-carbon-ember{position:absolute;top:-20px;width:5px;height:12px;border-radius:999px;background:linear-gradient(#fff7b3,#d8a72f,transparent);box-shadow:0 0 9px rgba(255,198,64,.65);animation:swqCarbonFall var(--dur,5.8s) linear forwards}',
+        '@keyframes swqCarbonFall{0%{opacity:0;transform:translateY(-18px) rotate(0)}10%{opacity:.72}100%{opacity:0;transform:translateY(112vh) rotate(180deg)}}',
+
+        'body.theme-prisma{background:radial-gradient(circle at 12% 0,#1a2d4f 0,#08111f 35%,#03060d 100%)!important;color:#eef9ff}',
+        'body.theme-prisma::before{content:"";position:fixed;inset:-20%;z-index:-2;pointer-events:none;background:linear-gradient(118deg,transparent 43%,rgba(103,245,255,.16) 48%,rgba(166,109,255,.16) 51%,rgba(255,111,186,.12) 54%,transparent 59%);background-size:180% 180%;animation:swqPrisma 11s linear infinite}',
+        'body.theme-prisma::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(circle at 82% 70%,rgba(66,221,255,.08),transparent 24%)}',
+        '@keyframes swqPrisma{from{transform:translateX(-8%) rotate(-1deg)}to{transform:translateX(8%) rotate(1deg)}}',
+        'body.theme-saturno{background:radial-gradient(circle at 50% 18%,#1b2340 0,#070b17 45%,#02030a 100%)!important;color:#edf5ff}',
+        'body.theme-saturno::before{content:"";position:fixed;width:min(34vw,250px);height:min(34vw,250px);left:50%;top:23%;transform:translate(-50%,-50%);z-index:-1;pointer-events:none;border-radius:50%;background:radial-gradient(circle at 35% 28%,#cbd4c7 0 6%,#7e8b79 7% 22%,#3f4a45 23% 70%,#182025 71% 100%);box-shadow:0 0 55px rgba(155,196,209,.12)}',
+        'body.theme-saturno::after{content:"";position:fixed;width:min(54vw,380px);height:min(17vw,100px);left:50%;top:23%;transform:translate(-50%,-50%) rotate(-12deg);z-index:-1;pointer-events:none;border:3px solid rgba(225,231,201,.48);border-radius:50%;box-shadow:0 0 20px rgba(229,220,168,.10);animation:swqSaturnRing 9s linear infinite}',
+        '@keyframes swqSaturnRing{to{transform:translate(-50%,-50%) rotate(348deg)}}',
+        'body.theme-tinta{background:radial-gradient(circle at 50% 0,#183d4a 0,#07121a 42%,#020609 100%)!important;color:#edfaff}',
+        'body.theme-tinta::after{content:"";position:fixed;width:min(74vw,560px);height:min(42vw,300px);left:50%;top:38%;transform:translate(-50%,-50%);z-index:-1;pointer-events:none;border-radius:52% 48% 46% 54%;background:radial-gradient(circle at 48% 45%,rgba(32,105,119,.34),rgba(17,55,68,.22) 44%,transparent 72%);filter:blur(5px);animation:swqInk 11s ease-in-out infinite alternate}',
+        '@keyframes swqInk{to{transform:translate(-45%,-46%) scale(1.05)}}',
+        'body.theme-marealunar{background:radial-gradient(circle at 50% 0,#172942 0,#07111f 42%,#02050b 100%)!important;color:#edf8ff}',
+        'body.theme-marealunar::before{content:"";position:fixed;width:86px;height:86px;right:14%;top:13%;z-index:-1;pointer-events:none;border-radius:50%;background:radial-gradient(circle at 34% 30%,#ffffff,#c7d8e6 40%,#71869d 78%,#2b3a4b 100%);box-shadow:0 0 35px rgba(199,219,255,.18)}',
+        'body.theme-marealunar::after{content:"";position:fixed;left:-10%;right:-10%;bottom:13%;height:110px;z-index:-1;pointer-events:none;border-top:2px solid rgba(130,209,255,.15);border-radius:50%;animation:swqMoonWave 8s ease-in-out infinite}',
+        '@keyframes swqMoonWave{50%{transform:translateY(-9px) scaleX(1.03)}}',
+        'body.theme-pizarra{background-color:#0d1014!important;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px)!important;background-size:34px 34px!important;color:#f2f4f5}',
+        'body.theme-pizarra .card{background:linear-gradient(180deg,rgba(27,31,36,.97),rgba(10,12,15,.99));border-color:rgba(221,228,232,.15)}',
+        'body.theme-pizarra .btn{background:linear-gradient(145deg,#22272d,#111419)!important;border-color:rgba(224,231,235,.18)!important;color:#f4f6f8!important}',
+        'body.theme-pizarra .btn.primary{background:linear-gradient(135deg,#c6cdd2,#626c74)!important;color:#0c1013!important;border-color:#e7ecef!important}'
+      ].join('');
+      document.head.appendChild(s);
+    }
+
+    function swqSyncLeviatanV9(){
+      let layer=document.getElementById('swqLeviatanLayer');
+      if(S.settings.theme!=='Leviatan'){if(layer)layer.remove();return;}
+      if(!layer){
+        layer=document.createElement('div');layer.id='swqLeviatanLayer';layer.className='swq-lev-layer';document.body.appendChild(layer);
+      }
+      while(layer.querySelectorAll('.swq-lev-front-fish').length>2)layer.querySelector('.swq-lev-front-fish')?.remove();
+      if(!layer.querySelector('.swq-lev-front-fish')&&Math.random()<0.8){
+        const f=document.createElement('span');f.className='swq-lev-front-fish';f.textContent=Math.random()<0.5?'🐟':'🐠';
+        f.style.top=(28+Math.random()*48)+'%';f.style.setProperty('--bob',(-22+Math.random()*44)+'px');layer.appendChild(f);setTimeout(()=>f.remove(),8200);
+      }
+    }
+
+    function swqSyncChessV9(){
+      let layer=document.getElementById('swqChessLayer'),burst=document.getElementById('swqChessBurstLayer');
+      if(S.settings.theme==='Ajedrez'){
+        if(!layer){layer=document.createElement('div');layer.id='swqChessLayer';layer.className='swq-chess-layer';document.body.appendChild(layer);}
+        const pieces=['♟','♞','♜','♝','♛','♚'];let current=layer.querySelectorAll('.swq-chess-fall');
+        while(current.length>5){current[0].remove();current=layer.querySelectorAll('.swq-chess-fall');}
+        if(current.length<5)for(let i=current.length;i<5;i++){const p=document.createElement('span');p.className='swq-chess-fall';p.textContent=pieces[i%pieces.length];p.style.left=(4+Math.random()*92)+'%';p.style.setProperty('--dx',(-60+Math.random()*120)+'px');p.style.setProperty('--d',(8+Math.random()*5)+'s');p.style.setProperty('--delay',(-Math.random()*9)+'s');layer.appendChild(p);}
+        if(!burst){burst=document.createElement('div');burst.id='swqChessBurstLayer';burst.className='swq-chess-burst-layer';document.body.appendChild(burst);}
+      }else{if(layer)layer.remove();if(burst)burst.remove();}
+    }
+
+    function swqSpawnBeeV9(){
+      const host=document.getElementById('themeParticles');if(!host||S.settings.theme!=='Bee')return;
+      if(host.querySelectorAll('.swq-bee-honey,.swq-bee-fly').length>=6)return;
+      const el=document.createElement('span');
+      if(Math.random()<0.55){el.className='swq-bee-honey';el.textContent='🍯';el.style.left=(5+Math.random()*90)+'%';}
+      else{el.className='swq-bee-fly';el.textContent='🐝';el.style.left='-12vw';el.style.setProperty('--top',(18+Math.random()*60)+'%');el.style.setProperty('--dur',(6+Math.random()*2)+'s');}
+      host.appendChild(el);setTimeout(()=>el.remove(),9000);
+    }
+
+    function swqSpawnCarbonV9(){
+      const host=document.getElementById('themeParticles');if(!host||S.settings.theme!=='Carbon')return;
+      if(host.querySelectorAll('.swq-carbon-ember').length>=6)return;
+      const el=document.createElement('span');el.className='swq-carbon-ember';el.style.left=(6+Math.random()*88)+'%';el.style.setProperty('--dur',(5+Math.random()*3)+'s');host.appendChild(el);setTimeout(()=>el.remove(),8500);
+    }
+
+    function swqInventoryHTML(){
+      swqEnsureV9State();
+      const keys=Object.keys(SWQ_CONSUMABLES).filter(k=>swqInventoryCount(k)>0||Number(S.activeConsumables[k]||0)>0);
+      const shield=Number(S.shield||0),rows=[];
+      for(const k of keys){
+        const d=SWQ_CONSUMABLES[k],count=swqInventoryCount(k),active=Number(S.activeConsumables[k]||0)>0;
+        let button='';
+        if(d.kind==='next')button=active?'<div class="pill swq-inventory-active" style="margin-top:7px">✅ Preparado para el próximo entrenamiento</div>':'<button class="btn secondary" onclick="swqUseConsumable(\''+k+'\')">Usar en próximo</button>';
+        else if(d.kind==='instant')button='<button class="btn primary" onclick="swqUseConsumable(\''+k+'\')">Usar ahora</button>';
+        else if(d.kind==='roulette')button='<button class="btn primary" onclick="swqUseConsumable(\''+k+'\')">Abrir ahora</button>';
+        else if(d.kind==='daily')button='<button class="btn primary" onclick="swqUseConsumable(\''+k+'\')">Activar para hoy</button>';
+        rows.push('<div class="swq-inventory-item"><div>'+d.icon+' <b>'+esc(d.name)+'</b></div><div class="count">×'+fmt(count)+'</div><div class="swq-use-note">'+esc(d.desc)+'</div>'+button+'</div>');
+      }
+      if(shield>0)rows.push('<div class="swq-inventory-item"><div>🛡️ <b>Recuperador de racha</b></div><div class="count">×'+fmt(shield)+'</div><div class="swq-use-note">Se conserva hasta que una revisión semanal necesite proteger tu racha.</div></div>');
+      if(!rows.length)return '<div class="card" style="margin-top:10px"><div class="sectionTitle">🎒 INVENTARIO DE CONSUMIBLES</div><div class="sub" style="margin-top:6px">No tienes consumibles guardados. Los que compres o recibas aparecerán aquí y no se usarán automáticamente.</div></div>';
+      return '<div class="card" style="margin-top:10px"><div class="sectionTitle">🎒 INVENTARIO DE CONSUMIBLES</div><div class="sub" style="margin-top:5px">Guarda tus consumibles y decide cuándo utilizarlos. Comprar un objeto nunca lo consume.</div><div class="swq-inventory-grid">'+rows.join('')+'</div></div>';
+    }
+
+    function swqOpenStoredRoulette(k){
+      swqEnsureV9State();
+      if(swqInventoryCount(k)<=0){toast('🎁 No tienes ese consumible.');return;}
+      S.inventory[k]--;save();
+      try{openShopRoulette(k==='rouletteVip'?'vip':'normal');}catch(e){console.warn('SWQ stored roulette',e);toast('No se pudo abrir la ruleta.');}
+      render();
+    }
+
+    function swqUseConsumable(k){
+      swqEnsureV9State();
+      if(k==='cloroPremium'||k==='fichaNadador'){
+        if(swqInventoryCount(k)<=0){toast('🎒 No tienes '+SWQ_CONSUMABLES[k].name+'.');return;}
+        if(Number(S.activeConsumables[k]||0)>0){toast('✅ Ya está preparado para el próximo entrenamiento.');return;}
+        S.inventory[k]--;S.activeConsumables[k]=1;
+        S.consumables[k]=1;save();render();
+        toast(SWQ_CONSUMABLES[k].icon+' '+SWQ_CONSUMABLES[k].name+' preparado para tu próximo entrenamiento.',3500);return;
+      }
+      if(k==='xp500'||k==='xp1500'||k==='xpJuan'){
+        if(swqInventoryCount(k)<=0){toast('🎒 No tienes ese cristal.');return;}
+        S.inventory[k]--;gainXP(k==='xp500'?500:k==='xp1500'?1500:13000);save();render();
+        toast(SWQ_CONSUMABLES[k].icon+' '+SWQ_CONSUMABLES[k].name+' utilizado.',3000);return;
+      }
+      if(k==='rouletteNormal'||k==='rouletteVip'){swqOpenStoredRoulette(k);return;}
+      if(k==='fichaRepeticion'){
+        const day=localDateKey(),d=S.dailyReward||{};
+        if(swqInventoryCount(k)<=0){toast('🎒 No tienes ninguna Ficha de Repetición.');return;}
+        if(d.date!==day||!d.claimed){toast('🎁 Primero cobra la recompensa diaria de hoy.');return;}
+        if(Number(d.repeatUsed||0)>0){toast('🔁 Ya utilizaste la repetición de hoy.');return;}
+        S.inventory[k]--;d.repeatUsed=1;
+        const themes=['Cosmos','Abismo','Solar','Glacial','Esmeralda','Leviatan','Sangriento','Rosadito','CianNeon','Carbon','Eclipse','Carretera','CobaltoCobre'].filter(x=>!S.purchases['theme_'+x]);
+        if(themes.length&&Math.random()<.04){d.kind='theme';d.themeKey=themes[Math.floor(Math.random()*themes.length)];d.coins=0;d.xp=0;d.claimed=false;}
+        else{d.kind='coinsxp';d.themeKey='';d.coins=20+Math.floor(Math.random()*131);d.xp=10+Math.floor(Math.random()*91);d.claimed=false;}
+        save();claimDailyReward();toast('🔁 Nueva tirada diaria obtenida.',3500);return;
+      }
+    }
+    window.swqUseConsumable=swqUseConsumable;
+
+    const baseNonAchievementThemes=nonAchievementThemesForRoulette;
+    nonAchievementThemesForRoulette=function(){return baseNonAchievementThemes().filter(k=>!SWQ_NEW_STYLES[k]);};
+
+    const baseBuyV9=buy;
+    if(!window.__swqBuyV9Wrapped){
+      buy=function(id){
+        if(SWQ_NEW_STYLES[id?.replace?.(/^theme_/,'')]){
+          const key=id.replace(/^theme_/,'');
+          if(!S.shopUnlocks?.[id]){toast('🔒 '+SWQ_NEW_STYLES[key].name+' se desbloquea al llegar a '+(RANKS.find(r=>r.c===SWQ_NEW_STYLES[key].rank)?.n||'un rango superior')+'.');return;}
+        }
+        if(id==='fichaRepeticion'&&!S.shopUnlocks?.fichaRepeticion){toast('🔒 La Ficha de Repetición se desbloquea al llegar a Poseidón.');return;}
+        return baseBuyV9.apply(this,arguments);
+      };
+      window.__swqBuyV9Wrapped=true;
+    }
+
+    const baseGainXPV9=gainXP;
+    if(!window.__swqGainXPV9Wrapped){
+      gainXP=function(amount){
+        const before=currentRank().i;
+        const result=baseGainXPV9.apply(this,arguments);
+        const after=currentRank().i;
+        if(after>before){
+          const info=swqGrantRankMilestones(false);
+          if(info.changed)toast('🏆 Nuevo rango: '+currentRank().r.n+' · recompensas añadidas a tu inventario.',4200);
+        }
+        swqEnsureV9State();
+        return result;
+      };
+      window.__swqGainXPV9Wrapped=true;
+    }
+
+    function swqShowRankRewardCard(info){
+      if(!info?.events?.length)return;
+      const host=document.querySelector('#modal .rank-promo');if(!host)return;
+      const btn=host.querySelector('button.btn.primary');
+      const box=document.createElement('div');box.className='swq-rank-reward';
+      box.innerHTML='<div class="kicker">🎁 RECOMPENSA DEL RANGO</div>'+swqRankRewardLabel(info.events);
+      if(btn)host.insertBefore(box,btn);else host.appendChild(box);
+    }
+
+    const baseRankRevealV9=rankReveal;
+    if(!window.__swqRankRevealV9Wrapped){
+      rankReveal=function(r){swqEnsureV9State();const info=swqGrantRankMilestones(false);baseRankRevealV9.apply(this,arguments);setTimeout(()=>swqShowRankRewardCard(info),35);};
+      window.__swqRankRevealV9Wrapped=true;
+    }
+
+    const baseProfileV9=profile;
+    if(!window.__swqProfileV9Wrapped){
+      profile=function(){swqEnsureV9State();return baseProfileV9.apply(this,arguments)+swqInventoryHTML();};
+      window.__swqProfileV9Wrapped=true;
+    }
+
+    const baseHomeV9=home;
+    if(!window.__swqHomeV9Wrapped){
+      home=function(){const html=baseHomeV9.apply(this,arguments);return html.replace(/<div class="update-note">[\s\S]*?<\/div>/,'<div class="update-note">🛠️ Última actualización: progresión por rangos, inventario de consumibles, cinco estilos nuevos, conversaciones especiales de Pera y refinamientos visuales de Ajedrez, Leviatán, Abeja y Carbón.</div>');};
+      window.__swqHomeV9Wrapped=true;
+    }
+
+    if(!window.__swqInstructionsV9Wrapped){
+      instructions=function(){
+        modal('<div class="kicker">📖 INSTRUCCIONES</div><h2>Cómo funciona Aqualithium</h2><div class="list">'+
+          '<div class="list-item"><b>🏊 Entrena</b><div class="sub">Registra distancia, repeticiones, estilo, intensidad, correctivo y tiempo opcional. La dificultad se calcula automáticamente usando tu carga de entrenamiento y tu referencia.</div></div>'+
+          '<div class="list-item"><b>⭐ XP y 🪙 monedas</b><div class="sub">Los metros son la base; el estilo, la intensidad, los correctivos y los tiempos también influyen. Los entrenamientos tienen +25% de XP global y +15% de monedas global respecto de la fórmula anterior. Cloro Premium y Ficha del Nadador se aplican únicamente cuando tú los preparas desde el inventario.</div></div>'+
+          '<div class="list-item"><b>🎒 Inventario</b><div class="sub">Los consumibles no se gastan al comprarlos. Se guardan en Perfil. Desde allí puedes preparar Cloro Premium o Ficha del Nadador para el siguiente entrenamiento, usar cristales XP, abrir ruletas o activar una Ficha de Repetición.</div></div>'+
+          '<div class="list-item"><b>🏆 Rangos</b><div class="sub">Los 22 rangos conservan su progresión actual. Al alcanzar uno, recibes su recompensa una sola vez: monedas, XP y algunos consumibles; ciertos rangos desbloquean contenido nuevo para comprar en la tienda.</div></div>'+
+          '<div class="list-item"><b>🎨 Cinco estilos nuevos</b><div class="sub">Prisma se desbloquea en Venus, Saturno en Saturno, Tinta en Neptuno, Marea Lunar en Leviatán y Pizarra en Poseidón. Se desbloquean en la tienda por rango y después se compran con monedas; nunca se regalan.</div></div>'+
+          '<div class="list-item"><b>🍐 Pera</b><div class="sub">Al llegar a Poseidón aparece una conversación nueva llamada “Felicidades”. Al llegar a Coach Mati esa misma conversación cambia a “...” y contiene el cierre sobre disciplina, constancia y qué hacer después del último rango.</div></div>'+
+          '<div class="list-item"><b>🎮 Atrapa Burbujas</b><div class="sub">Hay cuatro dificultades. Extremo dura menos pero ahora paga mejor que antes. Tienes un máximo de cinco partidas con recompensa por día.</div></div>'+
+          '<div class="list-item"><b>📱 App</b><div class="sub">La página sigue funcionando como PWA, con navegación inferior, guardado local y sincronización cuando tienes una cuenta conectada.</div></div>'+
+          '</div><div class="card" style="margin-top:10px;background:#0c2238"><b>💙 Recuerda:</b><div class="sub" style="margin-top:5px">La recompensa acompaña el camino, pero la constancia se construye sesión a sesión. No necesitas que cada entrenamiento sea perfecto.</div></div>'+
+          (S.tutorialRewardClaimed?'<div class="list-item" style="margin-top:10px">✅ Recompensa de instrucciones ya reclamada.</div>':'<button class="btn primary" style="margin-top:10px" onclick="claimTutorialReward()">🎁 Terminé de leer · reclamar 100 🪙</button>')+
+          '<button class="btn secondary" style="margin-top:8px" onclick="closeModal()">Cerrar</button>');
+      };
+      window.__swqInstructionsV9Wrapped=true;
+    }
+
+    const baseShopV9=shop;
+    if(!window.__swqShopV9Wrapped){
+      shop=function(){
+        let html=baseShopV9.apply(this,arguments);
+        for(const key of Object.keys(SWQ_NEW_STYLES)){
+          const id='theme_'+key;
+          if(!S.shopUnlocks?.[id]&&!S.purchases?.[id]){
+            const safe=id;
+            const re=new RegExp('<button class="btn primary" style="margin-top:10px" onclick="buy\\('''+safe+'''\\)">[^<]*</button>');
+            const rankName=RANKS.find(r=>r.c===SWQ_NEW_STYLES[key].rank)?.n||'un rango superior';
+            html=html.replace(re,'<div class="pill swq-locked-shop" style="margin-top:10px">🔒 Se desbloquea en '+esc(rankName)+'</div>');
+          }
+        }
+        if(!S.shopUnlocks?.fichaRepeticion&&!S.purchases?.fichaRepeticion){
+          const re=new RegExp('<button class="btn primary" style="margin-top:10px" onclick="buy\\(''fichaRepeticion''\\)">[^<]*</button>');
+          html=html.replace(re,'<div class="pill swq-locked-shop" style="margin-top:10px">🔒 Se desbloquea en Poseidón</div>');
+        }
+        return html;
+      };
+      window.__swqShopV9Wrapped=true;
+    }
+
+    const SWQ_POSEIDON_PEAR=[
+      {speaker:'👤 TÚ',text:'Pera, acabo de llegar a Poseidón y no sé muy bien qué debería sentir. Durante muchísimo tiempo este nombre parecía lejano, y ahora está ahí mismo delante de mí.'},
+      {speaker:'🍐 PERA',text:'Entonces deja que te felicite de verdad, porque llegar hasta aquí no fue simplemente llenar una barra de experiencia. Hubo sesiones buenas, sesiones normales, días en los que tenías energía y otros en los que seguramente habrías preferido estar haciendo cualquier otra cosa.'},
+      {speaker:'👤 TÚ',text:'Lo curioso es que cuando veía los primeros rangos pensaba que cada uno era enorme, pero ahora parecen pequeños pasos que quedaron muy atrás.'},
+      {speaker:'🍐 PERA',text:'Así funciona el progreso cuando se acumula durante mucho tiempo: mientras avanzas miras principalmente el siguiente obstáculo, pero cuando te das la vuelta descubres una distancia enorme que construiste casi sin darte cuenta.'},
+      {speaker:'👤 TÚ',text:'También hubo entrenamientos que salieron mal y momentos en los que pensé que estaba empeorando.'},
+      {speaker:'🍐 PERA',text:'Y ninguno de esos días logró borrar los demás. Una sesión mala puede enseñarte algo sobre tu energía, tu técnica o tu estado de ese día, pero no tiene derecho a escribir por sí sola toda la historia de tu progreso.'},
+      {speaker:'👤 TÚ',text:'Entonces supongo que llegar a un rango alto no significa que ahora tenga que ser perfecto.'},
+      {speaker:'🍐 PERA',text:'Exactamente. Poseidón no te está pidiendo perfección; te está recordando que pudiste mantener un proceso durante mucho tiempo, incluso cuando el entusiasmo inicial no estaba presente.'},
+      {speaker:'👤 TÚ',text:'Eso me hace pensar que la disciplina no es simplemente obligarme a entrenar siempre.'},
+      {speaker:'🍐 PERA',text:'No. La disciplina también es saber cuándo continuar, cuándo ajustar el esfuerzo, cuándo descansar y, sobre todo, cómo volver después de que una parte de tu rutina se desordenó.'},
+      {speaker:'👤 TÚ',text:'Me gusta más esa idea, porque así no siento que descansar sea automáticamente fracasar.'},
+      {speaker:'🍐 PERA',text:'Descansar de forma adecuada no elimina lo que ya construiste. Lo importante es que el descanso no se convierta accidentalmente en abandonar todo el proceso porque una semana no salió como querías.'},
+      {speaker:'👤 TÚ',text:'Creo que antes necesitaba ver una recompensa para sentir que realmente estaba avanzando.'},
+      {speaker:'🍐 PERA',text:'Las recompensas son divertidas y pueden darte dirección, pero no deberían ser la única prueba de que algo valió la pena. Llegará un momento en el que tendrás que seguir sin que aparezca un rango nuevo después.'},
+      {speaker:'👤 TÚ',text:'¿Y eso es lo que viene después de Poseidón?'},
+      {speaker:'🍐 PERA',text:'Podría ser. Pero todavía existe Coach Mati, así que no te voy a adelantar todo. Solo quiero que disfrutes este momento y entiendas lo que realmente significa haber llegado hasta aquí.'},
+      {speaker:'👤 TÚ',text:'Gracias, Pera. Creo que necesitaba escuchar eso más que una pantalla llena de números.'},
+      {speaker:'🍐 PERA',text:'De nada. Hoy no quiero que pienses solamente en cuánto falta. Mira también cuánto ya hiciste. Felicidades por Poseidón.'}
+    ];
+    const SWQ_COACH_PEAR=[
+      {speaker:'🍐 PERA',text:'...'},
+      {speaker:'👤 TÚ',text:'¿Pera? ¿Por qué tu conversación de Felicidades ahora se llama solamente “...”?'},
+      {speaker:'🍐 PERA',text:'Porque este es uno de esos momentos en los que siento que cualquier discurso enorme tendría menos valor que una pausa. Llegaste a Coach Mati, y por primera vez no existe otro nombre encima de este.'},
+      {speaker:'👤 TÚ',text:'Cuando empecé, Coach Mati parecía algo casi imposible. Pensaba en el último rango como si fuera una meta gigantesca que resolvería todo.'},
+      {speaker:'🍐 PERA',text:'Y ahora estás aquí, quizá esperando una sensación gigantesca que te diga que terminaste algo importante. Pero mira alrededor: sigues siendo tú, seguimos dentro del mismo juego y mañana seguirá existiendo una piscina, una rutina y decisiones que nadie puede tomar por ti.'},
+      {speaker:'👤 TÚ',text:'Entonces el último rango no significa que se acabó todo.'},
+      {speaker:'🍐 PERA',text:'Significa que se acabó la lista. Y hay una diferencia enorme entre terminar una lista y terminar un camino.'},
+      {speaker:'👤 TÚ',text:'Creo que por fin entiendo algo que me dijiste en Poseidón: las recompensas sirven para acompañar el camino, pero no pueden ser la razón por la que sigo.'},
+      {speaker:'🍐 PERA',text:'Exactamente. La verdadera constancia aparece cuando ya no hay una recompensa nueva esperándote y aun así eres capaz de decidir qué quieres seguir construyendo.'},
+      {speaker:'👤 TÚ',text:'También aprendí que perder el ritmo no borra todo lo anterior.'},
+      {speaker:'🍐 PERA',text:'Y eso quizá sea una de las cosas más importantes que puedes llevarte de todo este sistema. La constancia no significa nunca desordenarte; significa aprender a reorganizarte y volver cuando sea necesario.'},
+      {speaker:'👤 TÚ',text:'Si una semana sale mal, vuelvo. Si una sesión sale mal, aprendo. Si pierdo la motivación, intento entender por qué.'},
+      {speaker:'🍐 PERA',text:'Eso es. Ya no estás buscando una fórmula perfecta que garantice que nunca tendrás un día malo. Estás aprendiendo una habilidad mucho más útil: continuar sin convertir cada error en una sentencia sobre ti mismo.'},
+      {speaker:'👤 TÚ',text:'Supongo que ahora puedo perseguir otras cosas sin sentir que tengo que subir de rango para justificarlo.'},
+      {speaker:'🍐 PERA',text:'Claro. Puedes perseguir mejores marcas, disfrutar una sesión tranquila, aprender una técnica, completar una misión, probar un estilo nuevo o simplemente registrar un entrenamiento porque te apetecía nadar. Ya no necesitas un número superior para darle significado a lo que haces.'},
+      {speaker:'👤 TÚ',text:'Entonces Coach Mati no es exactamente el final.'},
+      {speaker:'🍐 PERA',text:'Es el final de la progresión de rangos. La historia, en cambio, sigue mientras tú quieras escribirla.'},
+      {speaker:'👤 TÚ',text:'Y si algún día vuelvo a sentir que estoy retrocediendo...'},
+      {speaker:'🍐 PERA',text:'Recuerda todo lo que tardó en construirse este momento. Una mala temporada no puede borrar meses o años de decisiones. Puedes detenerte, ajustar algo, pedir ayuda, descansar, cambiar de objetivo y volver a empezar desde donde estés.'},
+      {speaker:'👤 TÚ',text:'Me gusta pensar que la palabra más importante de todo esto no es “ganar”, sino “volver”.'},
+      {speaker:'🍐 PERA',text:'A mí también. Porque volver significa que todavía eliges seguir construyendo algo.'},
+      {speaker:'👤 TÚ',text:'Gracias por estar durante todo el camino, incluso cuando yo estaba obsesionado con mirar números y pensar en el siguiente rango.'},
+      {speaker:'🍐 PERA',text:'Gracias a ti por volver tantas veces. Y ahora sí voy a decirlo una última vez: no necesitas otro rango para demostrar que avanzaste. Llegaste hasta aquí. Ahora decide qué quieres hacer con todo lo que aprendiste.'},
+      {speaker:'👤 TÚ',text:'¿Y tú qué vas a hacer?'},
+      {speaker:'🍐 PERA',text:'Yo voy a seguir aquí. Soy una pera. Tengo un trabajo bastante específico.'},
+      {speaker:'👤 TÚ',text:'Eso fue sorprendentemente profundo para una fruta.'},
+      {speaker:'🍐 PERA',text:'He tenido 21 rangos para prepararme. Déjame disfrutar mi momento.'}
+    ];
+
+    function swqSyncPearRankTopic(){
+      if(typeof PEAR_TOPIC_DIALOGUES==='undefined'||!Array.isArray(PEAR_TOPIC_DIALOGUES))return;
+      const idx=currentRank().i,poseidonIdx=RANKS.findIndex(r=>r.c==='poseidon'),coach=RANKS.findIndex(r=>r.c==='coach');
+      let pos=PEAR_TOPIC_DIALOGUES.findIndex(x=>x.id==='rank_felicidades');
+      if(idx<poseidonIdx){if(pos>=0)PEAR_TOPIC_DIALOGUES.splice(pos,1);return;}
+      const targetTitle=idx>=coach?'...':'Felicidades',targetLines=idx>=coach?SWQ_COACH_PEAR:SWQ_POSEIDON_PEAR;
+      if(pos<0)PEAR_TOPIC_DIALOGUES.push({id:'rank_felicidades',title:targetTitle,lines:targetLines});
+      else{PEAR_TOPIC_DIALOGUES[pos].title=targetTitle;PEAR_TOPIC_DIALOGUES[pos].lines=targetLines;}
+    }
+    const basePearTopicMenuV9=pearTopicMenu;
+    if(!window.__swqPearTopicMenuV9Wrapped){pearTopicMenu=function(){swqSyncPearRankTopic();return basePearTopicMenuV9.apply(this,arguments);};window.__swqPearTopicMenuV9Wrapped=true;}
+    const baseOpenPearV9=openPearScene;
+    if(!window.__swqOpenPearV9Wrapped){openPearScene=function(){swqEnsureV9State();swqSyncPearRankTopic();return baseOpenPearV9.apply(this,arguments);};window.__swqOpenPearV9Wrapped=true;}
+
+    const baseSaveTrainingV9=saveTraining;
+    if(!window.__swqSaveTrainingV9Wrapped){
+      saveTraining=function(){
+        swqEnsureV9State();
+        const cloroActive=Number(S.activeConsumables.cloroPremium||0)>0,fichaActive=Number(S.activeConsumables.fichaNadador||0)>0;
+        const oldCloro=Number(S.consumables.cloroPremium||0),oldFicha=Number(S.consumables.fichaNadador||0);
+        S.consumables.cloroPremium=cloroActive?1:0;S.consumables.fichaNadador=fichaActive?1:0;
+        try{
+          const out=baseSaveTrainingV9.apply(this,arguments);
+          if(cloroActive)S.activeConsumables.cloroPremium=0;
+          if(fichaActive)S.activeConsumables.fichaNadador=0;
+          S.consumables.cloroPremium=0;S.consumables.fichaNadador=0;save();return out;
+        }catch(e){
+          S.consumables.cloroPremium=oldCloro;S.consumables.fichaNadador=oldFicha;throw e;
+        }
+      };
+      window.__swqSaveTrainingV9Wrapped=true;
+    }
+
+    const baseClaimDailyRewardV9=claimDailyReward;
+    if(!window.__swqDailyRepeatV9Wrapped){claimDailyReward=function(){swqEnsureV9State();return baseClaimDailyRewardV9.apply(this,arguments);};window.__swqDailyRepeatV9Wrapped=true;}
+
+    if(typeof MINI_LEVELS!=='undefined'&&MINI_LEVELS.extremo){MINI_LEVELS.extremo.rewardMax=75;MINI_LEVELS.extremo.desc='Muy poco tiempo y mucho movimiento. Es la dificultad con la recompensa máxima.';}
+
+    const baseSpawnThemeParticleV9=spawnThemeParticle;
+    if(!window.__swqSpawnThemeParticleV9Wrapped){
+      spawnThemeParticle=function(){if(S.settings.theme==='Bee'){swqSpawnBeeV9();return;}if(S.settings.theme==='Carbon'){swqSpawnCarbonV9();return;}return baseSpawnThemeParticleV9.apply(this,arguments);};
+      window.__swqSpawnThemeParticleV9Wrapped=true;
+    }
+
+    swqSyncLeviatan=swqSyncLeviatanV9;swqSyncChess=swqSyncChessV9;
+
+    const baseEquipThemeV9=equipTheme;
+    equipTheme=function(theme){if(SWQ_NEW_STYLES[theme]&&!S.purchases['theme_'+theme]){toast('🔒 Compra primero el estilo '+SWQ_NEW_STYLES[theme].name+' en la tienda.');return;}return baseEquipThemeV9.apply(this,arguments);};
+
+    swqEnsureV9State();swqInstallV9CSS();swqGrantRankMilestones(true);
+    if(typeof applyTheme==='function')try{applyTheme();}catch(e){}
+    try{swqSyncLeviatan();}catch(e){}
+    try{swqSyncChess();}catch(e){}
+    setInterval(()=>{try{swqEnsureV9State();swqSyncPearRankTopic();swqSyncLeviatan();swqSyncChess();if(S.settings.theme==='Bee')swqSpawnBeeV9();if(S.settings.theme==='Carbon')swqSpawnCarbonV9();}catch(e){}},5200);
+
+    let swqCloudSyncAttempts=0;
+    const swqCloudSyncTimer=setInterval(()=>{
+      try{
+        swqCloudSyncAttempts++;
+        if(authUser&&S.remote?.userId){swqEnsureV9State();swqGrantRankMilestones(false);save();if(typeof syncProfileToCloud==='function')syncProfileToCloud();clearInterval(swqCloudSyncTimer);}
+        else if(swqCloudSyncAttempts>=12)clearInterval(swqCloudSyncTimer);
+      }catch(e){if(swqCloudSyncAttempts>=12)clearInterval(swqCloudSyncTimer);}
+    },1000);
+
+    try{save();render();}catch(e){console.warn('SWQ v9 render',e);}
+  }catch(e){
+    if(String(e?.message||e)!=='__SWQ_ALREADY_APPLIED__')console.warn('SWQ update v9',e);
+  }
 
 })();
