@@ -14,7 +14,7 @@
   if(window.__SWQ_FINAL_FIXES_20260919_1__)return;
   window.__SWQ_FINAL_FIXES_20260919_1__=true;
 
-  const VERSION='20260919-7';
+  const VERSION='20260919-8';
   let updatingProfilePanel=false;
   let roadTimer=null,planeTimer=null,roadLayer=null;
   let timeCategory=localStorage.getItem('SWIM_QUEST_TIME_CATEGORY')||'50';
@@ -1723,7 +1723,7 @@ body.theme-carretera .app{position:relative;z-index:2}
   if(window.__SWQ_VISUAL_REPAIR_20260919__)return;
   window.__SWQ_VISUAL_REPAIR_20260919__=true;
 
-  const VIS_VERSION='20260919-4';
+  const VIS_VERSION='20260919-3';
 
   function swqVRRemove(id){
     const el=document.getElementById(id);
@@ -1755,7 +1755,7 @@ body.theme-carretera .app{position:relative;z-index:2}
       'body.theme-bee .btn.primary{background:linear-gradient(135deg,#ffe778,#d29a13,#40330a)!important;color:#171208!important;border-color:#fff2ae!important}',
       '.swq-vr-bee{left:-70px;font-size:24px;filter:drop-shadow(0 3px 7px rgba(255,210,52,.42))}',
       '.swq-vr-honey{top:-55px;font-size:22px;filter:drop-shadow(0 3px 7px rgba(255,204,44,.35))}',
-      '@keyframes swqVrBeeFly{0%{opacity:0;transform:translate3d(0,0,0) rotate(7deg) scale(.82)}10%{opacity:.94}42%{transform:translate3d(45vw,var(--dy),0) rotate(-7deg) scale(1.02)}72%{transform:translate3d(82vw,calc(var(--dy) * .55),0) rotate(5deg) scale(.95)}100%{opacity:0;transform:translate3d(118vw,calc(var(--dy) * .2),0) rotate(-4deg) scale(.82)}}',
+      '@keyframes swqVrBeeFly{0%{opacity:0;transform:translate3d(0,0,0) rotate(-7deg) scale(.82)}10%{opacity:.94}42%{transform:translate3d(45vw,var(--dy),0) rotate(7deg) scale(1.02)}72%{transform:translate3d(82vw,calc(var(--dy) * .55),0) rotate(-5deg) scale(.95)}100%{opacity:0;transform:translate3d(118vw,calc(var(--dy) * .2),0) rotate(4deg) scale(.82)}}',
       '@keyframes swqVrHoneyFall{0%{opacity:0;transform:translate3d(0,-20px,0) rotate(-8deg)}12%{opacity:.88}55%{transform:translate3d(var(--dx),52vh,0) rotate(10deg)}100%{opacity:0;transform:translate3d(calc(var(--dx) * .7),112vh,0) rotate(-14deg)}}',
       
       /* Carbón */
@@ -1977,99 +1977,45 @@ body.theme-carretera .app{position:relative;z-index:2}
 })();
 
 
-/* === SWQ ECONOMY + RANK THRESHOLDS 2026-09-19 === */
+/* === SWQ SAFE REPAIR 2026-09-19 === */
 (function(){
   'use strict';
-  if(window.__SWQ_ECONOMY_RANK_PATCH_20260919__)return;
-  window.__SWQ_ECONOMY_RANK_PATCH_20260919__=true;
+  if(window.__SWQ_SAFE_REPAIR_20260919__)return;
+  window.__SWQ_SAFE_REPAIR_20260919__=true;
 
-  /* Ruleta Normal: recompensa mayor, manteniendo VIP intacta. */
-  try{
-    const baseOpenShopRoulette=openShopRoulette;
-    if(typeof baseOpenShopRoulette==='function'&&!window.__swqNormalRouletteBoost20260919){
-      openShopRoulette=function(kind){
-        if(kind!=='normal')return baseOpenShopRoulette.apply(this,arguments);
-        const vip=false,styles=(typeof nonAchievementThemesForRoulette==='function'?nonAchievementThemesForRoulette():[]),music=null;
-        let coins=100+Math.floor(Math.random()*201); // 100–300
-        let xp=300+Math.floor(Math.random()*701);    // 300–1000
-        let style=null;
-        if(styles.length&&Math.random()<.02)style=styles[Math.floor(Math.random()*styles.length)];
-        S.coins+=coins;
-        const levelEvent=gainXP(xp);
-        const extras=[];
-        if(style){S.purchases["theme_"+style]=true;extras.push(`🎨 ${THEMES[style]?.emoji||"✨"} ${style}`);}
-        save();
-        if(typeof authUser!=='undefined'&&authUser&&typeof syncProfileToCloud==='function')syncProfileToCloud();
-        if(typeof tone==='function')tone("coin");
-        const title="🎰 RULETA NORMAL",accent="#42ddff",detail=extras.length?`<div class="pill" style="margin-top:9px">${extras.join(" · ")}</div>`:"";
-        if(typeof modal==='function')modal(`<div class="shop-roulette-panel reveal" style="text-align:center"><div class="kicker">${title}</div><div class="roulette-frame"><div class="roulette-pointer">▼</div><div class="roulette-wheel normal"><div class="roulette-glow"></div><div class="roulette-spark s1"></div><div class="roulette-spark s2"></div><div class="roulette-spark s3"></div><div class="roulette-spark s4"></div><div class="roulette-text">🎰</div></div></div><h2 style="color:${accent}">¡Premio!</h2><div class="roulette-prize-grid" style="margin-top:10px"><div class="roulette-prize"><div class="kicker">MONEDAS</div><h3>+${fmt(coins)} 🪙</h3></div><div class="roulette-prize"><div class="kicker">EXPERIENCIA</div><h3>+${fmt(xp)} XP</h3></div></div>${detail}${levelEvent?.levels?`<div class="pill" style="margin-top:8px">⬆️ LV ${S.level}</div>`:""}<button class="btn primary" style="margin-top:12px" onclick="closeModal();render()">Aceptar</button></div>`);
-        return {coins,xp,levelEvent,style};
-      };
-      window.__swqNormalRouletteBoost20260919=true;
-    }
-  }catch(e){console.warn('SWQ normal roulette boost',e)}
-
-  /* Recompensa diaria: prioridad en XP. 4% de tema se conserva. */
+  /* Daily reward boost: prioritizes XP and never rewrites an already claimed reward. */
   try{
     const baseDailyRewardInfo=dailyRewardInfo;
-    if(typeof baseDailyRewardInfo==='function'&&!window.__swqDailyRewardBoost20260919){
-      dailyRewardInfo=function(){
-        const out=baseDailyRewardInfo.apply(this,arguments);
-        try{
-          const d=S.dailyReward||{}, today=(typeof localDateKey==='function'?localDateKey():"");
-          if(d.date===today&&d.kind==="coinsxp"&&!d.claimed&&!d.__swqBoosted20260919){
-            d.coins=60+Math.floor(Math.random()*181); // 60–240
-            d.xp=250+Math.floor(Math.random()*551);   // 250–800
-            d.__swqBoosted20260919=true;
-            save();
-          }
-        }catch(e){}
+    dailyRewardInfo=function(){
+      const out=baseDailyRewardInfo.apply(this,arguments);
+      try{
         const d=S.dailyReward||{};
-        if(d.kind==="coinsxp")out.reward={...out.reward,coins:Number(d.coins||0),xp:Number(d.xp||0),kind:"coinsxp",themeKey:"",label:`${fmt(d.coins)} 🪙 + ${fmt(d.xp)} XP`};
-        return out;
-      };
-      window.__swqDailyRewardBoost20260919=true;
-    }
-  }catch(e){console.warn('SWQ daily reward boost',e)}
+        const today=typeof localDateKey==='function'?localDateKey():'';
+        if(d.date===today&&d.kind==='coinsxp'&&!d.claimed&&!d.__swqDailyBoost20260919){
+          d.coins=60+Math.floor(Math.random()*181);
+          d.xp=250+Math.floor(Math.random()*551);
+          d.__swqDailyBoost20260919=true;
+          save();
+        }
+        if(d.kind==='coinsxp'&&out?.reward){
+          out.reward={...out.reward,coins:Number(d.coins||0),xp:Number(d.xp||0),kind:'coinsxp',themeKey:'',label:`${fmt(d.coins)} 🪙 + ${fmt(d.xp)} XP`};
+        }
+      }catch(e){}
+      return out;
+    };
+  }catch(e){console.warn('SWQ daily reward repair',e)}
 
-  /* Abejas: invertir la dirección del vuelo para corregir el sentido. */
+  /* Bee: reverse only the custom foreground bee layer from the stable visual patch. */
   try{
-    const css=document.getElementById('swq-visual-repair-css');
-    if(css){
-      css.textContent += [
+    const style=document.getElementById('swq-visual-repair-css');
+    if(style){
+      style.textContent += [
         '.swq-vr-bee{left:auto!important;right:-70px!important}',
         '@keyframes swqVrBeeFlyReverse{0%{opacity:0;transform:translate3d(0,0,0) rotate(7deg)}10%{opacity:.94}42%{transform:translate3d(-45vw,var(--dy),0) rotate(-7deg)}72%{transform:translate3d(-82vw,calc(var(--dy) * .55),0) rotate(5deg)}100%{opacity:0;transform:translate3d(-118vw,calc(var(--dy) * .2),0) rotate(-4deg)}}',
         '.swq-vr-bee{animation-name:swqVrBeeFlyReverse!important}'
       ].join('');
     }
-  }catch(e){console.warn('SWQ bee direction fix',e)}
+  }catch(e){console.warn('SWQ Bee repair',e)}
 
   try{save();render();}catch(e){}
-  /* cloudGameState debe devolver un objeto, no una Promise, porque syncProfileToCloud() lo inserta directamente en jsonb. */
-  try{
-    if(typeof cloudGameState==='function'){
-      cloudGameState=function(){
-        return {
-          purchases:S.purchases||{},
-          consumables:S.consumables||{},
-          inventory:S.inventory||{},
-          activeConsumables:S.activeConsumables||{},
-          shopUnlocks:S.shopUnlocks||{},
-          rankRewardsClaimed:Array.isArray(S.rankRewardsClaimed)?S.rankRewardsClaimed:[],
-          rankRewardCoins:Number(S.rankRewardCoins||0),
-          rankRewardXP:Number(S.rankRewardXP||0),
-          itemBonusCoins:Number(S.itemBonusCoins||0),
-          itemBonusXP:Number(S.itemBonusXP||0),
-          achievements:Array.isArray(S.achievements)?S.achievements:[],
-          claimed:Array.isArray(S.claimed)?S.claimed:[],
-          shield:Number(S.shield||0),
-          levelRewardedThrough:Number(S.levelRewardedThrough||1),
-          levelRewardCoins:Number(S.levelRewardCoins||0),
-          monthlyShieldUntil:S.monthlyShieldUntil||"",
-          dailyReward:S.dailyReward||{date:"",claimed:false,coins:0,xp:0,kind:"coinsxp",themeKey:""}
-        };
-      };
-    }
-  }catch(e){console.warn('SWQ cloud state repair',e)}
-
 })();
