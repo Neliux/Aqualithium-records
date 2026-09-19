@@ -1558,8 +1558,7 @@ body.theme-carretera .app{position:relative;z-index:2}
           }
         }
         if(!S.shopUnlocks?.fichaRepeticion&&!S.purchases?.fichaRepeticion){
-          const re=new RegExp("<button class=\\\"btn primary\\\" style=\\\"margin-top:10px\\\" onclick=\\\"buy('fichaRepeticion')\\\">[^<]*</button>");
-          html=html.replace(re,'<div class="pill swq-locked-shop" style="margin-top:10px">🔒 Se desbloquea en Poseidón</div>');
+          html=html.replace('onclick="buy(\'fichaRepeticion\')"','onclick="toast(\'🔒 La Ficha de Repetición se desbloquea en Poseidón.\')"');
         }
         return html;
       };
