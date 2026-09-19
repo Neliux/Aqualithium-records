@@ -1194,6 +1194,14 @@ body.theme-carretera .app{position:relative;z-index:2}
       S.shopUnlocks=S.shopUnlocks||{};
       S.rankRewardsClaimed=Array.isArray(S.rankRewardsClaimed)?S.rankRewardsClaimed:[];
       S.dailyReward=S.dailyReward||{date:'',claimed:false,coins:0,xp:0,kind:'coinsxp',themeKey:''};
+      if(!S.__swqLegacyConsumablesMigrated){
+        ['cloroPremium','fichaNadador'].forEach(k=>{
+          const old=Number(S.consumables[k]||0);
+          if(old>0){S.inventory[k]=Math.max(0,Number(S.inventory[k]||0)+old);S.consumables[k]=0;}
+          else if(!Number.isFinite(Number(S.consumables[k])))S.consumables[k]=0;
+        });
+        S.__swqLegacyConsumablesMigrated=true;
+      }
       if(!Number.isFinite(Number(S.dailyReward.repeatUsed)))S.dailyReward.repeatUsed=0;
 
       Object.keys(SWQ_CONSUMABLES).forEach(k=>{
@@ -1203,13 +1211,7 @@ body.theme-carretera .app{position:relative;z-index:2}
         if(!Number.isFinite(Number(S.activeConsumables[k])))S.activeConsumables[k]=0;
       });
 
-      ['cloroPremium','fichaNadador'].forEach(k=>{
-        const old=Number(S.consumables[k]||0);
-        if(old>0){
-          S.inventory[k]+=old;
-          S.consumables[k]=0;
-        }else if(!Number.isFinite(Number(S.consumables[k])))S.consumables[k]=0;
-      });
+
 
       for(const key of Object.keys(SWQ_NEW_STYLES)){
         const t=SWQ_NEW_STYLES[key];
@@ -1485,7 +1487,7 @@ body.theme-carretera .app{position:relative;z-index:2}
         const after=currentRank().i;
         if(after>before){
           const info=swqGrantRankMilestones(false);
-          if(info.changed)toast('🏆 Nuevo rango: '+currentRank().r.n+' · recompensas añadidas a tu inventario.',4200);
+          if(info.changed){S.__swqLastRankRewardEvents=info.events||[];toast('🏆 Nuevo rango: '+currentRank().r.n+' · recompensas añadidas a tu inventario.',4200);}
         }
         swqEnsureV9State();
         return result;
@@ -1504,7 +1506,7 @@ body.theme-carretera .app{position:relative;z-index:2}
 
     const baseRankRevealV9=rankReveal;
     if(!window.__swqRankRevealV9Wrapped){
-      rankReveal=function(r){swqEnsureV9State();const info=swqGrantRankMilestones(false);baseRankRevealV9.apply(this,arguments);setTimeout(()=>swqShowRankRewardCard(info),35);};
+      rankReveal=function(r){swqEnsureV9State();const queued={events:Array.isArray(S.__swqLastRankRewardEvents)?S.__swqLastRankRewardEvents.slice():[]};const info=swqGrantRankMilestones(false);const merged={events:info.events?.length?info.events:queued.events};S.__swqLastRankRewardEvents=[];baseRankRevealV9.apply(this,arguments);setTimeout(()=>swqShowRankRewardCard(merged),35);};
       window.__swqRankRevealV9Wrapped=true;
     }
 
@@ -1546,13 +1548,13 @@ body.theme-carretera .app{position:relative;z-index:2}
           const id='theme_'+key;
           if(!S.shopUnlocks?.[id]&&!S.purchases?.[id]){
             const safe=id;
-            const re=new RegExp('<button class="btn primary" style="margin-top:10px" onclick="buy\\('''+safe+'''\\)">[^<]*</button>');
+            const re=new RegExp("<button class=\\\"btn primary\\\" style=\\\"margin-top:10px\\\" onclick=\\\"buy\\('"+safe+"'\\)\\\">[^<]*</button>");
             const rankName=RANKS.find(r=>r.c===SWQ_NEW_STYLES[key].rank)?.n||'un rango superior';
             html=html.replace(re,'<div class="pill swq-locked-shop" style="margin-top:10px">🔒 Se desbloquea en '+esc(rankName)+'</div>');
           }
         }
         if(!S.shopUnlocks?.fichaRepeticion&&!S.purchases?.fichaRepeticion){
-          const re=new RegExp('<button class="btn primary" style="margin-top:10px" onclick="buy\\(''fichaRepeticion''\\)">[^<]*</button>');
+          const re=new RegExp("<button class=\\\"btn primary\\\" style=\\\"margin-top:10px\\\" onclick=\\\"buy('fichaRepeticion')\\\">[^<]*</button>");
           html=html.replace(re,'<div class="pill swq-locked-shop" style="margin-top:10px">🔒 Se desbloquea en Poseidón</div>');
         }
         return html;
@@ -1629,15 +1631,23 @@ body.theme-carretera .app{position:relative;z-index:2}
       saveTraining=function(){
         swqEnsureV9State();
         const cloroActive=Number(S.activeConsumables.cloroPremium||0)>0,fichaActive=Number(S.activeConsumables.fichaNadador||0)>0;
-        const oldCloro=Number(S.consumables.cloroPremium||0),oldFicha=Number(S.consumables.fichaNadador||0);
+        const beforeCount=Array.isArray(S.trainings)?S.trainings.length:0;
         S.consumables.cloroPremium=cloroActive?1:0;S.consumables.fichaNadador=fichaActive?1:0;
         try{
           const out=baseSaveTrainingV9.apply(this,arguments);
-          if(cloroActive)S.activeConsumables.cloroPremium=0;
-          if(fichaActive)S.activeConsumables.fichaNadador=0;
-          S.consumables.cloroPremium=0;S.consumables.fichaNadador=0;save();return out;
+          setTimeout(()=>{
+            const succeeded=Array.isArray(S.trainings)&&S.trainings.length>beforeCount;
+            if(cloroActive){if(!succeeded)S.inventory.cloroPremium++;S.activeConsumables.cloroPremium=0;}
+            if(fichaActive){if(!succeeded)S.inventory.fichaNadador++;S.activeConsumables.fichaNadador=0;}
+            S.consumables.cloroPremium=0;S.consumables.fichaNadador=0;save();
+            if(!succeeded)render();
+          },120);
+          return out;
         }catch(e){
-          S.consumables.cloroPremium=oldCloro;S.consumables.fichaNadador=oldFicha;throw e;
+          if(cloroActive){S.inventory.cloroPremium++;S.activeConsumables.cloroPremium=0;}
+          if(fichaActive){S.inventory.fichaNadador++;S.activeConsumables.fichaNadador=0;}
+          S.consumables.cloroPremium=0;S.consumables.fichaNadador=0;save();
+          throw e;
         }
       };
       window.__swqSaveTrainingV9Wrapped=true;
@@ -1659,7 +1669,9 @@ body.theme-carretera .app{position:relative;z-index:2}
     const baseEquipThemeV9=equipTheme;
     equipTheme=function(theme){if(SWQ_NEW_STYLES[theme]&&!S.purchases['theme_'+theme]){toast('🔒 Compra primero el estilo '+SWQ_NEW_STYLES[theme].name+' en la tienda.');return;}return baseEquipThemeV9.apply(this,arguments);};
 
-    swqEnsureV9State();swqInstallV9CSS();swqGrantRankMilestones(true);
+    swqEnsureV9State();swqInstallV9CSS();
+    const swqInitialRewards=swqGrantRankMilestones(false);
+    if(swqInitialRewards.changed)toast('🎁 Se añadieron tus recompensas de rango al nuevo sistema de inventario.',4500);
     if(typeof applyTheme==='function')try{applyTheme();}catch(e){}
     try{swqSyncLeviatan();}catch(e){}
     try{swqSyncChess();}catch(e){}
