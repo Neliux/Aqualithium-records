@@ -1975,3 +1975,87 @@ body.theme-carretera .app{position:relative;z-index:2}
   setInterval(()=>{try{swqVRSyncThemeFixed();}catch(e){}},1100);
   try{swqVRSyncThemeFixed();}catch(e){}
 })();
+
+
+/* === SWQ ECONOMY + RANK THRESHOLDS 2026-09-19 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_ECONOMY_RANK_PATCH_20260919__)return;
+  window.__SWQ_ECONOMY_RANK_PATCH_20260919__=true;
+
+  /* Ruleta Normal: recompensa mayor, manteniendo VIP intacta. */
+  try{
+    const baseOpenShopRoulette=window.openShopRoulette;
+    if(typeof baseOpenShopRoulette==='function'&&!window.__swqNormalRouletteBoost20260919){
+      window.openShopRoulette=function(kind){
+        if(kind!=='normal')return baseOpenShopRoulette.apply(this,arguments);
+        const vip=false,styles=(typeof nonAchievementThemesForRoulette==='function'?nonAchievementThemesForRoulette():[]),music=null;
+        let coins=100+Math.floor(Math.random()*201); // 100–300
+        let xp=300+Math.floor(Math.random()*701);    // 300–1000
+        let style=null;
+        if(styles.length&&Math.random()<.02)style=styles[Math.floor(Math.random()*styles.length)];
+        S.coins+=coins;
+        const levelEvent=gainXP(xp);
+        const extras=[];
+        if(style){S.purchases["theme_"+style]=true;extras.push(`🎨 ${THEMES[style]?.emoji||"✨"} ${style}`);}
+        save();
+        if(typeof authUser!=='undefined'&&authUser&&typeof syncProfileToCloud==='function')syncProfileToCloud();
+        if(typeof tone==='function')tone("coin");
+        const title="🎰 RULETA NORMAL",accent="#42ddff",detail=extras.length?`<div class="pill" style="margin-top:9px">${extras.join(" · ")}</div>`:"";
+        if(typeof modal==='function')modal(`<div class="shop-roulette-panel reveal" style="text-align:center"><div class="kicker">${title}</div><div class="roulette-frame"><div class="roulette-pointer">▼</div><div class="roulette-wheel normal"><div class="roulette-glow"></div><div class="roulette-spark s1"></div><div class="roulette-spark s2"></div><div class="roulette-spark s3"></div><div class="roulette-spark s4"></div><div class="roulette-text">🎰</div></div></div><h2 style="color:${accent}">¡Premio!</h2><div class="roulette-prize-grid" style="margin-top:10px"><div class="roulette-prize"><div class="kicker">MONEDAS</div><h3>+${fmt(coins)} 🪙</h3></div><div class="roulette-prize"><div class="kicker">EXPERIENCIA</div><h3>+${fmt(xp)} XP</h3></div></div>${detail}${levelEvent?.levels?`<div class="pill" style="margin-top:8px">⬆️ LV ${S.level}</div>`:""}<button class="btn primary" style="margin-top:12px" onclick="closeModal();render()">Aceptar</button></div>`);
+        return {coins,xp,levelEvent,style};
+      };
+      window.__swqNormalRouletteBoost20260919=true;
+    }
+  }catch(e){console.warn('SWQ normal roulette boost',e)}
+
+  /* Recompensa diaria: prioridad en XP. 4% de tema se conserva. */
+  try{
+    const baseDailyRewardInfo=window.dailyRewardInfo;
+    if(typeof baseDailyRewardInfo==='function'&&!window.__swqDailyRewardBoost20260919){
+      window.dailyRewardInfo=function(){
+        const out=baseDailyRewardInfo.apply(this,arguments);
+        try{
+          const d=S.dailyReward||{}, today=(typeof localDateKey==='function'?localDateKey():"");
+          if(d.date===today&&d.kind==="coinsxp"&&!d.__swqBoosted20260919){
+            d.coins=60+Math.floor(Math.random()*181); // 60–240
+            d.xp=250+Math.floor(Math.random()*551);   // 250–800
+            d.__swqBoosted20260919=true;
+            save();
+          }
+        }catch(e){}
+        const d=S.dailyReward||{};
+        if(d.kind==="coinsxp")out.reward={...out.reward,coins:Number(d.coins||0),xp:Number(d.xp||0),kind:"coinsxp",themeKey:"",label:`${fmt(d.coins)} 🪙 + ${fmt(d.xp)} XP`};
+        return out;
+      };
+      window.__swqDailyRewardBoost20260919=true;
+    }
+  }catch(e){console.warn('SWQ daily reward boost',e)}
+
+  /* Rango: todos los niveles requeridos pasan a 90% del umbral anterior.
+     Se redondea hacia arriba porque el nivel es entero y nunca se aumenta el requisito. */
+  try{
+    if(Array.isArray(window.RANKS)){
+      window.RANKS.forEach(r=>{
+        const original=Number(r.lv);
+        if(!Number.isFinite(original)||original<1)return;
+        if(!r.__swqOriginalLv)r.__swqOriginalLv=original;
+        r.lv=Math.max(1,Math.ceil(Number(r.__swqOriginalLv)*0.90));
+      });
+    }
+  }catch(e){console.warn('SWQ rank threshold reduction',e)}
+
+  /* Abejas: invertir la dirección del vuelo para corregir el sentido. */
+  try{
+    const css=document.getElementById('swq-visual-repair-css');
+    if(css){
+      css.textContent += [
+        '.swq-vr-bee{left:auto!important;right:-70px!important}',
+        '@keyframes swqVrBeeFlyReverse{0%{opacity:0;transform:translate3d(0,0,0) rotate(7deg)}10%{opacity:.94}42%{transform:translate3d(-45vw,var(--dy),0) rotate(-7deg)}72%{transform:translate3d(-82vw,calc(var(--dy) * .55),0) rotate(5deg)}100%{opacity:0;transform:translate3d(-118vw,calc(var(--dy) * .2),0) rotate(-4deg)}}',
+        '.swq-vr-bee{animation-name:swqVrBeeFlyReverse!important}'
+      ].join('');
+    }
+  }catch(e){console.warn('SWQ bee direction fix',e)}
+
+  try{save();render();}catch(e){}
+})();
