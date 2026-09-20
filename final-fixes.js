@@ -2516,3 +2516,40 @@ body.theme-carretera .app{position:relative;z-index:2}
 
   try{save();render();}catch(e){}
 })();
+
+/* === SWQ THEME BUTTON FIX 2026-09-20 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_THEME_BUTTON_FIX_20260920__)return;
+  window.__SWQ_THEME_BUTTON_FIX_20260920__=true;
+
+  try{
+    if(typeof swqApplyQuickTheme==='function')window.swqApplyQuickTheme=swqApplyQuickTheme;
+    if(typeof swqQuickTheme==='function')window.swqQuickTheme=swqQuickTheme;
+  }catch(e){}
+
+  try{
+    if(typeof profile==='function'&&!window.__swqProfileThemeButton20260920){
+      const baseProfileThemeFix=profile;
+      profile=function(){
+        let html=baseProfileThemeFix.apply(this,arguments);
+        if(!html.includes('swqQuickThemeButton')){
+          html+='<div class="list-item swq-theme-entry" style="margin-top:10px"><div class="row"><span><b>🎨 Estilo</b><div class="sub">Cambia el estilo visual sin salir del perfil.</div></span><button id="swqQuickThemeButton" class="btn secondary" style="width:auto" type="button" onclick="window.swqQuickTheme()">Cambiar</button></div></div>';
+        }
+        return html;
+      };
+      window.__swqProfileThemeButton20260920=true;
+    }
+  }catch(e){console.warn('SWQ profile theme button',e)}
+
+  try{
+    if(typeof swqQuickTheme==='function'&&!window.__swqQuickThemeGlobal20260920){
+      window.swqQuickTheme=swqQuickTheme;
+      window.__swqQuickThemeGlobal20260920=true;
+    }
+    if(typeof swqApplyQuickTheme==='function'&&!window.__swqApplyQuickThemeGlobal20260920){
+      window.swqApplyQuickTheme=swqApplyQuickTheme;
+      window.__swqApplyQuickThemeGlobal20260920=true;
+    }
+  }catch(e){console.warn('SWQ theme globals',e)}
+})();
