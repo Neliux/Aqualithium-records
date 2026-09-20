@@ -4478,3 +4478,209 @@ body.theme-carretera .app{position:relative;z-index:2}
   }catch(e){}
 })();
 
+
+
+/* === SWQ FINAL ROAD + STYLE + FISH V4 2026-09-20 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_FINAL_ROAD_STYLE_FISH_V4__)return;
+  window.__SWQ_FINAL_ROAD_STYLE_FISH_V4__=true;
+
+  /* Pez Motivador: a small upward nudge, preserving the card dimensions and click area. */
+  try{
+    const st=document.createElement('style');
+    st.id='swq-final-fish-position-v4';
+    st.textContent='.profile-fish{position:relative!important;top:-10px!important;margin-top:10px!important}.profile-fish:active{top:-10px!important}';
+    document.head.appendChild(st);
+  }catch(e){}
+
+  /* STYLE: one simple selector + one Apply button, exactly like the music picker. */
+  function styleKeysV4(){
+    const out=['Aqua'];
+    try{
+      Object.keys(THEMES||{}).forEach(k=>{
+        if(k!=='Aqua'&&S.purchases?.['theme_'+k]&&!out.includes(k))out.push(k);
+      });
+    }catch(e){}
+    return out.filter(k=>THEMES?.[k]);
+  }
+  function applyStyleV4(k){
+    try{
+      if(!THEMES?.[k])return;
+      if(k!=='Aqua'&&!S.purchases?.['theme_'+k]){
+        toast('🔒 Ese estilo todavía no está desbloqueado.');
+        return;
+      }
+      S.settings.theme=k;
+      save();
+      if(typeof applyTheme==='function')applyTheme();
+      closeModal();
+      render();
+      /* The random style still gets its color change and permanent dice. */
+      if(k==='RandomBasic'){
+        window.__SWQ_RANDOM_BASIC_SESSION_COLOR__=false;
+        try{if(typeof applyRandomBasic==='function')applyRandomBasic();}catch(e){}
+        setTimeout(()=>{try{if(typeof startDice==='function')startDice();}catch(e){}},70);
+      }
+    }catch(e){console.warn('SWQ V4 style apply',e)}
+  }
+  window.swqQuickTheme=function(){
+    try{
+      const opts=styleKeysV4().map(k=>
+        '<option value="'+esc(k)+'" '+(S.settings.theme===k?'selected':'')+'>'+
+        esc(THEMES[k]?.emoji||'🎨')+' '+esc(typeof swqThemeName==='function'?swqThemeName(k):k)+
+        '</option>'
+      ).join('');
+      modal(
+        '<div class="kicker">🎨 ESTILO</div>'+
+        '<h2>Elegir estilo</h2>'+
+        '<div class="field" style="margin-top:10px">'+
+          '<select id="swqStyleV4Select" style="width:100%">'+opts+'</select>'+
+        '</div>'+
+        '<button type="button" id="swqStyleV4Apply" class="btn primary" style="margin-top:8px">Usar estilo</button>'+
+        '<button type="button" class="btn secondary" style="margin-top:8px" onclick="closeModal()">Cerrar</button>'
+      );
+      document.getElementById('swqStyleV4Apply')?.addEventListener('click',()=>{
+        applyStyleV4(document.getElementById('swqStyleV4Select')?.value||'Aqua');
+      });
+    }catch(e){console.warn('SWQ V4 style modal',e)}
+  };
+  window.swqApplyQuickTheme=applyStyleV4;
+  window.equipTheme=applyStyleV4;
+  try{equipTheme=applyStyleV4}catch(e){}
+
+  /* Rebind repeatedly because profile() can recreate its button after render. */
+  function rebindStyleV4(){
+    try{
+      const b=document.getElementById('swqQuickThemeButton');
+      if(!b)return;
+      b.onclick=function(ev){
+        ev?.preventDefault?.();ev?.stopPropagation?.();
+        window.swqQuickTheme();
+      };
+      b.textContent='🎨 Cambiar estilo';
+      b.removeAttribute('data-old-style-handler');
+    }catch(e){}
+  }
+  rebindStyleV4();
+  setInterval(rebindStyleV4,700);
+
+  /* CARRETERA V4
+     Use one isolated traffic layer. Motion and facing are separate transforms,
+     preventing the old animation/emoji-direction conflict. */
+  let roadV4Timer=null,heliV4Timer=null,planeV4Timer=null,roadV4Layer=null;
+  function roadV4Clear(){
+    if(roadV4Timer){clearInterval(roadV4Timer);roadV4Timer=null}
+    if(heliV4Timer){clearInterval(heliV4Timer);heliV4Timer=null}
+    if(planeV4Timer){clearInterval(planeV4Timer);planeV4Timer=null}
+    document.getElementById('swqRoadV4Layer')?.remove();
+    roadV4Layer=null;
+  }
+  function roadV4Ensure(){
+    if(roadV4Layer&&roadV4Layer.isConnected)return roadV4Layer;
+    roadV4Layer=document.createElement('div');
+    roadV4Layer.id='swqRoadV4Layer';
+    Object.assign(roadV4Layer.style,{position:'fixed',inset:'0',zIndex:'1',pointerEvents:'none',overflow:'hidden'});
+    roadV4Layer.innerHTML='<div class="swq-road-v4-stars"></div><div class="swq-road-v4-city"></div><div class="swq-road-v4-road"></div>';
+    document.body.appendChild(roadV4Layer);
+    return roadV4Layer;
+  }
+  function roadV4Car(){
+    if(S.settings.theme!=='Carretera')return;
+    const host=roadV4Ensure();
+    const outer=document.createElement('span');
+    outer.className='swq-road-v4-car';
+    const inner=document.createElement('span');
+    inner.textContent=['🚗','🚙','🚕','🚌'][Math.floor(Math.random()*4)];
+    inner.className='swq-road-v4-car-face';
+    outer.appendChild(inner);
+    outer.style.top=(66+Math.random()*20)+'%';
+    outer.style.setProperty('--v4dur',(5.0+Math.random()*3.2)+'s');
+    outer.style.setProperty('--v4size',(25+Math.random()*8)+'px');
+    host.appendChild(outer);
+    setTimeout(()=>outer.remove(),9500);
+  }
+  function roadV4Heli(){
+    if(S.settings.theme!=='Carretera')return;
+    const host=roadV4Ensure();
+    const outer=document.createElement('span');
+    outer.className='swq-road-v4-heli';
+    const inner=document.createElement('span');
+    inner.textContent='🚁';
+    inner.className='swq-road-v4-heli-face';
+    outer.appendChild(inner);
+    /* Clearly above the road traffic. */
+    outer.style.top=(5+Math.random()*13)+'%';
+    outer.style.setProperty('--v4hdur',(8.5+Math.random()*3.0)+'s');
+    host.appendChild(outer);
+    setTimeout(()=>outer.remove(),14500);
+  }
+  function roadV4Plane(){
+    if(S.settings.theme!=='Carretera')return;
+    const host=roadV4Ensure();
+    const outer=document.createElement('span');
+    outer.className='swq-road-v4-plane';
+    const inner=document.createElement('span');
+    inner.textContent=Math.random()<.65?'✈️':'🛫';
+    inner.className='swq-road-v4-plane-face';
+    outer.appendChild(inner);
+    outer.style.top=(18+Math.random()*19)+'%';
+    outer.style.setProperty('--v4pdur',(8+Math.random()*4)+'s');
+    host.appendChild(outer);
+    setTimeout(()=>outer.remove(),15000);
+  }
+  function roadV4Sync(){
+    if(S.settings.theme!=='Carretera'){
+      roadV4Clear();
+      return;
+    }
+    /* Kill only the two old DOM layers, not user data or settings. */
+    document.getElementById('swqMasterRoadLayer')?.remove();
+    document.getElementById('swqRoadLayer')?.remove();
+    const host=roadV4Ensure();
+    if(!host.querySelector('.swq-road-v4-car')){roadV4Car();roadV4Car();}
+    if(!host.querySelector('.swq-road-v4-heli'))roadV4Heli();
+    if(!host.querySelector('.swq-road-v4-plane'))roadV4Plane();
+    if(!roadV4Timer)roadV4Timer=setInterval(()=>{
+      if(!document.hidden&&S.settings.theme==='Carretera'){
+        roadV4Car();
+        if(Math.random()<.28)roadV4Car();
+      }
+    },1150);
+    if(!heliV4Timer)heliV4Timer=setInterval(()=>{
+      if(!document.hidden&&S.settings.theme==='Carretera')roadV4Heli();
+    },7000);
+    if(!planeV4Timer)planeV4Timer=setInterval(()=>{
+      if(!document.hidden&&S.settings.theme==='Carretera'&&Math.random()<.6)roadV4Plane();
+    },10500);
+  }
+  try{
+    const css=document.createElement('style');
+    css.id='swq-road-v4-css';
+    css.textContent=
+      '.swq-road-v4-stars{position:absolute;inset:0;background:radial-gradient(circle at 12% 12%,rgba(255,255,255,.8) 0 1px,transparent 2px),radial-gradient(circle at 64% 8%,rgba(255,255,255,.6) 0 1px,transparent 2px),radial-gradient(circle at 86% 21%,rgba(255,255,255,.7) 0 1px,transparent 2px);opacity:.55}'+
+      '.swq-road-v4-city{position:absolute;left:0;right:0;top:44%;height:18%;background:linear-gradient(180deg,transparent 0,rgba(13,25,42,.18) 22%,rgba(9,16,28,.68) 100%);box-shadow:inset 0 -18px 30px rgba(255,193,67,.05)}'+
+      '.swq-road-v4-road{position:absolute;left:0;right:0;top:64%;height:38%;background:linear-gradient(180deg,rgba(11,18,27,.15),rgba(3,7,12,.94));border-top:2px solid rgba(255,205,92,.25)}'+
+      '.swq-road-v4-road:before{content:\"\";position:absolute;left:0;right:0;top:48%;height:5px;background:repeating-linear-gradient(90deg,#ffd45f 0 70px,transparent 70px 125px);opacity:.8}'+
+      '.swq-road-v4-car{position:absolute;left:-12vw;top:0;font-size:var(--v4size,30px);animation:swqRoadV4Car var(--v4dur,6s) linear forwards;will-change:transform;white-space:nowrap;filter:drop-shadow(0 4px 8px rgba(0,0,0,.8))}'+
+      '.swq-road-v4-car-face{display:inline-block;transform:scaleX(-1);filter:drop-shadow(0 1px 2px rgba(255,255,255,.14))}'+
+      '.swq-road-v4-heli{position:absolute;left:-12vw;top:0;font-size:31px;animation:swqRoadV4Heli var(--v4hdur,10s) linear forwards;will-change:transform;white-space:nowrap;filter:drop-shadow(0 0 10px rgba(160,220,255,.75))}'+
+      '.swq-road-v4-heli-face{display:inline-block;transform:scaleX(1)}'+
+      '.swq-road-v4-plane{position:absolute;left:-12vw;top:0;font-size:23px;animation:swqRoadV4Plane var(--v4pdur,10s) linear forwards;will-change:transform;white-space:nowrap;filter:drop-shadow(0 0 8px rgba(160,210,255,.62))}'+
+      '.swq-road-v4-plane-face{display:inline-block;transform:scaleX(1)}'+
+      '@keyframes swqRoadV4Car{from{transform:translate3d(-12vw,0,0)}to{transform:translate3d(120vw,-3vh,0)}}'+
+      '@keyframes swqRoadV4Heli{from{transform:translate3d(-12vw,0,0)}to{transform:translate3d(120vw,-3vh,0)}}'+
+      '@keyframes swqRoadV4Plane{from{transform:translate3d(-12vw,0,0) scale(.88)}to{transform:translate3d(120vw,-7vh,0) scale(1.05)}}';
+    document.head.appendChild(css);
+  }catch(e){}
+
+  roadV4Sync();
+  setInterval(roadV4Sync,1000);
+
+  /* Make the new fish scene authoritative after every older fish patch. */
+  if(typeof window.swqOpenFishSecret==='function'){
+    /* V3 already provides: 5 questions, 32 endings, the “how do you converse?” question,
+       a separate conclusion screen, then a separate “what I think of you” screen. */
+  }
+})();
+
