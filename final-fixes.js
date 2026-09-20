@@ -4290,3 +4290,191 @@ body.theme-carretera .app{position:relative;z-index:2}
   try{equipTheme=applyStyleFinal}catch(e){}
 })();
 
+
+
+/* === SWQ FINAL FISH CONVO + STYLE BUTTON REBIND v3 2026-09-20 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_FINAL_FISH_STYLE_V3__)return;
+  window.__SWQ_FINAL_FISH_STYLE_V3__=true;
+
+  /* Pez Motivador: lift the profile card a little without changing its size. */
+  try{
+    const st=document.createElement('style');
+    st.id='swq-fish-motivator-position-v3';
+    st.textContent='.profile-fish{margin-top:0!important}';
+    document.head.appendChild(st);
+  }catch(e){}
+
+  /* Rebind the actual profile button to the final simple style selector.
+     The old button was created with a lexical reference to the previous grid menu. */
+  function rebindStyleButton(){
+    try{
+      const b=document.getElementById('swqQuickThemeButton');
+      if(!b)return;
+      b.onclick=function(ev){
+        ev?.preventDefault?.();
+        ev?.stopPropagation?.();
+        return window.swqQuickTheme();
+      };
+      b.textContent='🎨 Cambiar estilo';
+    }catch(e){}
+  }
+  rebindStyleButton();
+  setInterval(rebindStyleButton,900);
+
+  /* New fish conversation: one question specifically asks how the player manages
+     to have this kind of conversation, because the fish doesn't know how. */
+  const FISH_V3_QUESTIONS=[
+    {t:'🐟 Si tu plan cambia de repente, ¿qué haces?',a:'A · Ajusto el plan y sigo.',b:'B · Intento mantenerlo como estaba.'},
+    {t:'🐟 Haces algo bien y casi nadie lo nota. ¿Qué te importa más?',a:'A · Saber que avancé, aunque sea poco.',b:'B · Que el avance se note de verdad.'},
+    {t:'🐟 Alguien avanza más rápido que tú. ¿Qué aparece primero en tu cabeza?',a:'A · Puedo aprender algo de esa persona.',b:'B · Tengo que alcanzarla.'},
+    {t:'🐟 No sé hacer estas conversaciones. Tú sí pareces saber cómo seguirlas... ¿cómo lo haces?',a:'A · Digo lo que pienso y sigo el hilo.',b:'B · Pienso mi respuesta antes de decirla.'},
+    {t:'🐟 Llegas a algo que buscaste durante mucho tiempo. ¿Qué haces con ese momento?',a:'A · Lo disfruto y agradezco el camino.',b:'B · Pienso en demostrar que lo merecía.'}
+  ];
+
+  const v3Endings={};
+  const v3EndingsKeys=[
+    '00000','00001','00010','00011','00100','00101','00110','00111',
+    '01000','01001','01010','01011','01100','01101','01110','01111',
+    '10000','10001','10010','10011','10100','10101','10110','10111',
+    '11000','11001','11010','11011','11100','11101','11110','11111'
+  ];
+  const a0='adaptable cuando el camino cambia';
+  const b0='te aferras bastante a lo que habías planeado';
+  const a1='valoras un progreso aunque nadie lo vea';
+  const b1='quieres señales claras de que el progreso existe';
+  const a2='miras a quien va delante para aprender';
+  const b2='quieres alcanzarlo';
+  const a3='hablas desde lo que piensas y dejas que la conversación avance';
+  const b3='prefieres ordenar tus ideas antes de hablar';
+  const a4='puedes disfrutar una meta por lo que significa';
+  const b4='quieres demostrar que la meta fue merecida';
+
+  v3EndingsKeys.forEach(code=>{
+    const bits=[...code].map(x=>x==='1');
+    const attrs=[bits[0]?b0:a0,bits[1]?b1:a1,bits[2]?b2:a2,bits[3]?b3:a3,bits[4]?b4:a4];
+    const thought='Pienso que eres alguien '+attrs[0]+', que '+attrs[1]+', que '+attrs[2]+', que '+attrs[3]+' y que, cuando consigues algo importante, '+attrs[4]+'.';
+    const final='Después de estas cinco preguntas, entiendo esto de ti: '+attrs[0]+'. '+attrs[1].charAt(0).toUpperCase()+attrs[1].slice(1)+'. '+attrs[2].charAt(0).toUpperCase()+attrs[2].slice(1)+'. '+attrs[3].charAt(0).toUpperCase()+attrs[3].slice(1)+'. Y '+attrs[4]+'.';
+    v3Endings[code]={final,thought};
+  });
+
+  let v3Path='',v3Step=0,v3Final=null;
+  function v3FishMusicStop(){
+    if(window.__swqFishV3Timer){clearInterval(window.__swqFishV3Timer);window.__swqFishV3Timer=null}
+    if(window.__swqFishV3Ctx){try{window.__swqFishV3Ctx.close()}catch(e){}window.__swqFishV3Ctx=null}
+  }
+  function v3FishMusicStart(){
+    try{
+      v3FishMusicStop();
+      const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+      const ctx=new AC();const notes=[146.83,174.61,196,220,196,174.61,164.81,146.83];let i=0;
+      window.__swqFishV3Ctx=ctx;
+      window.__swqFishV3Timer=setInterval(()=>{
+        const o=ctx.createOscillator(),g=ctx.createGain();
+        o.type='sine';o.frequency.value=notes[i++%notes.length];
+        g.gain.setValueAtTime(.0001,ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(.032,ctx.currentTime+.03);
+        g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+.45);
+        o.connect(g).connect(ctx.destination);o.start();o.stop(ctx.currentTime+.47);
+      },560);
+    }catch(e){}
+  }
+  function v3CloseFishScene(){
+    v3FishMusicStop();
+    document.getElementById('swqFishSecretSceneV3')?.remove();
+    if(S.settings.music&&typeof restartAmbient==='function')restartAmbient();
+  }
+  function v3RenderQuestion(){
+    const old=document.getElementById('swqFishSecretSceneV3');if(old)old.remove();
+    const q=FISH_V3_QUESTIONS[v3Step];if(!q)return;
+    const scene=document.createElement('div');
+    scene.id='swqFishSecretSceneV3';
+    scene.className='swq-fish-v3-scene';
+    scene.innerHTML=
+      '<div class="swq-fish-v3-glow"></div><div class="swq-fish-v3-bubbles"><i></i><i></i><i></i><i></i><i></i></div>'+
+      '<div class="swq-fish-v3-stage">'+
+        '<div class="swq-fish-v3-fish">🐟</div>'+
+        '<div class="swq-fish-v3-speaker">🐟 PEZ</div>'+
+        '<div class="swq-fish-v3-text">'+esc(q.t)+'</div>'+
+        '<div class="swq-fish-v3-choices"><button class="swq-fish-v3-choice" data-c="A" type="button">'+esc(q.a)+'</button><button class="swq-fish-v3-choice" data-c="B" type="button">'+esc(q.b)+'</button></div>'+
+        '<button class="swq-fish-v3-exit" type="button">Salir</button>'+
+      '</div>';
+    document.body.appendChild(scene);
+    scene.querySelectorAll('.swq-fish-v3-choice').forEach(b=>b.addEventListener('click',()=>v3Choose(b.dataset.c)));
+    scene.querySelector('.swq-fish-v3-exit')?.addEventListener('click',v3CloseFishScene);
+    v3FishMusicStart();
+  }
+  function v3Choose(c){
+    if(c!=='A'&&c!=='B')return;
+    v3Path+=c;
+    S.secret.fishConversationPath=v3Path;
+    S.secret.fishConversationSeen=true;
+    save();
+    if(v3Step<FISH_V3_QUESTIONS.length-1){v3Step++;v3RenderQuestion();return}
+    v3Final=v3Endings[v3Path]||null;
+    v3RenderConclusion();
+  }
+  function v3RenderConclusion(){
+    const scene=document.getElementById('swqFishSecretSceneV3');if(!scene||!v3Final)return;
+    v3FishMusicStop();
+    scene.innerHTML=
+      '<div class="swq-fish-v3-glow"></div><div class="swq-fish-v3-stage final">'+
+      '<div class="swq-fish-v3-fish">🐟</div>'+
+      '<div class="swq-fish-v3-speaker">🐟 PEZ</div>'+
+      '<div class="kicker">🌊 CONCLUSIÓN</div>'+
+      '<div class="swq-fish-v3-text finaltext">'+esc(v3Final.final)+'</div>'+
+      '<button class="swq-fish-v3-next" type="button">¿Y qué piensas de mí?</button>'+
+      '</div>';
+    scene.querySelector('.swq-fish-v3-next')?.addEventListener('click',v3RenderThought);
+    v3FishMusicStart();
+  }
+  function v3RenderThought(){
+    const scene=document.getElementById('swqFishSecretSceneV3');if(!scene||!v3Final)return;
+    scene.innerHTML=
+      '<div class="swq-fish-v3-glow"></div><div class="swq-fish-v3-stage final">'+
+      '<div class="swq-fish-v3-fish">🐟</div>'+
+      '<div class="swq-fish-v3-speaker">🐟 PEZ</div>'+
+      '<div class="kicker">🐟 LO QUE PIENSO DE TI</div>'+
+      '<div class="swq-fish-v3-thought">'+esc(v3Final.thought)+'</div>'+
+      '<button class="swq-fish-v3-done" type="button">Terminar conversación</button>'+
+      '</div>';
+    scene.querySelector('.swq-fish-v3-done')?.addEventListener('click',()=>{save();v3CloseFishScene()});
+    v3FishMusicStart();
+  }
+  window.swqOpenFishSecret=function(){
+    if(!S.secret.fishConversationPurchased){toast('🐟 Primero compra la conversación secreta.');return}
+    v3Path='';v3Step=0;v3Final=null;
+    S.secret.fishConversationPath='';
+    save();
+    if(typeof ambientStop==='function')ambientStop();
+    v3RenderQuestion();
+  };
+  window.swqBuyFishSecretConversation=function(){
+    if(S.secret.fishConversationPurchased){window.swqOpenFishSecret();return}
+    if(Number(S.coins||0)<1){toast('🪙 Te falta 1 moneda.');return}
+    S.coins-=1;
+    S.secret.fishConversationPurchased=true;
+    S.secret.fishConversationPath='';
+    S.secret.fishConversationSeen=false;
+    save();
+    if(typeof tone==='function')tone('coin');
+    closeModal();render();
+    setTimeout(window.swqOpenFishSecret,180);
+  };
+
+  try{
+    const css=document.createElement('style');css.id='swq-fish-v3-css';
+    css.textContent=
+      '.swq-fish-v3-scene{position:fixed;inset:0;z-index:1300;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at 50% 20%,#165071 0,#09283e 38%,#03111c 100%);color:#eafaff;overflow:hidden}'+
+      '.swq-fish-v3-stage{width:min(760px,100%);min-height:82vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;z-index:2}.swq-fish-v3-stage.final{max-width:820px}'+
+      '.swq-fish-v3-fish{font-size:96px;filter:drop-shadow(0 8px 20px rgba(66,221,255,.3));animation:swqFishV3Float 3.2s ease-in-out infinite}.swq-fish-v3-speaker{margin:12px 0 8px;color:#82eaff;font-weight:1000;letter-spacing:1px}'+
+      '.swq-fish-v3-text{width:min(720px,100%);min-height:190px;display:flex;align-items:center;justify-content:center;font-size:20px;line-height:1.7;text-shadow:0 2px 10px rgba(0,0,0,.28)}'+
+      '.swq-fish-v3-text.finaltext{min-height:170px}.swq-fish-v3-choices{width:min(720px,100%);display:grid;grid-template-columns:1fr 1fr;gap:10px}.swq-fish-v3-choice{min-height:62px;border-radius:18px;border:1px solid rgba(126,232,255,.35);background:rgba(8,31,49,.9);color:#effcff;font-size:15px;font-weight:1000;padding:10px 14px}.swq-fish-v3-choice:first-child{background:linear-gradient(135deg,#1e799f,#0a344b)}.swq-fish-v3-choice:last-child{background:linear-gradient(135deg,#274f80,#0b2138)}'+
+      '.swq-fish-v3-exit{margin-top:12px;border:1px solid rgba(126,232,255,.2);background:none;color:#9ccada;border-radius:14px;padding:8px 14px;font-size:12px}.swq-fish-v3-thought{width:min(700px,100%);min-height:120px;display:flex;align-items:center;justify-content:center;padding:14px 16px;border-radius:18px;border:1px solid rgba(126,232,255,.22);background:rgba(5,24,39,.7);line-height:1.6;color:#d0edf5;font-size:18px}.swq-fish-v3-next,.swq-fish-v3-done{margin-top:16px;min-height:52px;border:0;border-radius:17px;padding:12px 22px;background:#1e799f;color:#fff;font-weight:1000}'+
+      '.swq-fish-v3-glow{position:absolute;width:340px;height:340px;border-radius:50%;left:50%;top:32%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(72,221,255,.15),transparent 68%);filter:blur(8px)}.swq-fish-v3-bubbles i{position:absolute;bottom:-40px;width:9px;height:9px;border:1px solid rgba(180,240,255,.35);border-radius:50%;animation:swqFishV3Bubble 7s linear infinite;opacity:.5}.swq-fish-v3-bubbles i:nth-child(1){left:12%;animation-delay:-1s}.swq-fish-v3-bubbles i:nth-child(2){left:29%;width:13px;height:13px;animation-delay:-5s}.swq-fish-v3-bubbles i:nth-child(3){left:54%;animation-delay:-3s}.swq-fish-v3-bubbles i:nth-child(4){left:75%;width:14px;height:14px;animation-delay:-6s}.swq-fish-v3-bubbles i:nth-child(5){left:88%;animation-delay:-2s}'+
+      '@keyframes swqFishV3Float{50%{transform:translateY(-8px) rotate(-2deg) scale(1.03)}}@keyframes swqFishV3Bubble{0%{transform:translateY(0);opacity:0}15%{opacity:.5}100%{transform:translateY(-110vh) translateX(18px);opacity:0}}@media(max-width:640px){.swq-fish-v3-choices{grid-template-columns:1fr}.swq-fish-v3-text{font-size:18px;min-height:170px}.swq-fish-v3-fish{font-size:78px}}';
+    document.head.appendChild(css);
+  }catch(e){}
+})();
+
