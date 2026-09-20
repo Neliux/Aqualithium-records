@@ -2177,3 +2177,51 @@ body.theme-carretera .app{position:relative;z-index:2}
 
   try{save();render();}catch(e){}
 })();
+
+
+/* === SWQ PEAR EX DUMP 2026-09-20 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_PEAR_EX_DUMP_20260920__)return;
+  window.__SWQ_PEAR_EX_DUMP_20260920__=true;
+
+  /* Restore the requested 22 s round for Extreme while keeping its faster spawn/lifetime settings. */
+  try{
+    if(typeof MINI_LEVELS!=='undefined'&&MINI_LEVELS.extremo){
+      MINI_LEVELS.extremo.time=22;
+    }
+  }catch(e){console.warn('SWQ extreme duration restore',e)}
+
+  const SWQ_EX_PEAR_TOPIC={
+    id:'tema12',
+    title:'Mi ex me dejó',
+    lines:[
+      {speaker:'👤 TÚ',text:'Pera... mi ex me dejó y todavía me cuesta dejar de pensar en eso.'},
+      {speaker:'🍐 PERA',text:'Ah. El famoso “me dejaron y ahora mi cerebro decidió repetir la película 400 veces”. Qué gran función de la mente humana.'},
+      {speaker:'👤 TÚ',text:'A veces estoy bien y de repente recuerdo todo otra vez.'},
+      {speaker:'🍐 PERA',text:'Normal. Superarlo no es borrar a alguien con una goma de borrar. Es ir haciendo que ocupe menos espacio en tu cabeza.'},
+      {speaker:'👤 TÚ',text:'¿Y cómo hago para avanzar?'},
+      {speaker:'🍐 PERA',text:'Como en natación: no pasas una piscina mirando fijamente el muro de salida. Respiras, haces tu brazada y sigues hacia el otro extremo.'},
+      {speaker:'👤 TÚ',text:'Pero todavía hay días en los que me siento bastante mal.'},
+      {speaker:'🍐 PERA',text:'Pues algunos días nadas suave. No tienes que romper tu récord emocional todos los días, campeón.'},
+      {speaker:'👤 TÚ',text:'Eso sonó sorprendentemente útil para una pera.'},
+      {speaker:'🍐 PERA',text:'Tengo mucha experiencia. He sobrevivido a una tienda, a una banana y ahora a tus problemas amorosos. Soy prácticamente Coach Mati con semillas.'},
+      {speaker:'👤 TÚ',text:'Entonces supongo que tengo que dejar de mirar hacia atrás todo el tiempo.'},
+      {speaker:'🍐 PERA',text:'Exacto. Mira el carril que tienes delante. Puedes extrañar a alguien y aun así seguir avanzando.'},
+      {speaker:'👤 TÚ',text:'¿Y si vuelvo a pensar en mi ex mañana?'},
+      {speaker:'🍐 PERA',text:'Respiras, lo notas y vuelves a nadar. Un pensamiento no tiene por qué convertirse en una vuelta completa.'},
+      {speaker:'👤 TÚ',text:'Creo que necesitaba escuchar eso.'},
+      {speaker:'🍐 PERA',text:'Entonces quédate con esto: no necesitas olvidar de golpe. Solo necesitas seguir avanzando, una brazada a la vez.'}
+    ]
+  };
+
+  try{
+    if(typeof PEAR_TOPIC_DIALOGUES!=='undefined'&&Array.isArray(PEAR_TOPIC_DIALOGUES)){
+      const i=PEAR_TOPIC_DIALOGUES.findIndex(x=>x.id===SWQ_EX_PEAR_TOPIC.id);
+      if(i<0)PEAR_TOPIC_DIALOGUES.push(SWQ_EX_PEAR_TOPIC);
+      else PEAR_TOPIC_DIALOGUES[i]=SWQ_EX_PEAR_TOPIC;
+    }
+  }catch(e){console.warn('SWQ Pera ex dialogue',e)}
+
+  try{save();render();}catch(e){}
+})();
