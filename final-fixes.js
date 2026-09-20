@@ -3738,3 +3738,265 @@ body.theme-carretera .app{position:relative;z-index:2}
   observer.observe(document.documentElement,{childList:true,subtree:true});
   setInterval(()=>{try{ensureRandomBasic();ensureGenderUIs();generalizePera();syncMasterRoad()}catch(e){}},5000);
 })();
+/* === SWQ PEAR FLOAT + XP TEXT + CINEMA CALM + COACH + FISH SECRET 2026-09-20 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_FINAL_20260920_SECRET_UPDATE__)return;
+  window.__SWQ_FINAL_20260920_SECRET_UPDATE__=true;
+
+  /* Pera: when Banana exists, her floating bubbles are anchored above Banana. */
+  try{
+    if(typeof startPearFloatingPhrases==='function'&&!window.__SWQ_PEAR_FLOAT_ABOVE_BANANA__){
+      startPearFloatingPhrases=function(){
+        if(typeof pearFloatTimer!=='undefined'&&pearFloatTimer)clearInterval(pearFloatTimer);
+        pearFloatTimer=setInterval(()=>{
+          if(!S.purchases?.pear||document.hidden)return;
+          const pear=$("pearPet"),banana=$("bananaPet");
+          if(!pear)return;
+          const b=document.createElement('div');
+          b.className='pear-floating-phrase';
+          b.textContent=PEAR_FLOAT_PHRASES[Math.floor(Math.random()*PEAR_FLOAT_PHRASES.length)];
+          document.body.appendChild(b);
+
+          const target=(banana&&banana.classList.contains('visible'))?banana:pear;
+          const r=target.getBoundingClientRect();
+          const right=Math.max(8,window.innerWidth-r.right+8);
+          const top=Math.max(8,r.top-b.offsetHeight-10);
+          b.style.position='fixed';
+          b.style.right=right+'px';
+          b.style.top=top+'px';
+          b.style.zIndex='60';
+          setTimeout(()=>b.remove(),3600);
+        },12000);
+      };
+      window.__SWQ_PEAR_FLOAT_ABOVE_BANANA__=true;
+    }
+    const st=document.createElement('style');
+    st.id='swq-pear-float-above-banana-20260920';
+    st.textContent='.pear-floating-phrase{z-index:60!important}';
+    document.head.appendChild(st);
+  }catch(e){}
+
+  /* XP consumables: descriptions contain only the useful effect, never old-vs-new comparisons. */
+  function cleanXPConsumableDescriptions(){
+    try{
+      const descs={
+        xp500:'Gema de XP. Otorga 650 XP.',
+        xp1500:'Gema de XP. Otorga 1.950 XP.',
+        xpJuan:'Gema de XP especial. Otorga 13.000 XP.'
+      };
+      for(const [id,desc] of Object.entries(descs)){
+        const it=SHOP?.find?.(x=>x.id===id);
+        if(it)it.desc=desc;
+      }
+    }catch(e){}
+  }
+  cleanXPConsumableDescriptions();
+
+  /* Absolute Cinema: slower and softer, with more breathing room and a calmer atmosphere.
+     Original composition; this only changes its musical character and timing. */
+  try{
+    if(typeof MUSIC_TRACKS!=='undefined'&&MUSIC_TRACKS.absoluteCinema){
+      const t=MUSIC_TRACKS.absoluteCinema;
+      t.tempo=500;
+      t.type='sine';
+      t.accent=8;
+      t.notes=[
+        440.00,415.30,392.00,369.99,349.23,369.99,392.00,415.30,
+        392.00,369.99,349.23,329.63,349.23,369.99,392.00,440.00,
+        493.88,440.00,415.30,392.00,369.99,349.23,329.63,349.23,
+        369.99,392.00,415.30,440.00,493.88,523.25,493.88,440.00,
+
+        392.00,415.30,440.00,493.88,523.25,587.33,523.25,493.88,
+        440.00,415.30,392.00,415.30,440.00,493.88,523.25,587.33,
+        659.25,587.33,523.25,493.88,440.00,493.88,523.25,587.33,
+        659.25,698.46,659.25,587.33,523.25,493.88,440.00,392.00,
+
+        440.00,493.88,523.25,587.33,659.25,698.46,659.25,587.33,
+        523.25,587.33,659.25,739.99,698.46,659.25,587.33,523.25,
+        493.88,523.25,587.33,659.25,739.99,783.99,739.99,698.46,
+        659.25,698.46,739.99,830.61,783.99,739.99,698.46,659.25,
+
+        587.33,659.25,739.99,830.61,880.00,830.61,783.99,739.99,
+        698.46,739.99,830.61,987.77,880.00,830.61,783.99,739.99,
+        698.46,783.99,880.00,987.77,1046.50,987.77,880.00,783.99,
+        739.99,830.61,987.77,1108.73,1046.50,987.77,880.00,830.61,
+
+        783.99,739.99,698.46,659.25,587.33,523.25,587.33,659.25,
+        698.46,739.99,830.61,783.99,739.99,698.46,659.25,587.33,
+        523.25,587.33,659.25,698.46,739.99,698.46,659.25,587.33,
+        523.25,493.88,440.00,415.30,440.00,493.88,523.25,587.33
+      ];
+      t.bass=[
+        55.00,61.74,65.41,73.42,49.00,55.00,58.27,65.41,
+        61.74,73.42,82.41,65.41,55.00,58.27,61.74,73.42,
+        65.41,73.42,82.41,98.00,73.42,65.41,55.00,49.00,
+        61.74,73.42,82.41,98.00,82.41,73.42,65.41,55.00
+      ];
+    }
+  }catch(e){console.warn('SWQ calm Absolute Cinema',e)}
+
+  /* Final completion: Pera and Pez both congratulate the player upon reaching Coach Mati. */
+  function coachMatiCelebration(){
+    S.secret=S.secret||{};
+    const seen=!!S.secret.coachMatiCelebrationSeen;
+    S.secret.coachMatiCelebrationSeen=true;
+    try{save();}catch(e){}
+    modal(
+      '<div class="reveal" style="text-align:center">'+
+      '<div style="font-size:58px">🍐</div>'+
+      '<div class="kicker">🍐 PERA</div>'+
+      '<h1>Lo lograste.</h1>'+
+      '<p class="sub" style="font-size:16px;line-height:1.55">Llegaste hasta Coach Mati. Todo ese historial de sesiones, metros, días buenos y días complicados terminó formando algo enorme. No fue una sola sesión: fue la suma de todas.</p>'+
+      '<button class="btn primary" style="margin-top:14px" onclick="window.swqCoachFishCelebration()">Siguiente → 🐟</button>'+
+      '</div>'
+    );
+  }
+  window.swqCoachMatiCelebration=coachMatiCelebration;
+  window.swqCoachFishCelebration=function(){
+    modal(
+      '<div class="reveal" style="text-align:center">'+
+      '<div style="font-size:58px">🐟</div>'+
+      '<div class="kicker">🐟 PEZ</div>'+
+      '<h1>Coach Mati.</h1>'+
+      '<p class="sub" style="font-size:16px;line-height:1.55">No soy bueno para discursos largos.</p>'+
+      '<p class="sub" style="font-size:16px;line-height:1.55">Pero... lo hiciste.</p>'+
+      '<p class="sub" style="font-size:16px;line-height:1.55">Nadaste. Volviste. Seguiste.</p>'+
+      '<p class="sub" style="font-size:16px;line-height:1.55">Eso basta.</p>'+
+      '<button class="btn primary" style="margin-top:14px" onclick="closeModal()">🌊 Continuar</button>'+
+      '</div>'
+    );
+  };
+
+  try{
+    if(typeof rankReveal==='function'&&!window.__SWQ_COACH_RANK_WRAP__){
+      const baseRankReveal=rankReveal;
+      rankReveal=function(r){
+        const wasCoach=r?.c==='coach';
+        const out=baseRankReveal.apply(this,arguments);
+        if(wasCoach){
+          const btn=document.querySelector('.rank-promo .btn.primary');
+          if(btn){
+            btn.onclick=function(){closeModal();setTimeout(()=>coachMatiCelebration(),180)};
+          }
+          if(S.secret?.coachMatiCelebrationSeen){
+            /* The achievement remains unlocked, but the final congratulations are only shown once. */
+            btn.onclick=function(){closeModal()};
+          }
+        }
+        return out;
+      };
+      window.__SWQ_COACH_RANK_WRAP__=true;
+    }
+  }catch(e){}
+
+  /* Secret Fish conversation: 1 coin, short phrases, one topic not used by Pera,
+     and a two-way A/B branch with different conclusions. */
+  S.secret=S.secret||{};
+  if(typeof S.secret.fishConversationPurchased!=='boolean')S.secret.fishConversationPurchased=false;
+  if(typeof S.secret.fishConversationPath!=='string')S.secret.fishConversationPath='';
+  if(typeof S.secret.fishConversationSeen!=='boolean')S.secret.fishConversationSeen=false;
+
+  const FISH_SECRET_ID='fishConversationSecret';
+
+  function fishConversationModal(step){
+    const commonButton=label=>'<button class="btn secondary" style="margin-top:9px" onclick="closeModal()">Cerrar</button>';
+    const screens={
+      intro:
+        '<div class="reveal">'+
+        '<div class="kicker">🐟 CONVERSACIÓN SECRETA</div>'+
+        '<h2>El Pez habla distinto</h2>'+
+        '<p class="sub">🐟 No soy bueno para conversar.</p>'+
+        '<p class="sub">🐟 Pera sabe llenar silencios.</p>'+
+        '<p class="sub">🐟 Yo solo recuerdo frases cortas.</p>'+
+        '<p class="sub">🐟 Esta es una de las pocas cosas que puedo contar.</p>'+
+        '<div class="card" style="margin-top:10px;background:#0b2235"><div class="kicker">🐟 TEMA</div><div class="sub">¿Qué haces con un momento sencillo que algún día podrías extrañar?</div></div>'+
+        '<p class="sub" style="margin-top:10px">Elige una respuesta.</p>'+
+        '<div class="grid g2" style="margin-top:9px">'+
+        '<button class="btn primary" onclick="window.swqFishSecretChoice(\'A\')">A · Guardaría uno para siempre.</button>'+
+        '<button class="btn secondary" onclick="window.swqFishSecretChoice(\'B\')">B · Dejaría espacio para los siguientes.</button>'+
+        '</div>'+commonButton('Cerrar')+
+        '</div>',
+      A:
+        '<div class="reveal">'+
+        '<div style="font-size:48px;text-align:center">🐟</div><div class="kicker">PEZ</div>'+
+        '<p class="sub">🐟 Buena respuesta.</p><p class="sub">🐟 Yo no guardo muchos.</p><p class="sub">🐟 Pero recuerdo uno: luz sobre el agua.</p>'+
+        '<p class="sub">🐟 Nadie dijo nada. No pasó nada grande.</p><p class="sub">🐟 Por eso quizá lo recuerdo.</p>'+
+        '<p class="sub">🐟 Lo pequeño también puede quedarse.</p>'+
+        '<div class="card" style="margin-top:10px"><b>Conclusión A</b><div class="sub" style="margin-top:5px">No necesitas que un momento sea extraordinario para que merezca un lugar en tu memoria.</div></div>'+
+        '<button class="btn primary" style="margin-top:12px" onclick="closeModal()">🌊 Entendido</button>'+
+        '</div>',
+      B:
+        '<div class="reveal">'+
+        '<div style="font-size:48px;text-align:center">🐟</div><div class="kicker">PEZ</div>'+
+        '<p class="sub">🐟 También sirve.</p><p class="sub">🐟 Yo dejo ir casi todo.</p><p class="sub">🐟 El agua no guarda huellas mucho tiempo.</p>'+
+        '<p class="sub">🐟 A veces olvidar abre espacio.</p><p class="sub">🐟 Luego aparece algo nuevo.</p>'+
+        '<p class="sub">🐟 Y quizá eso también sea recordar.</p>'+
+        '<div class="card" style="margin-top:10px"><b>Conclusión B</b><div class="sub" style="margin-top:5px">Dejar ir un momento no lo convierte en inútil; a veces simplemente prepara espacio para lo que viene.</div></div>'+
+        '<button class="btn primary" style="margin-top:12px" onclick="closeModal()">🌊 Entendido</button>'+
+        '</div>'
+    };
+    modal(screens[step]||screens.intro);
+  }
+  window.swqFishSecretChoice=function(path){
+    S.secret.fishConversationPath=path;
+    S.secret.fishConversationSeen=true;
+    save();
+    fishConversationModal(path);
+  };
+  window.swqOpenFishSecret=function(){
+    if(!S.secret.fishConversationPurchased){toast('🐟 Primero compra la conversación secreta.');return}
+    fishConversationModal('intro');
+  };
+  window.swqBuyFishSecretConversation=function(){
+    if(S.secret.fishConversationPurchased){fishConversationModal('intro');return}
+    if(Number(S.coins||0)<1){toast('🪙 Te falta 1 moneda.');return}
+    S.coins-=1;
+    S.secret.fishConversationPurchased=true;
+    save();
+    tone('coin');
+    closeModal();
+    render();
+    setTimeout(()=>fishConversationModal('intro'),180);
+  };
+
+  function injectFishSecretOffer(){
+    try{
+      const grid=document.querySelector('.fish-shop-grid');
+      if(!grid)return;
+      document.getElementById('swqFishSecretConversationCard')?.remove();
+      const purchased=!!S.secret.fishConversationPurchased;
+      const card=document.createElement('div');
+      card.id='swqFishSecretConversationCard';
+      card.className='fish-shop-card';
+      card.innerHTML=
+        '<div style="font-size:42px">💬</div>'+
+        '<h3>Conversación secreta</h3>'+
+        '<div class="sub">El Pez tiene una conversación que nunca le contó a la Pera. Solo frases cortas, recuerdos y una decisión con dos caminos.</div>'+
+        '<button class="btn primary" style="margin-top:8px">'+(purchased?'💬 Hablar · Gratis':'💬 Comprar · 1 🪙')+'</button>';
+      card.querySelector('button').onclick=purchased?window.swqOpenFishSecret:window.swqBuyFishSecretConversation;
+      grid.appendChild(card);
+    }catch(e){}
+  }
+
+  try{
+    if(typeof openFishShop==='function'&&!window.__SWQ_FISH_SHOP_SECRET_WRAP__){
+      const baseOpenFishShop=openFishShop;
+      openFishShop=function(){
+        const out=baseOpenFishShop.apply(this,arguments);
+        setTimeout(injectFishSecretOffer,30);
+        return out;
+      };
+      window.openFishShop=openFishShop;
+      window.__SWQ_FISH_SHOP_SECRET_WRAP__=true;
+    }
+  }catch(e){}
+
+  /* Reinforce on shop refreshes, keeping all existing shop cards untouched. */
+  const fixTimer=setInterval(()=>{
+    try{
+      cleanXPConsumableDescriptions();
+      if(document.querySelector('.fish-shop-grid'))injectFishSecretOffer();
+    }catch(e){}
+  },2500);
+})();
