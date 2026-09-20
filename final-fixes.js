@@ -2671,6 +2671,8 @@ body.theme-carretera .app{position:relative;z-index:2}
       const baseProfileThemeMusic=profile;
       profile=function(){
         let html=baseProfileThemeMusic.apply(this,arguments);
+        html=html.replace("<div class=\"list-item swq-theme-entry\" style=\"margin-top:10px\"><div class=\"row\"><span><b>🎨 Estilo</b><div class=\"sub\">Cambia el estilo visual sin salir del perfil.</div></span><button id=\"swqQuickThemeButton\" class=\"btn secondary\" style=\"width:auto\" type=\"button\" onclick=\"window.swqQuickTheme()\">Cambiar</button></div></div>",'');
+
         const controls=
           '<div class="card swq-theme-music-card" style="margin-top:10px">'+
             '<div class="sectionTitle">🎨 PERSONALIZA</div>'+
@@ -2682,6 +2684,7 @@ body.theme-carretera .app{position:relative;z-index:2}
         return controls+html;
       };
       window.__swqProfileThemeMusic20260920=true;
+      window.__swqRemoveLegacyThemeEntry20260920=true;
     }
   }catch(e){console.warn('SWQ profile theme/music placement',e)}
 
