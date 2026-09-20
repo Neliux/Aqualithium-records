@@ -2890,61 +2890,75 @@ body.theme-carretera .app{position:relative;z-index:2}
   }
   window.swqSyncLeviatan=leviathanFishSync;
 
+  /* Música: Absolute Cinema — versión 2026-09-20.
+     Composición original con tres actos, más espacio entre notas y cierre luminoso. */
   const cinemaTrack={
     name:'Absolute Cinema',
     emoji:'🎬',
-    /* 192-note original cinematic mystery composition.
-       Three movements: suspense, ascent and bright final resolution.
-       No copied soundtrack melody. */
     notes:[
-      880.00,830.61,783.99,739.99,698.46,659.25,739.99,830.61,
-      987.77,880.00,783.99,659.25,622.25,698.46,783.99,880.00,
+      /* Acto I · misterio */
+      440.00,415.30,392.00,349.23,369.99,415.30,466.16,392.00,
+      329.63,369.99,392.00,440.00,415.30,392.00,349.23,329.63,
+      293.66,329.63,369.99,392.00,440.00,415.30,392.00,369.99,
+      349.23,329.63,293.66,329.63,369.99,415.30,466.16,493.88,
 
-      1046.50,987.77,880.00,783.99,698.46,659.25,739.99,830.61,
-      987.77,1108.73,987.77,880.00,783.99,739.99,659.25,587.33,
+      523.25,493.88,466.16,440.00,415.30,392.00,369.99,349.23,
+      329.63,349.23,369.99,415.30,440.00,466.16,493.88,523.25,
 
-      523.25,587.33,659.25,739.99,830.61,987.77,880.00,783.99,
-      698.46,739.99,830.61,987.77,1174.66,1046.50,987.77,880.00,
+      /* Acto II · ascenso */
+      587.33,523.25,493.88,523.25,587.33,659.25,622.25,587.33,
+      523.25,493.88,523.25,587.33,659.25,698.46,659.25,622.25,
+      587.33,622.25,659.25,739.99,783.99,739.99,698.46,659.25,
+      622.25,659.25,739.99,830.61,880.00,830.61,783.99,739.99,
 
-      783.99,659.25,587.33,698.46,830.61,987.77,1318.51,1174.66,
-      1046.50,987.77,880.00,783.99,698.46,659.25,739.99,830.61,
+      698.46,739.99,783.99,880.00,987.77,880.00,830.61,783.99,
+      739.99,783.99,830.61,987.77,1046.50,987.77,880.00,830.61,
 
-      659.25,739.99,830.61,987.77,1174.66,1318.51,1174.66,1046.50,
-      987.77,880.00,987.77,1108.73,1318.51,1396.91,1318.51,1174.66,
+      /* Acto III · clímax y resolución */
+      987.77,1046.50,1174.66,1318.51,1174.66,1108.73,987.77,1046.50,
+      1174.66,1318.51,1567.98,1396.91,1318.51,1174.66,1046.50,987.77,
+      1108.73,1174.66,1396.91,1567.98,1760.00,1567.98,1396.91,1318.51,
+      1174.66,1318.51,1567.98,1975.53,1760.00,1567.98,1396.91,1318.51,
 
-      987.77,1108.73,1318.51,1567.98,1396.91,1318.51,1174.66,1046.50,
-      987.77,1046.50,1174.66,1318.51,1567.98,1760.00,1567.98,1396.91,
+      1174.66,1396.91,1567.98,1760.00,2093.00,1975.53,1760.00,1567.98,
+      1396.91,1567.98,1760.00,2093.00,2349.32,2093.00,1975.53,1760.00,
 
-      1174.66,1318.51,1567.98,1760.00,1975.53,1760.00,1567.98,1396.91,
-      1318.51,1567.98,1760.00,2093.00,1975.53,1760.00,1567.98,1396.91,
-
-      1318.51,1174.66,1046.50,1174.66,1396.91,1567.98,1760.00,1567.98,
-      1396.91,1318.51,1174.66,987.77,1108.73,1318.51,1567.98,1760.00,
-
-      1567.98,1396.91,1174.66,1046.50,987.77,1108.73,1318.51,1567.98,
-      1760.00,1975.53,2093.00,2349.32,2093.00,1975.53,1760.00,1567.98,
-
-      1396.91,1567.98,1760.00,1975.53,1760.00,1567.98,1396.91,1318.51,
-      1174.66,1046.50,987.77,880.00,987.77,1174.66,1396.91,1567.98,
-
-      1318.51,1174.66,1046.50,987.77,880.00,739.99,830.61,987.77,
-      1174.66,1396.91,1318.51,1174.66,987.77,880.00,830.61,783.99
+      /* Coda */
+      1567.98,1396.91,1318.51,1174.66,1046.50,1108.73,1318.51,1396.91,
+      1567.98,1760.00,1567.98,1396.91,1318.51,1174.66,987.77,880.00,
+      783.99,830.61,987.77,1174.66,1046.50,987.77,880.00,739.99,
+      659.25,698.46,783.99,880.00,783.99,698.46,659.25,587.33
     ],
     bass:[
       55.00,65.41,73.42,82.41,61.74,73.42,49.00,58.27,
-      65.41,73.42,55.00,41.20,49.00,58.27,65.41,73.42,
-      55.00,41.20,46.25,55.00,61.74,73.42,49.00,41.20,
+      55.00,65.41,73.42,82.41,49.00,58.27,61.74,73.42,
       65.41,73.42,82.41,98.00,73.42,61.74,55.00,49.00,
-      41.20,49.00,55.00,65.41,73.42,82.41,61.74,55.00
+      65.41,73.42,98.00,110.00,82.41,73.42,61.74,55.00,
+      73.42,82.41,98.00,110.00,98.00,82.41,73.42,65.41,
+      82.41,98.00,110.00,123.47,110.00,98.00,82.41,73.42
     ],
-    tempo:270,
-    type:'sine',
-    accent:6
+    tempo:320,
+    type:'triangle',
+    accent:5
   };
+
+  /* Cosmos: conserva su base grave/espacial y añade destellos agudos sin volverla chillona. */
   try{
-    if(typeof MUSIC_TRACKS!=='undefined'){
-      MUSIC_TRACKS.absoluteCinema=cinemaTrack;
+    if(typeof MUSIC_TRACKS!=='undefined'&&MUSIC_TRACKS.cosmos){
+      MUSIC_TRACKS.cosmos.notes=[
+        174.61,196.00,220.00,261.63,293.66,329.63,392.00,523.25,
+        392.00,329.63,293.66,440.00,523.25,587.33,523.25,392.00,
+        220.00,246.94,293.66,329.63,392.00,440.00,523.25,659.25,
+        523.25,440.00,392.00,523.25,659.25,698.46,659.25,523.25
+      ];
+      MUSIC_TRACKS.cosmos.bass=[87.31,98.00,110.00,130.81];
+      MUSIC_TRACKS.cosmos.tempo=585;
+      MUSIC_TRACKS.cosmos.type='triangle';
+      MUSIC_TRACKS.cosmos.accent=3;
     }
+  }catch(e){console.warn('SWQ Cosmos music patch',e)}
+  try{
+    if(typeof MUSIC_TRACKS!=='undefined')MUSIC_TRACKS.absoluteCinema=cinemaTrack;
     const id='music5';
     if(typeof SHOP_PERMANENT_IDS!=='undefined')SHOP_PERMANENT_IDS.add(id);
     if(typeof SHOP!=='undefined'){
@@ -2952,11 +2966,11 @@ body.theme-carretera .app{position:relative;z-index:2}
       if(absoluteCinemaShop){
         absoluteCinemaShop.icon='🎬';
         absoluteCinemaShop.name='Absolute Cinema';
-        absoluteCinemaShop.price=1000;
-        absoluteCinemaShop.desc='Obra maestra original: melodía larga de misterio, tonos agudos, graves y ambiente cinematográfico.';
+        absoluteCinemaShop.price=750;
+        absoluteCinemaShop.desc='Obra maestra original: misterio, ascenso, clímax y resolución con graves profundos y agudos cinematográficos.';
         absoluteCinemaShop.buy=()=>{S.purchases.music5=true;};
       }else{
-        SHOP.push({id,icon:'🎬',name:'Absolute Cinema',price:1000,desc:'Obra maestra original: melodía larga de misterio, tonos agudos, graves y ambiente cinematográfico.',buy:()=>{S.purchases.music5=true;}});
+        SHOP.push({id,icon:'🎬',name:'Absolute Cinema',price:750,desc:'Obra maestra original: misterio, ascenso, clímax y resolución con graves profundos y agudos cinematográficos.',buy:()=>{S.purchases.music5=true;}});
       }
     }
     S.purchases=S.purchases||{};
