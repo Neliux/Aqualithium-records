@@ -1284,7 +1284,7 @@ function coinMultiplier(){return S.purchases.talismanMarea?1.15:1}
 function trainingCoinMultiplier(){return coinMultiplier()*(S.purchases.mustard?1.05:1)}
 function trainingCoins(e){return Math.max(25,Math.round(trainingXP(e)*.132*trainingCoinMultiplier()))}
 function recalcAll(){
- let tx=0,tc=0;S.trainings.forEach(e=>{e.difficulty=difficultyInfo(e,S?.profile?.avgMeters).key;e.xp=trainingXP(e);e.coins=trainingCoins(e);tx+=e.xp;tc+=e.coins});
+ let tx=0,tc=0;S.trainings.forEach(e=>{e.xp=trainingXP(e);e.coins=trainingCoins(e);tx+=e.xp;tc+=e.coins});
  let mx=0,mc=0;[...(S.missions.week||[]),...(S.missions.month||[])].forEach(m=>{if(S.claimed.includes(m.id)){mx+=m.xp;mc+=Math.round(m.coins*coinMultiplier())}});
  S.xp=tx+mx;S.level=levelFromXP(S.xp);S.coins=Math.max(0,tc+mc+(S.bonusCoins||0)+(S.levelRewardCoins||0));save();
 }
@@ -1762,7 +1762,7 @@ function commitEdit(id){
  if(currentRank().r.c!==oldRank)rankReveal(currentRank().r);
 }
 function rebuildProfile(){
- let tx=0,tc=0;S.trainings.forEach(e=>{e.difficulty=difficultyInfo(e,S?.profile?.avgMeters).key;e.xp=trainingXP(e);e.coins=trainingCoins(e);tx+=e.xp;tc+=e.coins});
+ let tx=0,tc=0;S.trainings.forEach(e=>{e.xp=trainingXP(e);e.coins=trainingCoins(e);tx+=e.xp;tc+=e.coins});
  let mx=0,mc=0;[...(S.missions.week||[]),...(S.missions.month||[])].forEach(m=>{if(S.claimed.includes(m.id)){mx+=m.xp;mc+=Math.round(m.coins*coinMultiplier())}});
  S.xp=tx+mx;S.coins=tc+mc+(S.bonusCoins||0)+(S.levelRewardCoins||0);S.level=levelFromXP(S.xp);save();
 }
