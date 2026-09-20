@@ -132,14 +132,8 @@
   }catch(e){console.warn('SWQ difficulty patch',e)}
 
   function repaintStoredDifficulties(){
-    updateWeeklyAverage(false);
-    let changed=false;
-    for(const e of (S.trainings||[])){
-      const k=difficultyByPercent(e,S.profile?.avgMeters).key;
-      if(e.difficulty!==k){e.difficulty=k;changed=true;}
-    }
-    if(changed){try{save();}catch(e){}}
-    return changed;
+    /* Entrenamientos guardados quedan congelados. Solo un alta nueva o una edición calcula su dificultad. */
+    return false;
   }
 
   function dedupeLocalTrainings(){
@@ -2708,4 +2702,287 @@ body.theme-carretera .app{position:relative;z-index:2}
       };
     }
   }catch(e){console.warn('SWQ FNAF reference melody',e)}
+})();
+
+/* === SWQ RESTORE + DIFFICULTY LOCK + CINEMA MUSIC 2026-09-20 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_RESTORE_DIFFICULTY_CINEMA_20260920__)return;
+  window.__SWQ_RESTORE_DIFFICULTY_CINEMA_20260920__=true;
+
+  const RANGE_STYLES={
+    Prisma:{rank:'venus',rankIndex:9,price:950,icon:'🌈',name:'Prisma',desc:'Fondo oscuro con una franja de luz prismática que se desplaza lentamente.'},
+    Saturno:{rank:'saturno',rankIndex:12,price:1100,icon:'🪐',name:'Saturno',desc:'Fondo oscuro, planeta central y anillos orbitantes.'},
+    Tinta:{rank:'neptuno',rankIndex:14,price:1300,icon:'🖋️',name:'Tinta',desc:'Azul petróleo y negro con una nube de tinta en movimiento.'},
+    MareaLunar:{rank:'leviatan',rankIndex:19,price:1600,icon:'🌙',name:'Marea Lunar',desc:'Océano oscuro, luna tenue y una onda horizontal lenta.'},
+    Pizarra:{rank:'poseidon',rankIndex:20,price:1900,icon:'◼️',name:'Pizarra',desc:'Grafito oscuro con cuadrícula tenue y bordes limpios.'}
+  };
+
+  function repairRangeStyles(){
+    try{
+      S.purchases=S.purchases||{};
+      S.shopUnlocks=S.shopUnlocks||{};
+      if(typeof THEMES!=='undefined')Object.entries(RANGE_STYLES).forEach(([key,t])=>{
+        if(!THEMES[key])THEMES[key]={a:'#7fc7ff',b:'#1f2a5f',emoji:t.icon,desc:t.desc};
+        const id='theme_'+key;
+        let it=SHOP?.find?.(x=>x.id===id);
+        if(!it){
+          it={id,icon:t.icon,name:t.name,price:t.price,desc:t.desc,buy:()=>{S.purchases[id]=true;}};
+          SHOP.push(it);
+        }else{
+          it.icon=t.icon;it.name=t.name;it.price=t.price;it.desc=t.desc;
+        }
+        if(currentRank().i>=t.rankIndex)S.shopUnlocks[id]=true;
+        if(S.settings?.theme===key)S.purchases[id]=true;
+      });
+      const poseidonIndex=RANKS.findIndex(r=>r.c==='poseidon');
+      if(currentRank().i>=poseidonIndex)S.shopUnlocks.fichaRepeticion=true;
+      let rep=SHOP?.find?.(x=>x.id==='fichaRepeticion');
+      if(!rep){
+        rep={id:'fichaRepeticion',icon:'🔁',name:'Ficha de Repetición',price:750,desc:'Permite reclamar una segunda recompensa diaria.',buy:()=>{S.inventory.fichaRepeticion=(Number(S.inventory.fichaRepeticion)||0)+1;}};
+        SHOP.push(rep);
+      }
+      if(SHOP_PERMANENT_IDS?.has?.('fichaRepeticion'))SHOP_PERMANENT_IDS.delete('fichaRepeticion');
+      if(!Number.isFinite(Number(S.inventory?.fichaRepeticion)))S.inventory.fichaRepeticion=0;
+    }catch(e){console.warn('SWQ restore range shop',e)}
+  }
+
+  /* Difficulty is calculated only when a workout is created or edited.
+     Stored workouts retain their category forever afterwards. */
+  function calcDifficultyLocked(e,avgOverride){
+    const stored=String(e?.difficulty||'').trim();
+    if(stored){
+      const normalized=stored==='intenso'?'brutal':stored;
+      const d=typeof difficultyForKey==='function'?difficultyForKey(normalized):DIFFICULTIES.find(x=>x.key===normalized);
+      if(d&&d.key!=='facil'||normalized==='facil'){
+        const meters=(e.series||[]).reduce((a,s)=>a+(Number(s.distance)||0)*(Number(s.reps)||0),0);
+        const base=Math.max(100,Number(avgOverride)||Number(S.profile?.avgMeters)||1000);
+        const points=(e.series||[]).reduce((a,s)=>a+(typeof difficultySeriesPoints==='function'?difficultySeriesPoints(s):(Number(s.distance)||0)*(Number(s.reps)||0)),0);
+        const timed=(e.series||[]).filter(s=>Number(s.time)>0).length;
+        const timedRatio=(e.series||[]).length?timed/(e.series||[]).length:0;
+        const pct=meters>0?(points/base)*100*(1+Math.min(.12,timedRatio*.08)):0;
+        return {...d,percent:pct,base,points:Math.round(points)};
+      }
+    }
+
+    const series=Array.isArray(e?.series)?e.series:[];
+    const meters=series.reduce((a,s)=>a+(Number(s.distance)||0)*(Number(s.reps)||0),0);
+    if(meters<=0)return {...DIFFICULTIES[0],percent:0,base:Math.max(100,Number(avgOverride)||Number(S.profile?.avgMeters)||1000),points:0};
+    const base=Math.max(100,Number(avgOverride)||Number(S.profile?.avgMeters)||1000);
+    const points=series.reduce((a,s)=>a+(typeof difficultySeriesPoints==='function'?difficultySeriesPoints(s):(Number(s.distance)||0)*(Number(s.reps)||0)),0);
+    const timed=series.filter(s=>Number(s.time)>0).length;
+    const timedRatio=series.length?timed/series.length:0;
+    const percent=(points/base)*100*(1+Math.min(.12,timedRatio*.08));
+    let key='facil';
+    if(percent<=19)key='facil';
+    else if(percent<=49)key='normal';
+    else if(percent<=110)key='brutal';
+    else if(percent<450)key='demoniaco';
+    else key='masoquista';
+    const d=difficultyForKey(key);
+    return {...d,percent,base,points:Math.round(points)};
+  }
+
+  try{
+    difficultyInfo=calcDifficultyLocked;
+    difficultyLabel=function(e){
+      const d=typeof e==='string'?difficultyForKey(e):calcDifficultyLocked(e,S?.profile?.avgMeters);
+      return d.icon+' '+d.name;
+    };
+    difficultyCounts=function(arr){
+      return Object.fromEntries(DIFFICULTIES.map(d=>[d.key,(arr||[]).filter(e=>{
+        const k=String(e?.difficulty||'intenso')==='intenso'?'brutal':String(e?.difficulty||'');
+        return k===d.key;
+      }).length]));
+    };
+  }catch(e){console.warn('SWQ frozen difficulties',e)}
+
+  function freezeMissingDifficulties(){
+    let changed=false;
+    try{
+      for(const e of (S.trainings||[])){
+        if(e.difficulty==='intenso'){e.difficulty='brutal';changed=true;continue;}
+        if(!e.difficulty){
+          e.difficulty=calcDifficultyLocked({...e,difficulty:''},S.profile?.avgMeters).key;
+          changed=true;
+        }
+      }
+      if(changed)save();
+    }catch(e){console.warn('SWQ freeze missing difficulty',e)}
+    return changed;
+  }
+
+  function wrapRebuildWithoutDifficulty(){
+    try{
+      if(typeof rebuildProfile==='function'&&!window.__swqFrozenRebuild20260920){
+        const base=rebuildProfile;
+        rebuildProfile=function(){
+          const snapshot=(S.trainings||[]).map(e=>[e,e.difficulty]);
+          const out=base.apply(this,arguments);
+          snapshot.forEach(([e,d])=>{if(d)e.difficulty=d;});
+          save();
+          return out;
+        };
+        window.__swqFrozenRebuild20260920=true;
+      }
+      if(typeof recalcAll==='function'&&!window.__swqFrozenRecalc20260920){
+        const base=recalcAll;
+        recalcAll=function(){
+          const snapshot=(S.trainings||[]).map(e=>[e,e.difficulty]);
+          const out=base.apply(this,arguments);
+          snapshot.forEach(([e,d])=>{if(d)e.difficulty=d;});
+          save();
+          return out;
+        };
+        window.__swqFrozenRecalc20260920=true;
+      }
+    }catch(e){console.warn('SWQ frozen rebuild',e)}
+  }
+
+  function stableDifficultyDonut(arr){
+    const counts=difficultyCounts(arr),entries=Object.entries(counts).filter(([,v])=>v>0);
+    if(!entries.length)return '<div class="empty">Registra entrenamientos para ver la distribución.</div>';
+    const total=entries.reduce((a,[,v])=>a+v,0);
+    const palette={facil:'#61efaa',normal:'#42ddff',brutal:'#b78cff',demoniaco:'#ff6b86',masoquista:'#555a63',intenso:'#b78cff'};
+    let angle=0;
+    const stops=entries.map(([k,v])=>{
+      const start=angle;angle+=v/total*360;
+      return (palette[k]||'#778899')+' '+start.toFixed(3)+'deg '+angle.toFixed(3)+'deg';
+    });
+    const rows=entries.map(([k,v])=>{
+      const d=difficultyForKey(k==='intenso'?'brutal':k);
+      const pct=(v/total*100);
+      return '<div class="difficulty-legend-row"><span><i style="background:'+((palette[k]||'#778899'))+'"></i>'+d.icon+' '+d.name+'</span><b>'+v+' · '+pct.toFixed(0)+'%</b></div>';
+    }).join('');
+    return '<div class="difficulty-donut-wrap swq-stable-difficulty-wheel"><div class="difficulty-donut" style="background:conic-gradient('+stops.join(',')+')"><div class="difficulty-donut-hole"><b>'+fmt(total)+'</b><span>sesiones</span></div></div><div class="difficulty-donut-legend">'+rows+'</div></div>';
+  }
+  try{difficultyDonut=stableDifficultyDonut;}catch(e){}
+
+  /* Restore five range styles and Repetition item after account/cloud restores. */
+  repairRangeStyles();
+  freezeMissingDifficulties();
+  wrapRebuildWithoutDifficulty();
+
+  /* Leviathan: moving rainbow buttons + more persistent fish. */
+  function leviathanFishSync(){
+    let layer=document.getElementById('swqLeviatanLayer');
+    if(S.settings.theme!=='Leviatan'){if(layer)layer.remove();return;}
+    if(!layer){
+      layer=document.createElement('div');layer.id='swqLeviatanLayer';layer.className='swq-lev-layer';document.body.appendChild(layer);
+    }
+    layer.style.pointerEvents='none';
+    layer.style.position='fixed';
+    layer.style.inset='0';
+    layer.style.zIndex='46';
+    layer.style.overflow='hidden';
+    const fish=layer.querySelectorAll('.swq-lev-front-fish');
+    if(fish.length<5){
+      const f=document.createElement('span');
+      f.className='swq-lev-front-fish';
+      f.textContent=['🐟','🐠','🐡','🐟','🐠'][Math.floor(Math.random()*5)];
+      f.style.top=(16+Math.random()*68)+'%';
+      f.style.left='-15vw';
+      f.style.setProperty('--bob',(-28+Math.random()*56)+'px');
+      f.style.setProperty('--fishDur',(12+Math.random()*5)+'s');
+      layer.appendChild(f);
+      setTimeout(()=>f.remove(),18000);
+    }
+  }
+  window.swqSyncLeviatan=leviathanFishSync;
+
+  const cinemaTrack={
+    name:'Absolute Cinema',
+    emoji:'🎬',
+    notes:[
+      880.00,830.61,783.99,739.99,698.46,659.25,739.99,830.61,
+      987.77,880.00,783.99,659.25,622.25,698.46,783.99,880.00,
+      1046.50,987.77,880.00,783.99,698.46,659.25,739.99,830.61,
+      987.77,1108.73,987.77,880.00,783.99,739.99,659.25,587.33,
+      523.25,587.33,659.25,739.99,830.61,987.77,880.00,783.99,
+      698.46,739.99,830.61,987.77,1174.66,1046.50,987.77,880.00,
+      783.99,659.25,587.33,698.46,830.61,987.77,1318.51,1174.66,
+      1046.50,987.77,880.00,783.99,698.46,659.25,739.99,830.61,
+      987.77,1174.66,1396.91,1318.51,1174.66,987.77,880.00,739.99
+    ],
+    bass:[
+      55.00,65.41,73.42,82.41,61.74,73.42,49.00,58.27,
+      65.41,73.42,55.00,41.20
+    ],
+    tempo:290,type:'sine',accent:6
+  };
+
+  try{
+    if(typeof MUSIC_TRACKS!=='undefined'){
+      MUSIC_TRACKS.absoluteCinema=cinemaTrack;
+    }
+    const id='music5';
+    if(typeof SHOP_PERMANENT_IDS!=='undefined')SHOP_PERMANENT_IDS.add(id);
+    if(typeof SHOP!=='undefined'&&!SHOP.some(x=>x.id===id)){
+      SHOP.push({id,icon:'🎬',name:'Absolute Cinema',price:1000,desc:'Obra maestra original: melodía larga de misterio, tonos agudos, graves y ambiente cinematográfico.',buy:()=>{S.purchases.music5=true;}});
+    }
+    S.purchases=S.purchases||{};
+  }catch(e){console.warn('SWQ Absolute Cinema',e)}
+
+  function musicOwned5(){
+    return !!S.purchases?.music5;
+  }
+  window.swqQuickMusic=function(){
+    const owned=[];
+    try{
+      Object.entries(MUSIC_TRACKS||{}).forEach(([k,v])=>{
+        let ok=k==='aqua'||(k==='marea'&&S.purchases?.music1)||(k==='cosmos'&&S.purchases?.music2)||(k==='pixel'&&S.purchases?.music3)||(k==='frecuenciaPerdida'&&S.purchases?.music4)||(k==='absoluteCinema'&&musicOwned5());
+        if(ok)owned.push([k,v]);
+      });
+    }catch(e){}
+    const opts=owned.map(([k,v])=>'<option value="'+esc(k)+'" '+(S.settings.musicTrack===k?'selected':'')+'>'+esc(v.emoji||'🎵')+' '+esc(v.name||k)+'</option>').join('');
+    modal('<div class="kicker">🎵 MÚSICA</div><h2>Elegir música</h2><div class="field" style="margin-top:10px"><select id="swqMusic5Select" style="width:100%">'+opts+'</select></div><label class="checkrow" style="margin:8px 0"><input id="swqMusic5Enabled" type="checkbox" '+(S.settings.music?'checked':'')+'> 🎵 Música activa</label><button type="button" id="swqMusic5Apply" class="btn primary" style="margin-top:8px">Usar música</button><button type="button" class="btn secondary" style="margin-top:8px" onclick="window.swqQuickTheme()">🎨 Volver a estilos</button><button type="button" class="btn secondary" style="margin-top:8px" onclick="closeModal()">Cerrar</button>');
+    document.getElementById('swqMusic5Apply')?.addEventListener('click',()=>{
+      const key=document.getElementById('swqMusic5Select')?.value||'aqua';
+      S.settings.music=!!document.getElementById('swqMusic5Enabled')?.checked;
+      S.settings.musicTrack=key;save();
+      if(S.settings.music)restartAmbient();else ambientStop();
+      toast('🎵 '+(MUSIC_TRACKS[key]?.name||'Música')+' equipada.');
+    });
+  };
+
+  window.swqQuickTheme=function(){
+    repairRangeStyles();
+    const keys=['Aqua',...Object.keys(RANGE_STYLES).filter(k=>S.purchases?.['theme_'+k]),...Object.keys(THEMES||{}).filter(k=>k!=='Aqua'&&!RANGE_STYLES[k]&&S.purchases?.['theme_'+k])];
+    const unique=[...new Set(keys)].filter(k=>THEMES[k]);
+    const buttons=unique.map(k=>'<button type="button" class="btn '+(S.settings.theme===k?'primary':'secondary')+'" data-swq-safe-theme="'+esc(k)+'" style="min-height:54px;text-align:left">'+esc(THEMES[k]?.emoji||'🎨')+' '+esc((typeof swqThemeName==='function'?swqThemeName(k):k))+(S.settings.theme===k?' · ACTUAL':'')+'</button>').join('');
+    modal('<div class="kicker">🎨 PERSONALIZACIÓN</div><h2>Estilo y música</h2><div class="grid g2" style="margin-top:4px"><button type="button" id="swqSafeStyleTab" class="btn primary">🎨 Estilo</button><button type="button" id="swqSafeMusicTab" class="btn secondary">🎵 Música</button></div><div id="swqSafeStylePanel"><div class="sub" style="margin:9px 0 8px">Estilos desbloqueados.</div><div class="grid g2">'+buttons+'</div></div><button type="button" class="btn secondary" style="margin-top:10px" id="swqSafeThemeClose">Cerrar</button>');
+    document.getElementById('swqSafeStyleTab')?.addEventListener('click',()=>window.swqQuickTheme());
+    document.getElementById('swqSafeMusicTab')?.addEventListener('click',()=>window.swqQuickMusic());
+    document.querySelectorAll('[data-swq-safe-theme]').forEach(b=>b.addEventListener('click',()=>{
+      const k=b.dataset.swqSafeTheme;
+      if(k&&THEMES[k]&&(k==='Aqua'||S.purchases?.['theme_'+k])){
+        S.settings.theme=k;save();applyTheme();closeModal();render();
+      }
+    }));
+    document.getElementById('swqSafeThemeClose')?.addEventListener('click',closeModal);
+  };
+
+  /* Styles and fish should visibly survive renders. */
+  const style=document.createElement('style');
+  style.textContent=
+    'body.theme-leviatan .btn:not(.danger){background:linear-gradient(90deg,#ff5c5c,#ffd166,#61efaa,#42ddff,#8b66ff,#ff5c9d,#ff5c5c)!important;background-size:400% 100%!important;animation:swqLeviButtonFlow 4.2s linear infinite!important;color:#05131c!important;text-shadow:0 1px 1px rgba(255,255,255,.35)}'+
+    '@keyframes swqLeviButtonFlow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}'+
+    '.swq-lev-front-fish{position:absolute;top:var(--top,40%);left:-15vw;font-size:26px;filter:drop-shadow(0 0 9px rgba(130,246,255,.60));animation:swqLevFishLong var(--fishDur,14s) linear forwards!important;will-change:transform,opacity}'+
+    '@keyframes swqLevFishLong{0%{opacity:0;transform:translate3d(-3vw,0,0) scaleX(1) rotate(-2deg)}8%{opacity:.92}50%{transform:translate3d(52vw,var(--bob,0px),0) scaleX(-1) rotate(2deg)}100%{opacity:0;transform:translate3d(124vw,calc(var(--bob,0px)*-.65),0) scaleX(-1) rotate(-1deg)}}'+
+    '.swq-stable-difficulty-wheel .difficulty-donut{width:min(210px,58vw);height:min(210px,58vw);flex:0 0 auto}'+
+    '.swq-stable-difficulty-wheel .difficulty-donut-legend{width:100%;max-width:420px}';
+  document.head.appendChild(style);
+
+  /* Re-apply repairs after cloud/account synchronization without changing stored difficulties. */
+  let lastStableRepair=0;
+  const stableRepair=()=>{
+    if(Date.now()-lastStableRepair<2500)return;
+    lastStableRepair=Date.now();
+    try{repairRangeStyles();freezeMissingDifficulties();wrapRebuildWithoutDifficulty();if(S.settings.theme==='Leviatan')leviathanFishSync();}catch(e){}
+  };
+  setTimeout(stableRepair,300);
+  setTimeout(stableRepair,1400);
+  setInterval(stableRepair,5500);
+
+  try{save();render();}catch(e){}
 })();
