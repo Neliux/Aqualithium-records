@@ -881,7 +881,13 @@ function cloudGameState(){
   levelRewardedThrough:Number(S.levelRewardedThrough||1),
   levelRewardCoins:Number(S.levelRewardCoins||0),
   monthlyShieldUntil:S.monthlyShieldUntil||"",
-  dailyReward:S.dailyReward||{date:"",claimed:false,coins:0,xp:0,kind:"coinsxp",themeKey:""}
+  dailyReward:S.dailyReward||{date:"",claimed:false,coins:0,xp:0,kind:"coinsxp",themeKey:""},
+  secret:{
+   fishConversationPurchased:!!S.secret?.fishConversationPurchased,
+   fishConversationPath:String(S.secret?.fishConversationPath||""),
+   fishConversationSeen:!!S.secret?.fishConversationSeen,
+   coachMatiCelebrationSeen:!!S.secret?.coachMatiCelebrationSeen
+  }
  };
 }
 function applyCloudGameState(gs){
@@ -903,6 +909,13 @@ function applyCloudGameState(gs){
  if(Number.isFinite(Number(gs.levelRewardCoins)))S.levelRewardCoins=Number(gs.levelRewardCoins);
  if(typeof gs.monthlyShieldUntil==="string")S.monthlyShieldUntil=gs.monthlyShieldUntil;
  if(gs.dailyReward&&typeof gs.dailyReward==="object")S.dailyReward=gs.dailyReward;
+ if(gs.secret&&typeof gs.secret==="object"){
+  S.secret=S.secret||{};
+  if(typeof gs.secret.fishConversationPurchased==="boolean")S.secret.fishConversationPurchased=gs.secret.fishConversationPurchased;
+  if(typeof gs.secret.fishConversationPath==="string")S.secret.fishConversationPath=gs.secret.fishConversationPath;
+  if(typeof gs.secret.fishConversationSeen==="boolean")S.secret.fishConversationSeen=gs.secret.fishConversationSeen;
+  if(typeof gs.secret.coachMatiCelebrationSeen==="boolean")S.secret.coachMatiCelebrationSeen=gs.secret.coachMatiCelebrationSeen;
+ }
 }
 async function syncProfileToCloud(){if(!supabaseClient||!authUser||!S.profile)return;try{const row={id:authUser.id,username:S.profile.name,level:S.level,xp:S.xp,coins:S.coins,meters:totalMeters(),rank:currentRank().r.n,game_state:cloudGameState(),updated_at:new Date().toISOString()};const {data,error}=await supabaseClient.from("profiles").upsert(row,{onConflict:"id"}).select("public_player_id").single();if(!error&&data){S.remote={...(S.remote||{}),userId:authUser.id,publicPlayerId:data.public_player_id,username:S.profile.name};save()}}catch(e){console.warn("sync profile",e)}}
 async function syncTrainingToCloud(e,allowDuplicate=false){if(!supabaseClient||!authUser||!e)return;try{if(!allowDuplicate){const existing=await supabaseClient.from("workouts").select("id").eq("user_id",authUser.id).eq("workout_date",e.date).eq("name",e.name||"").eq("meters",totalMeters([e])).eq("xp_earned",e.xp||0).limit(1);if(existing.data?.length)return}await supabaseClient.from("workouts").insert({user_id:authUser.id,workout_date:e.date,name:e.name||null,meters:totalMeters([e]),xp_earned:e.xp||0,coins_earned:e.coins||0,details:{durationMin:e.durationMin||0,series:e.series||[],difficulty:e.difficulty||"normal",theme:e.theme||"Aqua"}});await syncProfileToCloud()}catch(e){console.warn("sync workout",e)}}
