@@ -2109,3 +2109,71 @@ body.theme-carretera .app{position:relative;z-index:2}
 
   try{save();render();}catch(e){}
 })();
+
+
+/* === SWQ BALANCE REPAIR 2026-09-20 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_BALANCE_REPAIR_20260920__)return;
+  window.__SWQ_BALANCE_REPAIR_20260920__=true;
+
+  /* Daily reward: intentionally below the normal roulette. Already-claimed rewards are never changed. */
+  try{
+    const previousDailyRewardInfo=dailyRewardInfo;
+    dailyRewardInfo=function(){
+      const out=previousDailyRewardInfo.apply(this,arguments);
+      try{
+        const d=S.dailyReward||{};
+        const today=typeof localDateKey==='function'?localDateKey():'';
+        if(d.date===today&&d.kind==='coinsxp'&&!d.claimed&&!d.__swqDailyNerf20260920){
+          d.coins=20+Math.floor(Math.random()*41); // 20–60
+          d.xp=40+Math.floor(Math.random()*111);   // 40–150
+          d.__swqDailyNerf20260920=true;
+          save();
+        }
+        if(d.kind==='coinsxp'&&out?.reward){
+          out.reward={
+            ...out.reward,
+            coins:Number(d.coins||0),
+            xp:Number(d.xp||0),
+            kind:'coinsxp',
+            themeKey:'',
+            label:`${fmt(d.coins)} 🪙 + ${fmt(d.xp)} XP`
+          };
+        }
+      }catch(e){}
+      return out;
+    };
+  }catch(e){console.warn('SWQ daily balance repair',e)}
+
+  /* Extreme bubbles: shorter window, faster spawns/expiration, and a larger reward cap. */
+  try{
+    if(typeof MINI_LEVELS!=='undefined'&&MINI_LEVELS.extremo){
+      MINI_LEVELS.extremo.time=18;
+      MINI_LEVELS.extremo.lifetime=520;
+      MINI_LEVELS.extremo.spawn=250;
+      MINI_LEVELS.extremo.rewardMax=90;
+      MINI_LEVELS.extremo.desc='Solo 18 s. Las burbujas aparecen y desaparecen todavía más rápido, pero cada partida puede pagar hasta 90 🪙.';
+    }
+  }catch(e){console.warn('SWQ extreme balance repair',e)}
+
+  /* Extreme mode also awards extra score per bubble, compensating for the shorter round. */
+  try{
+    if(!window.__swqExtremeScoreBonus20260920){
+      document.addEventListener('click',function(e){
+        try{
+          if(typeof miniGameDifficulty==='undefined'||miniGameDifficulty!=='extremo')return;
+          if(typeof miniGameRunning==='undefined'||!miniGameRunning)return;
+          const bubble=e.target?.closest?.('.mini-bubble');
+          if(!bubble)return;
+          miniGameScore+=2;
+          const scoreEl=$('miniScore');
+          if(scoreEl)scoreEl.textContent=miniGameScore;
+        }catch(err){}
+      },true);
+      window.__swqExtremeScoreBonus20260920=true;
+    }
+  }catch(e){console.warn('SWQ extreme score repair',e)}
+
+  try{save();render();}catch(e){}
+})();
