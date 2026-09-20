@@ -2553,3 +2553,156 @@ body.theme-carretera .app{position:relative;z-index:2}
     }
   }catch(e){console.warn('SWQ theme globals',e)}
 })();
+
+/* === SWQ THEME MUSIC UI FIX 2026-09-20 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_THEME_MUSIC_UI_FIX_20260920__)return;
+  window.__SWQ_THEME_MUSIC_UI_FIX_20260920__=true;
+
+  function swqOwnedMusicKeys(){
+    const out=[];
+    try{
+      if(typeof MUSIC_TRACKS!=='undefined'){
+        for(const [k,v] of Object.entries(MUSIC_TRACKS)){
+          const owned=k==='aqua'
+            ||(k==='marea'&&!!S.purchases?.music1)
+            ||(k==='cosmos'&&!!S.purchases?.music2)
+            ||(k==='pixel'&&!!S.purchases?.music3)
+            ||(k==='frecuenciaPerdida'&&!!S.purchases?.music4);
+          if(owned)out.push([k,v]);
+        }
+      }
+    }catch(e){}
+    return out;
+  }
+
+  function swqOwnedThemeKeys(){
+    const out=['Aqua'];
+    try{
+      if(typeof THEMES!=='undefined'){
+        Object.keys(THEMES).forEach(k=>{if(k!=='Aqua'&&S.purchases?.['theme_'+k])out.push(k)});
+      }
+    }catch(e){}
+    return [...new Set(out)];
+  }
+
+  function swqApplyThemeDirect(k){
+    try{
+      if(typeof THEMES==='undefined'||!THEMES[k])return;
+      if(k!=='Aqua'&&!S.purchases?.['theme_'+k]){toast('🔒 Ese estilo todavía no está desbloqueado.');return}
+      S.settings.theme=k;
+      save();
+      if(typeof applyTheme==='function')applyTheme();
+      closeModal();
+      render();
+    }catch(e){console.warn('SWQ direct theme',e)}
+  }
+
+  function swqApplyMusicDirect(k){
+    try{
+      if(typeof MUSIC_TRACKS==='undefined'||!MUSIC_TRACKS[k])return;
+      const owned=swqOwnedMusicKeys().some(([id])=>id===k);
+      if(!owned){toast('🔒 Esa música todavía no está desbloqueada.');return}
+      S.settings.musicTrack=k;
+      save();
+      if(S.settings.music&&typeof restartAmbient==='function')restartAmbient();
+      toast('🎵 '+(MUSIC_TRACKS[k]?.name||'Música')+' equipada.');
+      swqOpenThemeMusicModal('music');
+    }catch(e){console.warn('SWQ direct music',e)}
+  }
+
+  function swqOpenThemeMusicModal(tab='theme'){
+    try{
+      const themes=swqOwnedThemeKeys();
+      const music=swqOwnedMusicKeys();
+      const themeButtons=themes.map(k=>{
+        const active=S.settings.theme===k;
+        const emoji=THEMES[k]?.emoji||'🎨';
+        const name=(typeof swqThemeName==='function'?swqThemeName(k):k);
+        return '<button type="button" class="btn '+(active?'primary':'secondary')+' swq-theme-choice" data-swq-theme="'+esc(k)+'" style="min-height:54px;text-align:left">'+esc(emoji)+' '+esc(name)+(active?' · ACTUAL':'')+'</button>';
+      }).join('');
+      const musicOptions=music.map(([k,v])=>'<option value="'+esc(k)+'" '+(S.settings.musicTrack===k?'selected':'')+'>'+esc(v.emoji||'🎵')+' '+esc(v.name||k)+'</option>').join('');
+
+      modal(
+        '<div class="kicker">🎨 PERSONALIZACIÓN</div>'+
+        '<h2 style="margin-bottom:8px">Estilo y música</h2>'+
+        '<div class="grid g2" style="margin-top:4px">'+
+          '<button type="button" id="swqThemeTab" class="btn '+(tab==='theme'?'primary':'secondary')+'">🎨 Estilo</button>'+
+          '<button type="button" id="swqMusicTab" class="btn '+(tab==='music'?'primary':'secondary')+'">🎵 Música</button>'+
+        '</div>'+
+        '<div id="swqThemePanel" style="'+(tab==='theme'?'':'display:none;')+'">'+
+          '<div class="sub" style="margin:9px 0 8px">Elige un estilo desbloqueado.</div>'+
+          '<div class="grid g2">'+themeButtons+'</div>'+
+        '</div>'+
+        '<div id="swqMusicPanel" style="'+(tab==='music'?'':'display:none;')+'">'+
+          '<div class="field" style="margin-top:10px"><label>Música equipada</label><select id="swqMusicSelect" style="width:100%">'+musicOptions+'</select></div>'+
+          '<label class="checkrow" style="margin:8px 0"><input id="swqMusicEnabled" type="checkbox" '+(S.settings.music?'checked':'')+'> 🎵 Música activa</label>'+
+          '<button type="button" id="swqApplyMusicBtn" class="btn primary" style="margin-top:8px">Usar música</button>'+
+        '</div>'+
+        '<button type="button" id="swqCloseThemeMusic" class="btn secondary" style="margin-top:10px">Cerrar</button>'
+      );
+
+      document.getElementById('swqThemeTab')?.addEventListener('click',()=>swqOpenThemeMusicModal('theme'));
+      document.getElementById('swqMusicTab')?.addEventListener('click',()=>swqOpenThemeMusicModal('music'));
+      document.getElementById('swqCloseThemeMusic')?.addEventListener('click',()=>closeModal());
+
+      document.querySelectorAll('#swqThemePanel .swq-theme-choice').forEach(btn=>{
+        btn.addEventListener('click',()=>swqApplyThemeDirect(btn.dataset.swqTheme||'Aqua'));
+      });
+
+      document.getElementById('swqApplyMusicBtn')?.addEventListener('click',()=>{
+        const key=document.getElementById('swqMusicSelect')?.value||'aqua';
+        const enabled=!!document.getElementById('swqMusicEnabled')?.checked;
+        S.settings.music=enabled;
+        swqApplyMusicDirect(key);
+        save();
+        if(!enabled&&typeof ambientStop==='function')ambientStop();
+      });
+    }catch(e){console.warn('SWQ theme/music modal',e)}
+  }
+
+  window.swqQuickTheme=()=>swqOpenThemeMusicModal('theme');
+  window.swqQuickMusic=()=>swqOpenThemeMusicModal('music');
+  window.swqApplyQuickTheme=swqApplyThemeDirect;
+
+  try{
+    if(typeof profile==='function'&&!window.__swqProfileThemeMusic20260920){
+      const baseProfileThemeMusic=profile;
+      profile=function(){
+        let html=baseProfileThemeMusic.apply(this,arguments);
+        const controls=
+          '<div class="card swq-theme-music-card" style="margin-top:10px">'+
+            '<div class="sectionTitle">🎨 PERSONALIZA</div>'+
+            '<div class="grid g2" style="margin-top:8px">'+
+              '<button type="button" id="swqQuickThemeButton" class="btn secondary" onclick="window.swqQuickTheme()">🎨 Cambiar estilo</button>'+
+              '<button type="button" id="swqQuickMusicButton" class="btn secondary" onclick="window.swqQuickMusic()">🎵 Cambiar música</button>'+
+            '</div>'+
+          '</div>';
+        return controls+html;
+      };
+      window.__swqProfileThemeMusic20260920=true;
+    }
+  }catch(e){console.warn('SWQ profile theme/music placement',e)}
+
+  try{
+    if(typeof MUSIC_TRACKS!=='undefined'&&MUSIC_TRACKS.frecuenciaPerdida){
+      MUSIC_TRACKS.frecuenciaPerdida={
+        name:'FNAF reference',
+        emoji:'🕯️',
+        /* Original horror/game-music phrase: tense chromatic motion and a high register,
+           without reproducing the melody of any FNAF soundtrack. */
+        notes:[
+          659.25,622.25,659.25,783.99,698.46,659.25,587.33,523.25,
+          587.33,622.25,659.25,523.25,466.16,523.25,587.33,698.46,
+          783.99,739.99,698.46,659.25,622.25,587.33,523.25,493.88,
+          523.25,659.25,739.99,830.61,783.99,698.46,622.25,659.25
+        ],
+        bass:[82.41,77.78,87.31,73.42,69.3,77.78,82.41,65.41],
+        tempo:300,
+        type:'triangle',
+        accent:4
+      };
+    }
+  }catch(e){console.warn('SWQ FNAF reference melody',e)}
+})();
