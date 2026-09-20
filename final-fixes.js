@@ -2225,3 +2225,294 @@ body.theme-carretera .app{position:relative;z-index:2}
 
   try{save();render();}catch(e){}
 })();
+
+/* === SWQ ACCOUNT TERMS 2026-09-20 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_ACCOUNT_TERMS_20260920__)return;
+  window.__SWQ_ACCOUNT_TERMS_20260920__=true;
+
+  function swqPasswordStrength(password){
+    const p=String(password||'');
+    let score=0;
+    if(p.length>=8)score++;
+    if(p.length>=12)score++;
+    if(/[a-z]/.test(p)&&/[A-Z]/.test(p))score++;
+    if(/\d/.test(p))score++;
+    if(/[^A-Za-z0-9]/.test(p))score++;
+    return score;
+  }
+  function swqPasswordLabel(password){
+    const s=swqPasswordStrength(password);
+    if(!password)return {text:'Usa 8 caracteres o más.',cls:'pw-empty'};
+    if(s<=1)return {text:'Contraseña débil',cls:'pw-bad'};
+    if(s<=3)return {text:'Contraseña aceptable',cls:'pw-mid'};
+    return {text:'Contraseña fuerte',cls:'pw-good'};
+  }
+  function swqTermsButton(){
+    return '<button class="btn secondary" style="margin-top:8px" onclick="conditionsOfUse()">📜 Condiciones de uso</button>';
+  }
+
+  window.conditionsOfUse=function(){
+    modal(
+      '<div class="kicker">📜 CONDICIONES DE USO</div>'+
+      '<h2>Antes de usar Swim Quest</h2>'+
+      '<div class="sub" style="margin-bottom:10px">Estas reglas explican cómo usar el juego, las cuentas y los datos de forma responsable.</div>'+
+      '<div class="list">'+
+        '<div class="list-item"><b>1. Honestidad</b><div class="sub">Los registros dependen de ti. Introduce metros, tiempos, estilos y resultados de forma honesta. Swim Quest no puede saber si un dato es real: depende de tu honestidad.</div></div>'+
+        '<div class="list-item"><b>2. Juego limpio</b><div class="sub">No intentes explotar errores para conseguir monedas, XP, rangos, objetos o ventajas. Si encuentras un fallo, lo correcto es avisar y no convertirlo en una máquina de monedas.</div></div>'+
+        '<div class="list-item"><b>3. Tu cuenta</b><div class="sub">Mantén tu correo y contraseña bajo tu control. No compartas tu contraseña. La autenticación y las contraseñas se gestionan mediante Supabase; Swim Quest no guarda tu contraseña en el progreso local.</div></div>'+
+        '<div class="list-item"><b>4. Datos y sincronización</b><div class="sub">Sin cuenta, el progreso se guarda localmente. Con cuenta, parte del progreso se sincroniza con Supabase. Ningún sistema online puede prometer que jamás habrá errores o interrupciones, así que las copias de seguridad siguen siendo buena idea.</div></div>'+
+        '<div class="list-item"><b>5. Redes y otros jugadores</b><div class="sub">No uses las funciones sociales para acosar, amenazar, suplantar a otra persona, compartir información privada o molestar deliberadamente.</div></div>'+
+        '<div class="list-item"><b>6. Contenido y propiedad</b><div class="sub">No presentes como tuyo el código, arte, textos o sistemas de Swim Quest que pertenecen al proyecto. Tampoco subas contenido de otras personas como si fuera tuyo.</div></div>'+
+        '<div class="list-item"><b>7. Entrenamiento</b><div class="sub">Swim Quest es un registro y un juego, no un médico ni un entrenador personal. Usa criterio y sigue las indicaciones de tu familia, entrenador y profesionales que correspondan.</div></div>'+
+        '<div class="list-item"><b>8. Cambios del juego</b><div class="sub">Los precios, rangos, recompensas, música, misiones y sistemas pueden cambiar para equilibrar el juego o corregir errores. Tu progreso no es un contrato mágico con la pera.</div></div>'+
+        '<div class="list-item"><b>9. Servicios externos</b><div class="sub">Algunas funciones dependen de servicios como Supabase, el navegador y el correo electrónico. Si uno de ellos falla, algunas funciones online pueden dejar de funcionar temporalmente.</div></div>'+
+        '<div class="list-item"><b>10. Seguridad</b><div class="sub">Usa una contraseña que no reutilices en otros sitios. Si recibes un correo de recuperación que no solicitaste, no compartas enlaces o códigos con nadie.</div></div>'+
+        '<div class="list-item"><b>11. No hagas trampas... demasiado creativas</b><div class="sub">Registrar “50 m” después de sentarte en el borde cuenta como una interpretación muy libre de la natación. La Pera no lo considera récord.</div></div>'+
+        '<div class="list-item"><b>12. Humor</b><div class="sub">Algunas condiciones contienen bromas. No cambian las reglas reales y no pretenden atacar a ninguna persona o grupo.</div></div>'+
+        '<div class="list-item"><b>13. Responsabilidad</b><div class="sub">Usas Swim Quest bajo tu propia responsabilidad. El proyecto se ofrece como una herramienta de registro y entretenimiento y puede contener errores.</div></div>'+
+        '<div class="list-item"><b>14. Aceptación</b><div class="sub">Al usar Swim Quest aceptas estas condiciones. Si no estás de acuerdo, puedes cerrar la aplicación y no usar sus funciones.</div></div>'+
+      '</div>'+
+      '<button class="btn primary" style="margin-top:10px" onclick="closeModal()">Entendido</button>'
+    );
+  };
+
+  try{
+    if(typeof onboarding==='function'&&!window.__swqOnboardingTerms20260920){
+      const baseOnboarding=onboarding;
+      onboarding=function(){
+        let html=baseOnboarding.apply(this,arguments);
+        const extra=[
+          'No binario','Género fluido','Agénero','Bigénero','Demigénero',
+          'Andrógino','Neutrois','Género no conforme','En cuestionamiento','Helicoptero se batalla'
+        ].map(x=>'<option>'+x+'</option>').join('');
+        html=html.replace('<option>Otro</option>','<option>Otro</option>'+extra);
+        html=html.replace('<button class="btn primary" onclick="createProfile()">Comenzar →</button>','<button class="btn secondary" onclick="conditionsOfUse()">📜 Condiciones de uso</button><button class="btn primary" style="margin-top:8px" onclick="createProfile()">Comenzar →</button>');
+        return html;
+      };
+      window.__swqOnboardingTerms20260920=true;
+    }
+  }catch(e){console.warn('SWQ onboarding terms',e)}
+
+  try{
+    if(typeof home==='function'&&!window.__swqHomeTerms20260920){
+      const baseHome=home;
+      home=function(){
+        return baseHome.apply(this,arguments)+'<div class="list-item" style="margin-top:10px"><div class="row"><span><b>📜 Condiciones</b><div class="sub">Reglas de uso, cuentas y juego limpio.</div></span><button class="btn secondary" style="width:auto" onclick="conditionsOfUse()">Leer</button></div></div>';
+      };
+      window.__swqHomeTerms20260920=true;
+    }
+  }catch(e){console.warn('SWQ home terms',e)}
+
+  try{
+    if(typeof profile==='function'&&!window.__swqProfileTerms20260920){
+      const baseProfile=profile;
+      profile=function(){
+        let html=baseProfile.apply(this,arguments);
+        html+='<div class="list-item" style="margin-top:10px"><div class="row"><span><b>📜 Condiciones de uso</b><div class="sub">Reglas de cuentas, datos y juego limpio.</div></span><button class="btn secondary" style="width:auto" onclick="conditionsOfUse()">Leer</button></div></div>';
+        if(authUser)html+='<div class="list-item" style="margin-top:8px"><div class="row"><span><b>🔐 Seguridad de cuenta</b><div class="sub">Cambia tu contraseña cuando lo necesites.</div></span><button class="btn secondary" style="width:auto" onclick="changeAccountPassword()">Cambiar</button></div></div>';
+        return html;
+      };
+      window.__swqProfileTerms20260920=true;
+    }
+  }catch(e){console.warn('SWQ profile terms',e)}
+
+  try{
+    if(typeof shop==='function'&&!window.__swqShopText20260920){
+      const baseShop=shop;
+      shop=function(){
+        return baseShop.apply(this,arguments).replace('Todo está organizado para que encuentres rápido lo que buscas.','');
+      };
+      window.__swqShopText20260920=true;
+    }
+  }catch(e){}
+
+  try{
+    const css=document.createElement('style');
+    css.id='swq-terms-account-css';
+    css.textContent=[
+      '.brand>.sub{display:none!important}',
+      '.swq-pw-hint{font-size:10px;margin-top:5px;min-height:15px;color:var(--muted)}',
+      '.swq-pw-hint.pw-bad{color:#ff7d94}.swq-pw-hint.pw-mid{color:#ffd166}.swq-pw-hint.pw-good{color:#61efaa}'
+    ].join('');
+    document.head.appendChild(css);
+  }catch(e){}
+
+  try{
+    if(typeof authModal==='function'&&!window.__swqAuthModal20260920){
+      const baseAuthModal=authModal;
+      authModal=function(mode){
+        const out=baseAuthModal.apply(this,arguments);
+        const signup=mode==='signup';
+        setTimeout(()=>{
+          const host=document.querySelector('#modal .modal');
+          const input=document.getElementById('authPassword');
+          if(input){
+            input.minLength=8;
+            input.autocomplete=signup?'new-password':'current-password';
+            let hint=document.getElementById('swqPwHint');
+            if(!hint){
+              hint=document.createElement('div');
+              hint.id='swqPwHint';
+              hint.className='swq-pw-hint';
+              input.parentElement?.appendChild(hint);
+            }
+            const paint=()=>{
+              const info=swqPasswordLabel(input.value);
+              hint.textContent=info.text;
+              hint.className='swq-pw-hint '+info.cls;
+            };
+            input.addEventListener('input',paint);
+            paint();
+          }
+          if(host){
+            const buttons=[...host.querySelectorAll('button')];
+            if(signup&&!host.querySelector('[data-terms-account]')){
+              const b=document.createElement('button');
+              b.className='btn secondary';
+              b.style.marginTop='8px';
+              b.dataset.termsAccount='1';
+              b.textContent='📜 Leer condiciones de uso';
+              b.onclick=conditionsOfUse;
+              const close=buttons.find(x=>x.textContent.trim()==='Cerrar');
+              close?host.insertBefore(b,close):host.appendChild(b);
+            }
+            if(!signup&&!host.querySelector('[data-resend-confirm]')){
+              const b=document.createElement('button');
+              b.className='btn secondary';
+              b.style.marginTop='8px';
+              b.dataset.resendConfirm='1';
+              b.textContent='📩 Reenviar confirmación';
+              b.onclick=resendSignupConfirmation;
+              const close=buttons.find(x=>x.textContent.trim()==='Cerrar');
+              close?host.insertBefore(b,close):host.appendChild(b);
+            }
+          }
+        },0);
+        return out;
+      };
+      window.__swqAuthModal20260920=true;
+    }
+  }catch(e){console.warn('SWQ auth modal',e)}
+
+  window.resendSignupConfirmation=async function(){
+    if(!supabaseReady()){toast('Supabase todavía no está disponible.');return}
+    const email=document.getElementById('authEmail')?.value.trim();
+    if(!email){toast('Introduce tu correo primero.');return}
+    try{
+      const {error}=await supabaseClient.auth.resend({
+        type:'signup',
+        email,
+        options:{emailRedirectTo:window.location.origin+window.location.pathname}
+      });
+      if(error)throw error;
+      toast('📩 Correo de confirmación reenviado.',4200);
+    }catch(e){toast('❌ No se pudo reenviar el correo.',4200)}
+  };
+
+  window.changeAccountPassword=function(){
+    if(!authUser||!supabaseReady()){toast('Inicia sesión para cambiar la contraseña.');return}
+    modal(
+      '<div class="kicker">🔐 SEGURIDAD</div>'+
+      '<h2>Cambiar contraseña</h2>'+
+      '<div class="field"><label>Nueva contraseña</label><input id="accountNewPassword" type="password" minlength="8" autocomplete="new-password" placeholder="Mínimo 8 caracteres"><div id="accountPwHint" class="swq-pw-hint pw-empty">Usa 8 caracteres o más.</div></div>'+
+      '<div class="field"><label>Repetir contraseña</label><input id="accountNewPassword2" type="password" minlength="8" autocomplete="new-password"></div>'+
+      '<button class="btn primary" onclick="saveAccountPassword()">Guardar contraseña</button>'+
+      '<button class="btn secondary" style="margin-top:8px" onclick="closeModal()">Cerrar</button>'
+    );
+    const input=document.getElementById('accountNewPassword');
+    if(input)input.addEventListener('input',()=>{
+      const info=swqPasswordLabel(input.value);
+      const h=document.getElementById('accountPwHint');
+      if(h){h.textContent=info.text;h.className='swq-pw-hint '+info.cls;}
+    });
+  };
+  window.saveAccountPassword=async function(){
+    const a=document.getElementById('accountNewPassword')?.value||'';
+    const b=document.getElementById('accountNewPassword2')?.value||'';
+    if(a.length<8||swqPasswordStrength(a)<2||a!==b){toast('Usa una contraseña de al menos 8 caracteres y confirma que coincida.',4200);return}
+    if(!supabaseReady()||!authUser){toast('Tu sesión ya no está disponible.');return}
+    try{
+      const {error}=await supabaseClient.auth.updateUser({password:a});
+      if(error)throw error;
+      closeModal();
+      toast('✅ Contraseña actualizada.',4200);
+    }catch(e){toast('❌ No se pudo actualizar la contraseña.',4200)}
+  };
+
+  try{
+    if(typeof signUpReal==='function'&&!window.__swqSignupStrength20260920){
+      const baseSignUp=signUpReal;
+      signUpReal=async function(){
+        const pw=document.getElementById('authPassword')?.value||'';
+        if(pw.length<8||swqPasswordStrength(pw)<2){toast('Usa una contraseña de al menos 8 caracteres con mejor variedad.',4200);return}
+        return baseSignUp.apply(this,arguments);
+      };
+      window.__swqSignupStrength20260920=true;
+    }
+  }catch(e){}
+
+  try{
+    if(typeof changeRecoveredPassword==='function'&&!window.__swqRecoveryStrength20260920){
+      const baseRecovery=changeRecoveredPassword;
+      changeRecoveredPassword=async function(){
+        const pw=document.getElementById('newPassword')?.value||'';
+        if(pw.length<8||swqPasswordStrength(pw)<2){toast('Usa una contraseña de al menos 8 caracteres.',4200);return}
+        return baseRecovery.apply(this,arguments);
+      };
+      window.__swqRecoveryStrength20260920=true;
+    }
+  }catch(e){}
+
+  /* New original horror-chiptune music: high register, tense intervals, no copied FNAF melody. */
+  try{
+    if(typeof MUSIC_TRACKS!=='undefined'){
+      MUSIC_TRACKS.frecuenciaPerdida={
+        name:'FNAF reference',
+        emoji:'🕯️',
+        notes:[659.25,622.25,659.25,783.99,698.46,659.25,587.33,523.25,659.25,698.46,830.61,783.99],
+        bass:[82.41,77.78,87.31,73.42],
+        tempo:430,
+        type:'triangle',
+        accent:3
+      };
+    }
+    if(typeof SHOP!=='undefined'&&!SHOP.some(x=>x.id==='music4')){
+      SHOP.push({
+        id:'music4',
+        icon:'🕯️',
+        name:'FNAF reference',
+        price:330,
+        desc:'Música original de terror con tono agudo y ambiente de videojuego de supervivencia.',
+        buy:()=>S.purchases.music4=true
+      });
+    }
+    if(typeof SHOP_PERMANENT_IDS!=='undefined')SHOP_PERMANENT_IDS.add('music4');
+  }catch(e){console.warn('SWQ music4',e)}
+
+  try{
+    if(typeof shopMusicCandidates==='function'&&!window.__swqMusic4Candidates20260920){
+      const baseShopMusic=shopMusicCandidates;
+      shopMusicCandidates=function(){
+        const list=baseShopMusic.apply(this,arguments);
+        if(!list.some(x=>x.id==='music4')&&!S.purchases.music4&&MUSIC_TRACKS.frecuenciaPerdida)list.push({id:'music4',key:'frecuenciaPerdida'});
+        return list;
+      };
+      window.__swqMusic4Candidates20260920=true;
+    }
+  }catch(e){}
+
+  try{
+    if(typeof buy==='function'&&!window.__swqMusic4Buy20260920){
+      const baseBuy=buy;
+      buy=function(id){
+        if(id==='music4'&&S.purchases.music4){toast('✅ Ya tienes esta música.');return}
+        return baseBuy.apply(this,arguments);
+      };
+      window.__swqMusic4Buy20260920=true;
+    }
+  }catch(e){}
+
+  try{save();render();}catch(e){}
+})();
