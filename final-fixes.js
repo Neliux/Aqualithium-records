@@ -20,7 +20,7 @@
 
   const VERSION='20260919-11';
   let updatingProfilePanel=false;
-  let roadTimer=null,planeTimer=null,roadLayer=null;
+  let roadTimer=null,planeTimer=null,helicopterTimer=null,roadLayer=null;
   let timeCategory=localStorage.getItem('SWIM_QUEST_TIME_CATEGORY')||'50';
   if(!['25','50','100','200'].includes(timeCategory))timeCategory='50';
   const PEAR_ANGER_KEY='SWIM_QUEST_PEAR_ANGER_COUNT';
@@ -257,8 +257,10 @@ body.theme-carretera .app{position:relative;z-index:2}
 .swq-road-light{position:absolute;top:59%;width:2px;height:25%;background:linear-gradient(#ffe79e,transparent);box-shadow:0 0 12px rgba(255,213,81,.55)}
 .swq-road-light.l1{left:13%}.swq-road-light.l2{right:13%}.swq-road-light.l3{left:30%;top:67%;height:16%}.swq-road-light.l4{right:30%;top:67%;height:16%}
 .swq-road-car,.swq-road-plane{position:absolute;will-change:transform;filter:drop-shadow(0 4px 8px rgba(0,0,0,.7));font-size:30px;white-space:nowrap}
-.swq-road-car{animation:swqCarDrive var(--dur,5.5s) linear forwards}.swq-road-car.reverse{animation-name:swqCarDriveReverse}.swq-road-car.fast{font-size:36px}
-.swq-road-plane{font-size:22px;animation:swqPlaneFly var(--dur,8s) linear forwards;opacity:.75;text-shadow:0 0 7px rgba(156,207,255,.55);will-change:transform}.swq-road-plane.reverse{animation-name:swqPlaneFlyReverse}
+.swq-road-car{animation:swqCarDrive var(--dur,5.5s) linear forwards!important;transform:translateZ(0)!important}.swq-road-car.reverse{animation-name:swqCarDrive!important;transform:none!important}.swq-road-car.fast{font-size:36px}
+.swq-road-plane{font-size:22px;animation:swqPlaneFly var(--dur,8s) linear forwards!important;opacity:.82;text-shadow:0 0 7px rgba(156,207,255,.55);will-change:transform}
+.swq-road-helicopter{position:absolute;font-size:25px;animation:swqPlaneFly var(--dur,10s) linear forwards!important;opacity:.98;text-shadow:0 0 9px rgba(170,220,255,.65);will-change:transform}
+@keyframes swqRoadHelicopterRide{from{transform:translateX(-18vw) translateY(0)}to{transform:translateX(118vw) translateY(-4vh)}}
 @keyframes swqCarDrive{from{transform:translateX(-18vw)}to{transform:translateX(118vw) translateY(-3vh)}}
 @keyframes swqCarDriveReverse{from{transform:translateX(118vw) scaleX(-1)}to{transform:translateX(-18vw) scaleX(-1)}}
 @keyframes swqPlaneFly{from{transform:translateX(-15vw) translateY(0) scale(.85) scaleX(1)}to{transform:translateX(118vw) translateY(-7vh) scale(1.05) scaleX(1)}}@keyframes swqPlaneFlyReverse{from{transform:translateX(118vw) translateY(0) scale(.9) scaleX(-1)}to{transform:translateX(-15vw) translateY(-7vh) scale(1.05) scaleX(-1)}}
@@ -284,31 +286,43 @@ body.theme-carretera .app{position:relative;z-index:2}
     document.body.appendChild(roadLayer);
   }
   function clearRoadLayer(){
-    if(roadTimer){clearInterval(roadTimer);roadTimer=null}if(planeTimer){clearInterval(planeTimer);planeTimer=null}
+    if(roadTimer){clearInterval(roadTimer);roadTimer=null}
+    if(planeTimer){clearInterval(planeTimer);planeTimer=null}
+    if(helicopterTimer){clearInterval(helicopterTimer);helicopterTimer=null}
     if(roadLayer){roadLayer.remove();roadLayer=null}
   }
   function spawnRoadCar(){
     if(S.settings.theme!=='Carretera'||!roadLayer)return;
     const el=document.createElement('span');el.className='swq-road-car'+(Math.random()<.3?' fast':'');
     el.textContent=['🚗','🚙','🚕','🚌'][Math.floor(Math.random()*4)];
-    const reverse=Math.random()<.28;if(reverse)el.classList.add('reverse');
     el.style.setProperty('--dur',(4.5+Math.random()*4.5)+'s');el.style.top=(61+Math.random()*27)+'%';
-    el.style.filter=`drop-shadow(0 3px 8px rgba(0,0,0,.8)) ${reverse?'brightness(.8)':'brightness(1)'}`;
+    el.style.filter='drop-shadow(0 3px 8px rgba(0,0,0,.8)) brightness(1)';
     roadLayer.appendChild(el);setTimeout(()=>el.remove(),10000);
   }
   function spawnRoadPlane(){
     if(S.settings.theme!=='Carretera'||!roadLayer)return;
-    const reverse=Math.random()<.28;
-    const el=document.createElement('span');el.className='swq-road-plane'+(reverse?' reverse':'');
-    el.textContent=Math.random()<.60?'🚁':(Math.random()<.5?'✈️':'🛫');
+    const el=document.createElement('span');el.className='swq-road-plane';
+    el.textContent=Math.random()<.60?'✈️':'🛫';
     el.style.top=(10+Math.random()*25)+'%';el.style.setProperty('--dur',(7.0+Math.random()*5.5)+'s');
     roadLayer.appendChild(el);setTimeout(()=>el.remove(),17000);
+  }
+  function spawnRoadHelicopter(){
+    if(S.settings.theme!=='Carretera'||!roadLayer)return;
+    const el=document.createElement('span');el.className='swq-road-helicopter';
+    el.textContent='🚁';
+    el.style.top=(9+Math.random()*25)+'%';
+    el.style.setProperty('--dur',(8.5+Math.random()*3.5)+'s');
+    roadLayer.appendChild(el);setTimeout(()=>el.remove(),15000);
   }
   function syncRoadTheme(){
     if(S.settings.theme==='Carretera'){
       createRoadLayer();
-      if(!roadTimer)roadTimer=setInterval(()=>{if(!document.hidden){spawnRoadCar();if(Math.random()<.10)spawnRoadCar()}},1700);
-      if(!planeTimer)planeTimer=setInterval(()=>{if(!document.hidden&&Math.random()<.10)spawnRoadPlane()},24000);
+      if(!roadTimer)roadTimer=setInterval(()=>{if(!document.hidden){spawnRoadCar();if(Math.random()<.12)spawnRoadCar()}},1700);
+      if(!planeTimer)planeTimer=setInterval(()=>{if(!document.hidden&&Math.random()<.35)spawnRoadPlane()},17000);
+      if(!helicopterTimer){
+        if(!document.hidden)setTimeout(()=>{if(S.settings.theme==='Carretera')spawnRoadHelicopter();},1200);
+        helicopterTimer=setInterval(()=>{if(!document.hidden)spawnRoadHelicopter()},10000);
+      }
     }else clearRoadLayer();
   }
 
@@ -3160,5 +3174,291 @@ body.theme-carretera .app{position:relative;z-index:2}
     const style=document.createElement('style');
     style.textContent='.swq-stable-difficulty-wheel .difficulty-legend-row{font-variant-numeric:tabular-nums}.swq-stable-difficulty-wheel .difficulty-donut-legend b{white-space:nowrap}';
     document.head.appendChild(style);
+  }catch(e){}
+})();
+
+/* === SWQ Solar orange-yellow 2026-09-20 === */
+(function(){
+  'use strict';
+  try{
+    if(typeof THEMES!=='undefined'&&THEMES.Solar){
+      THEMES.Solar.a='#ffe36a';
+      THEMES.Solar.b='#f28c18';
+      THEMES.Solar.desc='Amarillo solar intenso con naranja cálido y pulsos de luz.';
+    }
+    const st=document.createElement('style');
+    st.id='swq-solar-orange-yellow-20260920';
+    st.textContent=[
+      'body.theme-solar{background:radial-gradient(circle at 50% -12%,#fff6a8 0,#ffd84d 22%,#f5a623 48%,#c85b16 72%,#32130a 100%)!important;color:#fff9df!important}',
+      'body.theme-solar .card{background:linear-gradient(180deg,rgba(72,43,9,.95),rgba(28,14,6,.98))!important;border-color:rgba(255,221,95,.34)!important}',
+      'body.theme-solar .btn{background:linear-gradient(135deg,#ffe66b,#ffc12f 48%,#f58b18)!important;border-color:#ffeaa0!important;color:#241506!important;box-shadow:0 8px 26px rgba(255,190,40,.18)!important}',
+      'body.theme-solar .btn.primary{background:linear-gradient(135deg,#fff09a,#ffd23f 52%,#f07817)!important}',
+      'body.theme-solar .nav{background:rgba(39,19,5,.94)!important;border-top-color:rgba(255,220,90,.3)!important}',
+      'body.theme-solar .nav button.active{background:linear-gradient(135deg,rgba(255,229,102,.24),rgba(245,126,23,.16))!important;box-shadow:inset 0 0 0 1px rgba(255,226,110,.28),0 0 18px rgba(255,194,40,.12)!important}'
+    ].join('');
+    document.head.appendChild(st);
+  }catch(e){}
+})();
+
+/* === SWQ Carbon solid particles 2026-09-20 === */
+(function(){
+  'use strict';
+  try{
+    const st=document.createElement('style');
+    st.id='swq-carbon-solid-particles-20260920';
+    st.textContent=[
+      '.swq-carbon-ember{opacity:1!important;background:linear-gradient(180deg,#fff4a8 0,#efc548 58%,#a97816 100%)!important;box-shadow:0 0 11px rgba(255,205,70,.78),inset 0 1px 0 rgba(255,255,255,.5)!important}',
+      '.swq-carbon-ember::before,.swq-carbon-ember::after{opacity:1!important}',
+      'body.theme-carbon .theme-particle.abyss{opacity:.95!important}',
+      'body.theme-carbon .theme-particle.goldbar{opacity:1!important}'
+    ].join('');
+    document.head.appendChild(st);
+  }catch(e){}
+})();
+
+/* === SWQ stable styles random-basic gender pera 2026-09-20 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_STABLE_STYLE_GENDER_PEAR_20260920__)return;
+  window.__SWQ_STABLE_STYLE_GENDER_PEAR_20260920__=true;
+
+  const RANDOM_STYLE_ID='theme_RandomBasic';
+  const RANDOM_THEME='RandomBasic';
+  let randomBasicDice=false;
+  let randomBasicDiceTimer=null;
+
+  function ensureRandomBasic(){
+    try{
+      if(typeof THEMES!=='undefined'){
+        THEMES[RANDOM_THEME]=THEMES[RANDOM_THEME]||{
+          a:'#42b3ff',b:'#1d2a53',emoji:'🎲',
+          desc:'Estilo básico sin efectos: cambia de color al entrar al juego. A veces aparece en blanco y negro con dados.'
+        };
+        THEMES[RANDOM_THEME].emoji='🎲';
+        THEMES[RANDOM_THEME].desc='Estilo básico sin efectos: cada entrada cambia el color. A veces aparece en blanco y negro con dados cayendo.';
+      }
+      if(typeof SHOP!=='undefined'){
+        let it=SHOP.find(x=>x.id===RANDOM_STYLE_ID);
+        if(!it){
+          it={id:RANDOM_STYLE_ID,icon:'🎲',name:'Aleatorio Básico',price:210,
+            desc:'Muy básico y sin efectos. Cada vez que entras al juego obtiene un color distinto. A veces sale blanco y negro con dados.',
+            buy:()=>{S.purchases[RANDOM_STYLE_ID]=true;}};
+          SHOP.push(it);
+        }else{
+          it.icon='🎲';it.name='Aleatorio Básico';it.price=210;
+          it.desc='Muy básico y sin efectos. Cada vez que entras al juego obtiene un color distinto. A veces sale blanco y negro con dados.';
+          it.buy=()=>{S.purchases[RANDOM_STYLE_ID]=true;};
+        }
+      }
+      S.purchases=S.purchases||{};
+      if(S.purchases[RANDOM_STYLE_ID]===true)S.shopUnlocks=S.shopUnlocks||{};
+    }catch(e){}
+  }
+
+  const RANDOM_PALETTES=[
+    ['#55d6ff','#1767d9'],['#6ee7a8','#16704d'],['#ffd54a','#d88900'],['#ff9b73','#d84a20'],
+    ['#c99cff','#7130c9'],['#ff8fc5','#c74682'],['#78a9ff','#304fbe'],['#e8f4ff','#7b8ea8'],
+    ['#7cf2e1','#178f83']
+  ];
+
+  function pickRandomBasicColor(){
+    const dice=Math.random()<0.12;
+    randomBasicDice=dice;
+    if(dice)return ['#f8f8f8','#111111'];
+    return RANDOM_PALETTES[Math.floor(Math.random()*RANDOM_PALETTES.length)];
+  }
+
+  function applyRandomBasicEntryColor(force=false){
+    try{
+      ensureRandomBasic();
+      if(S.settings.theme!==RANDOM_THEME)return;
+      if(!force&&window.__SWQ_RANDOM_BASIC_SESSION_COLOR__)return;
+      const [a,b]=pickRandomBasicColor();
+      THEMES[RANDOM_THEME].a=a;
+      THEMES[RANDOM_THEME].b=b;
+      document.documentElement.style.setProperty('--a',a);
+      document.documentElement.style.setProperty('--b',b);
+      window.__SWQ_RANDOM_BASIC_SESSION_COLOR__=true;
+      if(typeof applyTheme==='function')applyTheme();
+      syncRandomBasicDice();
+      save();
+    }catch(e){}
+  }
+
+  function syncRandomBasicDice(){
+    clearInterval(randomBasicDiceTimer);
+    randomBasicDiceTimer=null;
+    const old=document.getElementById('swqRandomBasicDiceLayer');if(old)old.remove();
+    if(S.settings.theme!==RANDOM_THEME||!randomBasicDice)return;
+    let host=document.getElementById('swqRandomBasicDiceLayer');
+    if(!host){
+      host=document.createElement('div');host.id='swqRandomBasicDiceLayer';
+      document.body.appendChild(host);
+    }
+    const spawn=()=>{
+      if(S.settings.theme!==RANDOM_THEME||!randomBasicDice){clearInterval(randomBasicDiceTimer);return;}
+      const d=document.createElement('span');d.className='swq-random-die';
+      d.textContent=['⚀','⚁','⚂','⚃','⚄','⚅'][Math.floor(Math.random()*6)];
+      d.style.left=(4+Math.random()*92)+'%';
+      d.style.setProperty('--fallDur',(4.5+Math.random()*2.5)+'s');
+      d.style.setProperty('--drift',(-45+Math.random()*90)+'px');
+      host.appendChild(d);setTimeout(()=>d.remove(),8000);
+    };
+    spawn();randomBasicDiceTimer=setInterval(spawn,1150);
+  }
+
+  function stableEquipTheme(theme){
+    try{
+      ensureRandomBasic();
+      const purchased=(theme==='Aqua'||!!S.purchases?.['theme_'+theme]);
+      if(!THEMES?.[theme]){toast('⚠️ Ese estilo no existe.');return;}
+      if(!purchased){toast('🔒 Ese estilo todavía no está desbloqueado.');return;}
+      S.settings.theme=theme;
+      if(theme===RANDOM_THEME){
+        window.__SWQ_RANDOM_BASIC_SESSION_COLOR__=false;
+        applyRandomBasicEntryColor(true);
+      }else{
+        applyTheme();
+        randomBasicDice=false;
+        syncRandomBasicDice();
+      }
+      try{eclipseCartoonStars();}catch(e){}
+      save();
+      render();
+    }catch(e){console.warn('SWQ stable equipTheme',e)}
+  }
+  window.equipTheme=stableEquipTheme;
+  try{equipTheme=stableEquipTheme;}catch(e){}
+
+  function patchOnboardingGender(){
+    try{
+      const base=window.onboarding;
+      if(typeof base!=='function'||window.__SWQ_ONBOARDING_GENDER_FINAL__)return;
+      window.onboarding=function(){
+        let html=base.apply(this,arguments);
+        const desired='<div class="field"><label>Género</label><select id="onGender" onchange="document.getElementById(\'onOtherGenderWrap\').style.display=this.value===\'Otro\'?\'block\':\'none\'"><option>Masculino</option><option>Femenino</option><option>Prefiero no decirlo</option><option>Otro</option></select><div id="onOtherGenderWrap" style="display:none;margin-top:7px"><input id="onOtherGender" maxlength="40" placeholder="Escribe tu género"></div></div>';
+        html=html.replace(/<div class="field"><label>Género<\/label><select id="onGender">[\s\S]*?<\/select><\/div>/,desired);
+        return html;
+      };
+      window.__SWQ_ONBOARDING_GENDER_FINAL__=true;
+    }catch(e){}
+  }
+
+  function patchCreateProfileGender(){
+    try{
+      const base=window.createProfile;
+      if(typeof base!=='function'||window.__SWQ_CREATE_PROFILE_GENDER_FINAL__)return;
+      window.createProfile=function(){
+        const sel=document.getElementById('onGender'),other=document.getElementById('onOtherGender');
+        if(sel?.value==='Otro'){
+          const custom=String(other?.value||'').trim();
+          if(!custom){toast('Escribe qué género quieres mostrar en tu perfil.');return;}
+          const old=sel.value;
+          sel.value='Otro: '+custom.slice(0,40);
+          try{return base.apply(this,arguments);}finally{sel.value=old;}
+        }
+        return base.apply(this,arguments);
+      };
+      window.__SWQ_CREATE_PROFILE_GENDER_FINAL__=true;
+    }catch(e){}
+  }
+
+  function patchPearDialogues(){
+    try{
+      if(typeof PEAR_TOPIC_DIALOGUES==='undefined'||!Array.isArray(PEAR_TOPIC_DIALOGUES))return;
+      const generic={
+        tema1:['💭 Siento que últimamente no estoy avanzando como quisiera.','💭 Me preocupa que mis resultados estén empeorando.','💭 A veces hago esfuerzo y aun así no noto la mejora.','💭 Me cuesta saber si lo que estoy haciendo está funcionando.','💭 Tengo miedo de perder el progreso que ya había construido.','💭 Necesito encontrar una forma más tranquila de medir mi avance.','💭 Supongo que puedo seguir intentando sin exigir que todo mejore de inmediato.'],
+        tema2:['💭 Me da miedo equivocarme cuando algo me importa.','💭 Siento mucha presión por hacerlo bien.','💭 A veces imagino todos los errores posibles antes de empezar.','💭 Me preocupa cómo reaccionarán los demás si algo sale mal.','💭 Quiero poder seguir adelante aunque tenga nervios.','💭 Quizá no necesito hacerlo perfecto para que valga la pena.','💭 Me gustaría confiar más en lo que ya practiqué.'],
+        tema3:['💭 Una mala etapa me hace pensar que quizá no sirvo para esto.','💭 Cuando algo sale mal, me cuesta no convertirlo en una etiqueta sobre mí.','💭 A veces siento que mis esfuerzos no son suficientes.','💭 Me preocupa quedarme atrás y no encontrar una forma de cambiarlo.','💭 Quiero separar un resultado malo de lo que valgo como persona.','💭 Me cuesta recordar todo lo que sí he conseguido cuando estoy frustrado.','💭 Quizá necesito juzgarme menos por un solo resultado.'],
+        tema4:['💭 Veo que otras personas avanzan y me cuesta no compararme.','💭 A veces siento que estoy quedándome atrás.','💭 Me fijo demasiado en resultados ajenos y eso me hace dudar de mí.','💭 Sé que no conozco todo el camino de las demás personas, pero aun así me comparo.','💭 Quiero aprender a admirar los logros ajenos sin convertirlos en una medida de mi valor.','💭 Tal vez debería mirar más mi propio progreso.','💭 Puedo aprender de otras personas sin necesitar ser igual que ellas.'],
+        tema5:['💭 Ya no siento la misma emoción que al principio.','💭 A veces sigo por costumbre y no sé qué quiero realmente.','💭 Me pregunto si todavía disfruto esto de la misma manera.','💭 Me da miedo cambiar de rumbo después de haber invertido tanto tiempo.','💭 No quiero que una actividad se convierta en toda mi identidad.','💭 Quizá necesito permitirme evaluar qué quiero seguir haciendo.','💭 Puedo cambiar de objetivo sin borrar lo que aprendí.'],
+        tema6:['💭 A veces escondo que estoy cansado o preocupado para que todo parezca normal.','💭 Me cuesta decir cuando algo me está superando.','💭 Temo que los demás interpreten mis límites como una debilidad.','💭 A veces acumulo demasiado antes de hablar.','💭 Quiero encontrar una forma de pedir apoyo cuando lo necesito.','💭 Reconocer cómo me siento puede ser una forma de cuidarme.'],
+        tema7:['💭 Me pongo nervioso cuando las cosas no salen como las había imaginado.','💭 Quiero controlar todos los detalles para sentirme seguro.','💭 Un pequeño cambio puede hacer que pierda la calma más de lo que quisiera.','💭 Sé que no puedo controlar todo, aunque todavía me cuesta aceptarlo.','💭 Quiero aprender a adaptarme sin sentir que todo está perdido.','💭 Quizá ser flexible también sea una forma de tener control sobre mi respuesta.','💭 El agua va a cambiar de todas formas; puedo aprender a moverme con ella.'],
+        tema8:['💭 A veces siento que mi esfuerzo pasa desapercibido.','💭 Me gustaría que alguien reconociera el trabajo que hay detrás de mis resultados.','💭 Cuando nadie nota una mejora, me cuesta sentir que contó.','💭 A veces busco mostrar lo que hago para sentir que tiene más valor.','💭 No quiero depender de la aprobación para saber que algo fue importante.','💭 Mi esfuerzo puede tener significado aunque nadie lo vea.'],
+        tema9:['💭 A veces siento que otra persona parece mejor que yo.','💭 Me cuesta no comparar mis resultados con los de otras personas.','💭 Sé que solo veo una parte de la historia de los demás.','💭 Quiero aprender de quienes admiro sin convertirme en una copia.','💭 Una diferencia en una habilidad no tiene por qué definir mi valor.','💭 Puedo reconocer que alguien destaca en algo y seguir construyendo mi propio camino.'],
+        tema10:['💭 Antes de competir me pongo nervioso y temo olvidar lo que practiqué.','💭 Siento que mis nervios pueden afectar mi rendimiento.','💭 Quiero aprender a competir sin necesitar que desaparezcan todos los nervios.','💭 Me ayuda recordar las partes sencillas de la rutina que ya conozco.'],
+        tema11:['💭 A veces siento culpa cuando descanso.','💭 Me preocupa que descansar signifique estar perdiendo progreso.','💭 Compararme con quien entrenó mientras yo descansaba me hace sentir atrás.','💭 Quiero entender mejor qué lugar ocupa el descanso en mi proceso.','💭 Quizá descansar también puede ser una decisión responsable.','💭 No necesito llenar cada día para demostrar que me estoy esforzando.'],
+        tema12:['💭 Una relación terminó y todavía me cuesta dejar de pensar en ello.','💭 A veces estoy bien y luego vuelve el recuerdo.','💭 Me gustaría avanzar sin fingir que nada de lo vivido importó.','💭 Algunos días se sienten más pesados que otros.','💭 No necesito olvidar de golpe para poder seguir adelante.','💭 Puedo aceptar lo que siento y volver poco a poco a mi propia vida.']
+      };
+      for(const d of PEAR_TOPIC_DIALOGUES){
+        const arr=generic[d.id];
+        if(!arr||!Array.isArray(d.lines))continue;
+        let j=0;
+        for(const line of d.lines){
+          if(line?.speaker==='👤 TÚ'){
+            line.speaker='💭 TÚ PIENSAS';
+            line.text=arr[j%arr.length];
+            j++;
+          }else if(line?.text){
+            line.text=String(line.text)
+              .replace(/Mateo/g,'otra persona')
+              .replace(/Juan/g,'otra persona')
+              .replace(/el sábado/g,'en una próxima competencia')
+              .replace(/carril tres/g,'un carril')
+              .replace(/carril cuatro/g,'otro carril')
+              .replace(/hombro derecho/g,'el cuerpo');
+          }
+        }
+      }
+    }catch(e){console.warn('SWQ generalized Pera',e)}
+  }
+
+  function applyRandomBasicCSS(){
+    if(document.getElementById('swq-random-basic-css'))return;
+    const st=document.createElement('style');st.id='swq-random-basic-css';
+    st.textContent=[
+      'body.theme-randombasic{background:linear-gradient(180deg,var(--a),var(--b))!important;color:#fff!important}',
+      'body.theme-randombasic .card{background:rgba(8,15,24,.84)!important;border-color:rgba(255,255,255,.2)!important;box-shadow:none!important}',
+      'body.theme-randombasic .btn{background:var(--a)!important;color:#08111c!important;border-color:rgba(255,255,255,.35)!important;box-shadow:none!important;animation:none!important}',
+      'body.theme-randombasic .btn.primary{background:var(--b)!important;color:#fff!important}',
+      'body.theme-randombasic .nav{background:rgba(7,10,14,.96)!important;border-top-color:rgba(255,255,255,.18)!important}',
+      '#swqRandomBasicDiceLayer{position:fixed;inset:0;z-index:43;pointer-events:none;overflow:hidden}',
+      '.swq-random-die{position:absolute;top:-34px;font-size:28px;color:#111;text-shadow:0 1px 0 #fff;animation:swqRandomDieFall var(--fallDur,5s) linear forwards;will-change:transform,opacity}',
+      '@keyframes swqRandomDieFall{0%{opacity:0;transform:translate3d(0,-12px,0) rotate(0deg)}10%{opacity:1}100%{opacity:1;transform:translate3d(var(--drift,0px),112vh,0) rotate(360deg)}}'
+    ].join('');
+    document.head.appendChild(st);
+  }
+
+  ensureRandomBasic();
+  patchOnboardingGender();
+  patchCreateProfileGender();
+  patchPearDialogues();
+  applyRandomBasicCSS();
+  if(S.settings.theme===RANDOM_THEME)applyRandomBasicEntryColor(false);
+
+  const observer=new MutationObserver(()=>{
+    try{ensureRandomBasic();patchOnboardingGender();patchCreateProfileGender();patchPearDialogues();}catch(e){}
+  });
+  observer.observe(document.documentElement,{childList:true,subtree:true});
+
+  let lastTheme=S.settings.theme;
+  setInterval(()=>{
+    try{
+      ensureRandomBasic();
+      if(S.settings.theme!==lastTheme){
+        lastTheme=S.settings.theme;
+        if(S.settings.theme===RANDOM_THEME){
+          window.__SWQ_RANDOM_BASIC_SESSION_COLOR__=false;
+          applyRandomBasicEntryColor(true);
+        }else{
+          randomBasicDice=false;syncRandomBasicDice();
+        }
+      }
+      if(S.settings.theme===RANDOM_THEME)syncRandomBasicDice();
+    }catch(e){}
+  },1800);
+})();
+
+/* === SWQ road direction + helicopter visual layer 2026-09-20 === */
+(function(){
+  'use strict';
+  try{
+    const st=document.createElement('style');st.id='swq-road-cars-one-direction-20260920';
+    st.textContent=[
+      '.swq-road-car.reverse{animation-name:swqCarDrive!important;transform:none!important}',
+      '.swq-road-helicopter{position:absolute;display:block;will-change:transform,opacity;pointer-events:none;animation:swqPlaneFly var(--dur,10s) linear forwards!important}',
+      'body.theme-carretera .swq-road-helicopter{filter:drop-shadow(0 0 8px rgba(170,220,255,.62))}'
+    ].join('');
+    document.head.appendChild(st);
   }catch(e){}
 })();
