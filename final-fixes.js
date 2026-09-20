@@ -4222,3 +4222,71 @@ body.theme-carretera .app{position:relative;z-index:2}
   try{if(S.settings.theme==='RandomBasic')startDice();}catch(e){}
 })();
 
+
+
+/* === SWQ FINAL STYLE SELECT + FISH POSITION 2026-09-20 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_FINAL_STYLE_SELECT_FISH_POS__)return;
+  window.__SWQ_FINAL_STYLE_SELECT_FISH_POS__=true;
+
+  /* Pez Motivador: slightly higher on the profile, without changing its layout size. */
+  try{
+    const st=document.createElement('style');
+    st.id='swq-final-fish-position-css';
+    st.textContent='.profile-fish{transform:translateY(-9px)!important}';
+    document.head.appendChild(st);
+  }catch(e){}
+
+  function ownedStylesFinal(){
+    const out=['Aqua'];
+    try{
+      for(const k of Object.keys(THEMES||{})){
+        if(k!=='Aqua'&&S.purchases?.['theme_'+k])out.push(k);
+      }
+    }catch(e){}
+    return [...new Set(out)];
+  }
+  function applyStyleFinal(k){
+    try{
+      if(!THEMES?.[k])return;
+      if(k!=='Aqua'&&!S.purchases?.['theme_'+k]){
+        toast('🔒 Ese estilo todavía no está desbloqueado.');
+        return;
+      }
+      S.settings.theme=k;
+      save();
+      if(typeof applyTheme==='function')applyTheme();
+      closeModal();
+      render();
+    }catch(e){console.warn('SWQ final style select apply',e)}
+  }
+
+  /* Exact same simple interaction pattern as music: one select, one apply button. */
+  window.swqQuickTheme=function(){
+    try{
+      const opts=ownedStylesFinal().map(k=>
+        '<option value="'+esc(k)+'" '+(S.settings.theme===k?'selected':'')+'>'+
+        esc(THEMES[k]?.emoji||'🎨')+' '+
+        esc(typeof swqThemeName==='function'?swqThemeName(k):k)+
+        '</option>'
+      ).join('');
+      modal(
+        '<div class="kicker">🎨 ESTILO</div>'+
+        '<h2>Elegir estilo</h2>'+
+        '<div class="field" style="margin-top:10px">'+
+          '<select id="swqFinalStyleSelect" style="width:100%">'+opts+'</select>'+
+        '</div>'+
+        '<button type="button" id="swqFinalStyleApply" class="btn primary" style="margin-top:8px">Usar estilo</button>'+
+        '<button type="button" class="btn secondary" style="margin-top:8px" onclick="closeModal()">Cerrar</button>'
+      );
+      document.getElementById('swqFinalStyleApply')?.addEventListener('click',()=>{
+        applyStyleFinal(document.getElementById('swqFinalStyleSelect')?.value||'Aqua');
+      });
+    }catch(e){console.warn('SWQ final style select modal',e)}
+  };
+  window.swqApplyQuickTheme=applyStyleFinal;
+  window.equipTheme=applyStyleFinal;
+  try{equipTheme=applyStyleFinal}catch(e){}
+})();
+
