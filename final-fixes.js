@@ -505,7 +505,7 @@ body.theme-carretera .app{position:relative;z-index:2}
     try{
       const gemValues={xp500:650,xp1500:1950,xpJuan:13000};
       const gemNames={xp500:'Cristal XP 650',xp1500:'Cristal XP 1.950',xpJuan:'Cristal de Ascensión · 13.000 XP'};
-      const gemDescs={xp500:'Gema de XP. Otorga 650 XP (30% más que antes).',xp1500:'Gema de XP. Otorga 1.950 XP (30% más que antes).',xpJuan:'Gema de XP especial. Otorga 13.000 XP (30% más que antes).' };
+      const gemDescs={xp500:'Gema de XP. Otorga 650 XP.',xp1500:'Gema de XP. Otorga 1.950 XP.',xpJuan:'Gema de XP especial. Otorga 13.000 XP.' };
       for(const [id,val] of Object.entries(gemValues)){
         const it=SHOP?.find?.(x=>x.id===id);if(!it)continue;
         it.name=gemNames[id];it.desc=gemDescs[id];it.buy=()=>gainXP(val);
