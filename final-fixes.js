@@ -3464,3 +3464,277 @@ body.theme-carretera .app{position:relative;z-index:2}
     document.head.appendChild(st);
   }catch(e){}
 })();
+
+/* === SWQ MASTER STABILITY PATCH 2026-09-20 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_MASTER_STABILITY_20260920__)return;
+  window.__SWQ_MASTER_STABILITY_20260920__=true;
+
+  /* SOLAR: yellow-orange, with yellow clearly dominant. */
+  try{
+    if(typeof THEMES!=='undefined'&&THEMES.Solar){
+      THEMES.Solar.a='#ffe86a';
+      THEMES.Solar.b='#f28b16';
+      THEMES.Solar.desc='Amarillo solar intenso con naranja cálido y pulsos de luz.';
+    }
+    const st=document.createElement('style');st.id='swq-master-solar-20260920';
+    st.textContent='body.theme-solar{background:radial-gradient(circle at 50% -18%,#fff8a8 0,#ffe85b 24%,#ffc226 48%,#f28b16 70%,#8e3c0c 100%)!important;color:#fffbe8!important}'+
+      'body.theme-solar .card,body.theme-solar .list-item,body.theme-solar .series,body.theme-solar .stat{background:linear-gradient(180deg,rgba(74,45,7,.94),rgba(30,15,5,.98))!important;border-color:rgba(255,228,101,.38)!important}'+
+      'body.theme-solar .btn{background:linear-gradient(135deg,#fff19a 0,#ffe15a 45%,#ffbd22 74%,#f28b16 100%)!important;border-color:#fff0a2!important;color:#2a1704!important}'+
+      'body.theme-solar .btn.primary{background:linear-gradient(135deg,#fff7b4,#ffe14d 48%,#f7a915)!important}'+
+      'body.theme-solar .nav{background:rgba(49,25,4,.95)!important;border-top-color:rgba(255,224,93,.34)!important}';
+    document.head.appendChild(st);
+  }catch(e){}
+
+  /* CARBON: falling particles are solid, not washed out by the base animation. */
+  try{
+    const st=document.createElement('style');st.id='swq-master-carbon-20260920';
+    st.textContent='.swq-carbon-solid{opacity:1!important}'+
+      'body.theme-carbon .theme-particle.goldbar{opacity:1!important;animation:swqCarbonSolidGold 5.5s linear forwards!important;background:linear-gradient(180deg,#fff7b0 0,#f0c63e 48%,#9b6c10 100%)!important;border-color:#fff2a0!important;box-shadow:inset 0 2px 0 rgba(255,255,255,.72),0 0 13px rgba(255,204,68,.62)!important}'+
+      'body.theme-carbon .theme-particle.abyss{opacity:1!important;animation:swqCarbonSolidDot 4.8s linear forwards!important;background:#58dfd6!important;box-shadow:0 0 9px #58dfd6!important}';
+    document.head.appendChild(st);
+    const anim=document.createElement('style');
+    anim.textContent='@keyframes swqCarbonSolidGold{0%{opacity:1;transform:translateY(-20px) rotate(0)}100%{opacity:1;transform:translateY(112vh) rotate(240deg)}}@keyframes swqCarbonSolidDot{0%{opacity:1;transform:translate3d(0,18px,0) scale(.5) rotate(0)}100%{opacity:1;transform:translate3d(var(--dx),-90px,0) scale(1.15) rotate(160deg)}}';
+    document.head.appendChild(anim);
+  }catch(e){}
+
+  /* RANDOM BASIC STYLE: 210 coins, no normal effects, new color every full entry. */
+  const RANDOM_THEME='RandomBasic',RANDOM_ID='theme_RandomBasic';
+  let masterDice=false,masterDiceTimer=null;
+  const RANDOM_COLORS=[
+    ['#57d8ff','#2069d7'],['#7be7aa','#17734e'],['#ffe05b','#d98d00'],['#ff9b72','#d84c20'],
+    ['#c99dff','#7135cb'],['#ff91c5','#bf417d'],['#7ca9ff','#3151b9'],['#edf7ff','#788ca4'],['#7cf2e1','#178f83']
+  ];
+  function ensureRandomBasic(){
+    try{
+      if(typeof THEMES==='undefined'||typeof SHOP==='undefined')return;
+      THEMES[RANDOM_THEME]=THEMES[RANDOM_THEME]||{a:'#57d8ff',b:'#2069d7',emoji:'🎲',desc:''};
+      THEMES[RANDOM_THEME].emoji='🎲';
+      THEMES[RANDOM_THEME].desc='Estilo muy básico y sin efectos. Cada vez que entras al juego cambia de color. A veces aparece blanco y negro con dados cayendo.';
+      let it=SHOP.find(x=>x.id===RANDOM_ID);
+      if(!it)SHOP.push({id:RANDOM_ID,icon:'🎲',name:'Aleatorio Básico',price:210,desc:THEMES[RANDOM_THEME].desc,buy:()=>{S.purchases[RANDOM_ID]=true;}});
+      else{it.icon='🎲';it.name='Aleatorio Básico';it.price=210;it.desc=THEMES[RANDOM_THEME].desc;it.buy=()=>{S.purchases[RANDOM_ID]=true;};}
+    }catch(e){}
+  }
+  function clearMasterDice(){if(masterDiceTimer){clearInterval(masterDiceTimer);masterDiceTimer=null}document.getElementById('swq-master-dice')?.remove();}
+  function startMasterDice(){
+    clearMasterDice();
+    if(S.settings.theme!==RANDOM_THEME||!masterDice)return;
+    const host=document.createElement('div');host.id='swq-master-dice';
+    Object.assign(host.style,{position:'fixed',inset:'0',zIndex:'45',pointerEvents:'none',overflow:'hidden'});
+    document.body.appendChild(host);
+    const spawn=()=>{
+      if(S.settings.theme!==RANDOM_THEME||!masterDice){clearMasterDice();return}
+      const d=document.createElement('span');d.textContent=['⚀','⚁','⚂','⚃','⚄','⚅'][Math.floor(Math.random()*6)];
+      Object.assign(d.style,{position:'absolute',top:'-34px',left:(4+Math.random()*92)+'%',fontSize:'28px',color:'#111',fontWeight:'900',textShadow:'0 1px 0 #fff',animation:'swqMasterDiceFall 5.8s linear forwards'});
+      d.style.setProperty('--drift',(-45+Math.random()*90)+'px');
+      host.appendChild(d);setTimeout(()=>d.remove(),8500);
+    };
+    spawn();masterDiceTimer=setInterval(spawn,1150);
+  }
+  function chooseRandomBasic(){
+    const variants=RANDOM_COLORS.map((pair,i)=>({pair,i,dice:false}));
+    variants.push({pair:['#ffffff','#121212'],i:variants.length,dice:true});
+    const prev=Number(localStorage.getItem('SWQ_RANDOM_BASIC_MASTER_VARIANT'));
+    const available=variants.filter(x=>x.i!==prev);
+    const chosen=available[Math.floor(Math.random()*available.length)];
+    localStorage.setItem('SWQ_RANDOM_BASIC_MASTER_VARIANT',String(chosen.i));
+    return chosen;
+  }
+  function applyRandomBasic(){
+    ensureRandomBasic();
+    if(S.settings.theme!==RANDOM_THEME)return;
+    const chosen=chooseRandomBasic();
+    THEMES[RANDOM_THEME].a=chosen.pair[0];THEMES[RANDOM_THEME].b=chosen.pair[1];
+    masterDice=chosen.dice;
+    document.documentElement.style.setProperty('--a',chosen.pair[0]);
+    document.documentElement.style.setProperty('--b',chosen.pair[1]);
+    window.__SWQ_RANDOM_BASIC_SESSION_COLOR__=true;
+    clearMasterDice();
+    if(typeof applyTheme==='function')applyTheme();
+    startMasterDice();
+  }
+  try{const css=document.createElement('style');css.id='swq-master-random-basic-css';css.textContent='body.theme-randombasic{background:linear-gradient(180deg,var(--a),var(--b))!important;color:#fff!important}body.theme-randombasic .card{background:rgba(8,15,24,.84)!important;border-color:rgba(255,255,255,.20)!important;box-shadow:none!important}body.theme-randombasic .btn{background:var(--a)!important;color:#08111c!important;border-color:rgba(255,255,255,.35)!important;box-shadow:none!important;animation:none!important}body.theme-randombasic .btn.primary{background:var(--b)!important;color:#fff!important}@keyframes swqMasterDiceFall{0%{opacity:0;transform:translate3d(0,-12px,0) rotate(0deg)}10%{opacity:1}100%{opacity:1;transform:translate3d(var(--drift,0px),112vh,0) rotate(360deg)}}';document.head.appendChild(css)}catch(e){}
+
+  /* CARRETERA: independent visible traffic layer, all cars left-to-right, helicopters guaranteed. */
+  let masterRoadTimer=null,masterPlaneTimer=null,masterHeliTimer=null,masterRoadLayer=null;
+  function clearMasterRoad(){
+    if(masterRoadTimer){clearInterval(masterRoadTimer);masterRoadTimer=null}
+    if(masterPlaneTimer){clearInterval(masterPlaneTimer);masterPlaneTimer=null}
+    if(masterHeliTimer){clearInterval(masterHeliTimer);masterHeliTimer=null}
+    document.getElementById('swqMasterRoadLayer')?.remove();masterRoadLayer=null;
+  }
+  function makeMasterRoad(){
+    let host=document.getElementById('swqMasterRoadLayer');
+    if(host)return host;
+    host=document.createElement('div');host.id='swqMasterRoadLayer';
+    host.innerHTML='<div class="swq-road-stars"></div><div class="swq-road-city"></div><div class="swq-road"></div><div class="swq-road-light l1"></div><div class="swq-road-light l2"></div><div class="swq-road-light l3"></div><div class="swq-road-light l4"></div>';
+    Object.assign(host.style,{position:'fixed',inset:'0',zIndex:'1',pointerEvents:'none',overflow:'hidden'});
+    document.body.appendChild(host);masterRoadLayer=host;return host;
+  }
+  function spawnMasterCar(){
+    if(S.settings.theme!=='Carretera'||!masterRoadLayer)return;
+    const el=document.createElement('span');el.className='swq-master-road-car swq-road-car';
+    el.textContent=['🚗','🚙','🚕','🚌'][Math.floor(Math.random()*4)];
+    el.style.top=(61+Math.random()*27)+'%';el.style.setProperty('--dur',(4.6+Math.random()*4.2)+'s');
+    el.style.animation='swqMasterCarRide var(--dur,6s) linear forwards';
+    el.style.animationName='swqMasterCarRide';el.style.transform='none';
+    masterRoadLayer.appendChild(el);setTimeout(()=>el.remove(),10500);
+  }
+  function spawnMasterPlane(){
+    if(S.settings.theme!=='Carretera'||!masterRoadLayer)return;
+    const el=document.createElement('span');el.className='swq-master-road-plane';el.textContent=Math.random()<.6?'✈️':'🛫';
+    el.style.top=(10+Math.random()*25)+'%';el.style.setProperty('--dur',(7+Math.random()*5)+'s');
+    el.style.animation='swqMasterPlaneRide var(--dur,9s) linear forwards';masterRoadLayer.appendChild(el);setTimeout(()=>el.remove(),17000);
+  }
+  function spawnMasterHeli(){
+    if(S.settings.theme!=='Carretera'||!masterRoadLayer)return;
+    const el=document.createElement('span');el.className='swq-master-road-heli';el.textContent='🚁';
+    el.style.top=(9+Math.random()*28)+'%';el.style.setProperty('--dur',(8.5+Math.random()*3.2)+'s');
+    el.style.animation='swqMasterHeliRide var(--dur,10s) linear forwards';masterRoadLayer.appendChild(el);setTimeout(()=>el.remove(),15000);
+  }
+  function syncMasterRoad(){
+    if(S.settings.theme!=='Carretera'){clearMasterRoad();return}
+    const old=document.getElementById('swqRoadLayer');if(old)old.remove();
+    const host=makeMasterRoad();
+    if(!masterRoadTimer)masterRoadTimer=setInterval(()=>{if(!document.hidden){spawnMasterCar();if(Math.random()<.15)spawnMasterCar()}},1450);
+    if(!masterPlaneTimer)masterPlaneTimer=setInterval(()=>{if(!document.hidden&&Math.random()<.30)spawnMasterPlane()},15000);
+    if(!masterHeliTimer)masterHeliTimer=setInterval(()=>{if(!document.hidden)spawnMasterHeli()},8500);
+    if(!host.querySelector('.swq-master-road-heli')&&!document.hidden)setTimeout(()=>{if(S.settings.theme==='Carretera')spawnMasterHeli()},650);
+  }
+  try{
+    const css=document.createElement('style');css.id='swq-master-carretera-css';
+    css.textContent='@keyframes swqMasterCarRide{from{transform:translateX(-18vw)}to{transform:translateX(118vw) translateY(-3vh)}}@keyframes swqMasterPlaneRide{from{transform:translateX(-18vw) translateY(0) scale(.85)}to{transform:translateX(118vw) translateY(-7vh) scale(1.05)}}@keyframes swqMasterHeliRide{from{transform:translateX(-18vw) translateY(0)}to{transform:translateX(118vw) translateY(-4vh)}}.swq-master-road-car{position:absolute;font-size:30px;white-space:nowrap;filter:drop-shadow(0 4px 8px rgba(0,0,0,.7));will-change:transform}.swq-master-road-plane{position:absolute;font-size:22px;opacity:.82;filter:drop-shadow(0 4px 8px rgba(0,0,0,.7));white-space:nowrap}.swq-master-road-heli{position:absolute;font-size:27px;opacity:1;filter:drop-shadow(0 0 9px rgba(170,220,255,.65));white-space:nowrap}';
+    document.head.appendChild(css);
+  }catch(e){}
+
+  /* Pera: every user-side line becomes an internal thought, never invented speech. */
+  function generalizePera(){
+    try{
+      if(typeof PEAR_TOPIC_DIALOGUES==='undefined'||!Array.isArray(PEAR_TOPIC_DIALOGUES))return;
+      const pool=['💭 A veces me preocupa no estar avanzando como quisiera.','💭 Me cuesta no comparar mi progreso con lo que veo en otras personas.','💭 A veces siento presión por hacerlo bien.','💭 Me preocupa equivocarme en algo que me importa.','💭 Cuando algo sale mal, puedo pensar que es peor de lo que realmente es.','💭 Quiero mejorar sin sentir que tengo que ser perfecto.','💭 A veces me cuesta reconocer todo lo que sí he conseguido.','💭 Me pregunto si estoy tomando el camino correcto.','💭 Quiero aprender de otras personas sin convertirme en una copia.','💭 A veces me gustaría tener más confianza en mi propio progreso.','💭 Me cuesta saber cuánto de lo que siento viene de compararme.','💭 Quizá puedo seguir avanzando aunque hoy no vea una mejora.'];
+      const clean=t=>String(t||'').replace(/\b(Juan|Mateo|Valeria)\b/gi,'otra persona').replace(/\b(carril\s+(tres|cuatro|1|2|3|4))\b/gi,'un carril').replace(/\b(el\s+sábado|este sábado|el domingo)\b/gi,'una próxima competencia');
+      let n=0;
+      for(const d of PEAR_TOPIC_DIALOGUES){
+        if(!Array.isArray(d.lines))continue;
+        for(const line of d.lines){
+          if(!line)continue;
+          if(line.speaker==='👤 TÚ'){line.speaker='💭 TÚ PIENSAS';line.text=pool[n++%pool.length]}
+          else if(line.text)line.text=clean(line.text);
+        }
+      }
+    }catch(e){}
+  }
+
+  /* GENDER: onboarding + real account creation, with custom text only for Otro. */
+  function ensureGenderUIs(){
+    try{
+      const sel=document.getElementById('onGender');
+      if(sel){
+        const vals=['Masculino','Femenino','Prefiero no decirlo','Otro'];
+        sel.innerHTML=vals.map(v=>'<option>'+v+'</option>').join('');
+        let wrap=document.getElementById('onOtherGenderWrap');
+        if(!wrap){wrap=document.createElement('div');wrap.id='onOtherGenderWrap';wrap.style.cssText='display:none;margin-top:7px';wrap.innerHTML='<input id="onOtherGender" maxlength="40" placeholder="Escribe tu género">';sel.parentNode.appendChild(wrap)}
+        wrap.style.display=sel.value==='Otro'?'block':'none';
+        sel.onchange=()=>{wrap.style.display=sel.value==='Otro'?'block':'none'};
+      }
+      const email=document.getElementById('authEmail');
+      const name=document.getElementById('authUserName');
+      if(name&&email&&!document.getElementById('authGender')){
+        const row=document.createElement('div');row.className='field';row.innerHTML='<label>Género</label><select id="authGender"><option>Masculino</option><option>Femenino</option><option>Prefiero no decirlo</option><option>Otro</option></select><div id="authOtherGenderWrap" style="display:none;margin-top:7px"><input id="authOtherGender" maxlength="40" placeholder="Escribe tu género"></div>';
+        name.parentNode.insertBefore(row,email);
+        const gs=document.getElementById('authGender'),gw=document.getElementById('authOtherGenderWrap');gs.onchange=()=>{gw.style.display=gs.value==='Otro'?'block':'none'};
+      }
+    }catch(e){}
+  }
+  function readGender(id){
+    const sel=document.getElementById(id);
+    if(!sel)return 'Prefiero no decirlo';
+    if(sel.value!=='Otro')return sel.value;
+    const input=document.getElementById(id==='onGender'?'onOtherGender':'authOtherGender');
+    return 'Otro: '+String(input?.value||'').trim().slice(0,40);
+  }
+  try{
+    const originalCreate=window.createProfile;
+    if(typeof originalCreate==='function'&&!window.__SWQ_MASTER_CREATE_PROFILE_GENDER__){
+      window.createProfile=function(){
+        ensureGenderUIs();
+        const sel=document.getElementById('onGender');
+        if(sel&&sel.value==='Otro'&&!String(document.getElementById('onOtherGender')?.value||'').trim()){toast('Escribe tu género para continuar.');return}
+        const gender=readGender('onGender');
+        if(sel){const old=sel.value;sel.value=gender;try{return originalCreate.apply(this,arguments)}finally{sel.value=old}}
+        return originalCreate.apply(this,arguments);
+      };
+      window.__SWQ_MASTER_CREATE_PROFILE_GENDER__=true;
+    }
+  }catch(e){}
+  try{
+    const originalAuth=window.authModal;
+    if(typeof originalAuth==='function'&&!window.__SWQ_MASTER_AUTH_MODAL_GENDER__){
+      window.authModal=function(){const out=originalAuth.apply(this,arguments);setTimeout(ensureGenderUIs,0);return out};
+      window.__SWQ_MASTER_AUTH_MODAL_GENDER__=true;
+    }
+  }catch(e){}
+  try{
+    const originalSignup=window.signUpReal;
+    if(typeof originalSignup==='function'&&!window.__SWQ_MASTER_SIGNUP_GENDER__){
+      window.signUpReal=async function(){
+        ensureGenderUIs();
+        const sel=document.getElementById('authGender');
+        if(sel?.value==='Otro'&&!String(document.getElementById('authOtherGender')?.value||'').trim()){toast('Escribe tu género para continuar.');return}
+        const gender=readGender('authGender');window.__SWQ_PENDING_SIGNUP_GENDER__=gender;
+        let restore=null;
+        try{
+          if(typeof supabaseClient!=='undefined'&&supabaseClient?.auth?.signUp){
+            const auth=supabaseClient.auth,baseSignUp=auth.signUp;
+            auth.signUp=function(args){const next={...(args||{}),options:{...(args?.options||{}),data:{...(args?.options?.data||{}),gender}}};return baseSignUp.call(auth,next)};
+            restore=()=>{auth.signUp=baseSignUp};
+          }
+          const out=await originalSignup.apply(this,arguments);
+          if(S.profile){S.profile.gender=gender;save();}
+          return out;
+        }catch(e){throw e}finally{try{if(restore)restore()}catch(e){}}
+      };
+      window.__SWQ_MASTER_SIGNUP_GENDER__=true;
+    }
+  }catch(e){}
+
+  /* ONE authoritative theme switch + modal. */
+  function applyThemeMaster(k){
+    try{
+      ensureRandomBasic();
+      if(!THEMES?.[k]){toast('⚠️ Ese estilo no existe.');return}
+      if(k!=='Aqua'&&!S.purchases?.['theme_'+k]){toast('🔒 Ese estilo todavía no está desbloqueado.');return}
+      S.settings.theme=k;
+      if(k===RANDOM_THEME){window.__SWQ_RANDOM_BASIC_SESSION_COLOR__=false;applyRandomBasic();}
+      else{masterDice=false;clearMasterDice();if(typeof applyTheme==='function')applyTheme();}
+      save();closeModal();render();syncMasterRoad();
+    }catch(e){console.warn('SWQ master theme switch',e)}
+  }
+  function openThemeMaster(){
+    ensureRandomBasic();
+    const themes=['Aqua',...Object.keys(THEMES||{})].filter((k,i,a)=>a.indexOf(k)===i&&THEMES[k]&&(k==='Aqua'||S.purchases?.['theme_'+k]));
+    modal('<div class="kicker">🎨 PERSONALIZACIÓN</div><h2>Cambiar estilo</h2><p class="sub">Elige un estilo desbloqueado.</p><div class="grid g2" style="margin-top:10px">'+themes.map(k=>'<button type="button" class="btn '+(S.settings.theme===k?'primary':'secondary')+' swq-master-theme-choice" data-k="'+esc(k)+'" style="min-height:54px;text-align:left">'+esc(THEMES[k]?.emoji||'🎨')+' '+esc(typeof swqThemeName==='function'?swqThemeName(k):k)+(S.settings.theme===k?' · ACTUAL':'')+'</button>').join('')+'</div><button type="button" id="swq-master-theme-close" class="btn secondary" style="margin-top:10px">Cerrar</button>');
+    document.querySelectorAll('.swq-master-theme-choice').forEach(b=>b.addEventListener('click',()=>applyThemeMaster(b.dataset.k)));
+    document.getElementById('swq-master-theme-close')?.addEventListener('click',closeModal);
+  }
+  window.swqQuickTheme=openThemeMaster;
+  window.swqApplyQuickTheme=applyThemeMaster;
+  window.equipTheme=applyThemeMaster;
+
+  /* Reapply non-destructively after renders and on entry. */
+  const oldRender=window.render;
+  if(typeof oldRender==='function'&&!window.__SWQ_MASTER_RENDER_WRAP__){
+    window.render=function(){
+      const out=oldRender.apply(this,arguments);
+      try{ensureRandomBasic();ensureGenderUIs();generalizePera();if(S.settings.theme===RANDOM_THEME&&!window.__SWQ_RANDOM_BASIC_SESSION_COLOR__)applyRandomBasic();syncMasterRoad();}catch(e){}
+      return out;
+    };
+    window.__SWQ_MASTER_RENDER_WRAP__=true;
+  }
+  try{ensureRandomBasic();ensureGenderUIs();generalizePera();if(S.settings.theme===RANDOM_THEME)applyRandomBasic();syncMasterRoad()}catch(e){}
+  const observer=new MutationObserver(()=>{try{ensureGenderUIs();generalizePera();}catch(e){}});
+  observer.observe(document.documentElement,{childList:true,subtree:true});
+  setInterval(()=>{try{ensureRandomBasic();ensureGenderUIs();generalizePera();syncMasterRoad()}catch(e){}},5000);
+})();
