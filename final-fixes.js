@@ -2893,32 +2893,57 @@ body.theme-carretera .app{position:relative;z-index:2}
   const cinemaTrack={
     name:'Absolute Cinema',
     emoji:'🎬',
+    /* 128-note original cinematic mystery progression.
+       It moves from restrained low/mid tension into a brighter high-register climax,
+       then resolves without copying a known soundtrack melody. */
     notes:[
       880.00,830.61,783.99,739.99,698.46,659.25,739.99,830.61,
       987.77,880.00,783.99,659.25,622.25,698.46,783.99,880.00,
       1046.50,987.77,880.00,783.99,698.46,659.25,739.99,830.61,
       987.77,1108.73,987.77,880.00,783.99,739.99,659.25,587.33,
+
       523.25,587.33,659.25,739.99,830.61,987.77,880.00,783.99,
       698.46,739.99,830.61,987.77,1174.66,1046.50,987.77,880.00,
       783.99,659.25,587.33,698.46,830.61,987.77,1318.51,1174.66,
       1046.50,987.77,880.00,783.99,698.46,659.25,739.99,830.61,
-      987.77,1174.66,1396.91,1318.51,1174.66,987.77,880.00,739.99
+
+      987.77,1174.66,1396.91,1318.51,1174.66,987.77,880.00,739.99,
+      659.25,739.99,880.00,987.77,1174.66,1318.51,1396.91,1567.98,
+      1396.91,1318.51,1174.66,1046.50,987.77,880.00,1046.50,1174.66,
+      1318.51,1567.98,1760.00,1567.98,1396.91,1174.66,1046.50,987.77,
+
+      880.00,987.77,1174.66,1318.51,1567.98,1396.91,1174.66,1046.50,
+      987.77,1174.66,1396.91,1567.98,1760.00,1975.53,1760.00,1567.98,
+      1396.91,1318.51,1174.66,1046.50,987.77,880.00,783.99,880.00,
+      987.77,1046.50,1174.66,1318.51,1396.91,1174.66,987.77,880.00
     ],
     bass:[
       55.00,65.41,73.42,82.41,61.74,73.42,49.00,58.27,
-      65.41,73.42,55.00,41.20
+      65.41,73.42,55.00,41.20,
+      49.00,58.27,65.41,73.42,55.00,41.20,46.25,55.00,
+      61.74,73.42,49.00,41.20
     ],
-    tempo:290,type:'sine',accent:6
+    tempo:285,
+    type:'sine',
+    accent:6
   };
-
   try{
     if(typeof MUSIC_TRACKS!=='undefined'){
       MUSIC_TRACKS.absoluteCinema=cinemaTrack;
     }
     const id='music5';
     if(typeof SHOP_PERMANENT_IDS!=='undefined')SHOP_PERMANENT_IDS.add(id);
-    if(typeof SHOP!=='undefined'&&!SHOP.some(x=>x.id===id)){
-      SHOP.push({id,icon:'🎬',name:'Absolute Cinema',price:1000,desc:'Obra maestra original: melodía larga de misterio, tonos agudos, graves y ambiente cinematográfico.',buy:()=>{S.purchases.music5=true;}});
+    if(typeof SHOP!=='undefined'){
+      const absoluteCinemaShop=SHOP.find(x=>x.id===id);
+      if(absoluteCinemaShop){
+        absoluteCinemaShop.icon='🎬';
+        absoluteCinemaShop.name='Absolute Cinema';
+        absoluteCinemaShop.price=1000;
+        absoluteCinemaShop.desc='Obra maestra original: melodía larga de misterio, tonos agudos, graves y ambiente cinematográfico.';
+        absoluteCinemaShop.buy=()=>{S.purchases.music5=true;};
+      }else{
+        SHOP.push({id,icon:'🎬',name:'Absolute Cinema',price:1000,desc:'Obra maestra original: melodía larga de misterio, tonos agudos, graves y ambiente cinematográfico.',buy:()=>{S.purchases.music5=true;}});
+      }
     }
     S.purchases=S.purchases||{};
   }catch(e){console.warn('SWQ Absolute Cinema',e)}
