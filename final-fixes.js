@@ -3262,10 +3262,13 @@ body.theme-carretera .app{position:relative;z-index:2}
   ];
 
   function pickRandomBasicColor(){
-    const dice=Math.random()<0.12;
-    randomBasicDice=dice;
-    if(dice)return ['#f8f8f8','#111111'];
-    return RANDOM_PALETTES[Math.floor(Math.random()*RANDOM_PALETTES.length)];
+    const variants=[...RANDOM_PALETTES.map((pair,i)=>({pair,i,dice:false})),{pair:['#f8f8f8','#111111'],i:RANDOM_PALETTES.length,dice:true}];
+    const previous=Number(localStorage.getItem('SWQ_RANDOM_BASIC_VARIANT'));
+    const candidates=variants.filter(v=>v.i!==previous);
+    const chosen=candidates[Math.floor(Math.random()*candidates.length)];
+    localStorage.setItem('SWQ_RANDOM_BASIC_VARIANT',String(chosen.i));
+    randomBasicDice=chosen.dice;
+    return chosen.pair;
   }
 
   function applyRandomBasicEntryColor(force=false){
@@ -3444,7 +3447,6 @@ body.theme-carretera .app{position:relative;z-index:2}
           randomBasicDice=false;syncRandomBasicDice();
         }
       }
-      if(S.settings.theme===RANDOM_THEME)syncRandomBasicDice();
     }catch(e){}
   },1800);
 })();
