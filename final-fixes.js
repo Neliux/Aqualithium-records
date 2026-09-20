@@ -2986,3 +2986,126 @@ body.theme-carretera .app{position:relative;z-index:2}
 
   try{save();render();}catch(e){}
 })();
+
+/* === SWQ DIFFICULTY SNAPSHOT V2 2026-09-20 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_DIFFICULTY_SNAPSHOT_V2_20260920__)return;
+  window.__SWQ_DIFFICULTY_SNAPSHOT_V2_20260920__=true;
+
+  function normalizeDifficultyKey(k){return String(k||'').trim()==='intenso'?'brutal':String(k||'').trim();}
+  function freshDifficulty(e){
+    const copy={...(e||{}),difficulty:''};
+    return calcDifficultyLocked(copy,S?.profile?.avgMeters);
+  }
+  function attachSnapshot(e){
+    if(!e)return;
+    const d=freshDifficulty(e);
+    e.difficulty=normalizeDifficultyKey(d.key);
+    e.difficultyPercent=Number(d.percent)||0;
+    e.difficultyBase=Number(d.base)||Math.max(100,Number(S.profile?.avgMeters)||1000);
+    e.difficultyPoints=Number(d.points)||0;
+  }
+
+  try{
+    if(typeof DIFFICULTIES!=='undefined'){
+      const labels={
+        facil:'0–19% de tu referencia',
+        normal:'20–49% de tu referencia',
+        brutal:'50–110% de tu referencia',
+        demoniaco:'111–449% de tu referencia',
+        masoquista:'450% o más de tu referencia'
+      };
+      DIFFICULTIES.forEach(d=>{if(labels[d.key])d.desc=labels[d.key]+'; metros, tiempos y carga del entrenamiento influyen.';});
+    }
+  }catch(e){}
+
+  try{
+    if(typeof difficultyInfo==='function'){
+      const baseDifficultyInfoV2=difficultyInfo;
+      difficultyInfo=function(e,avg){
+        const stored=normalizeDifficultyKey(e?.difficulty);
+        if(stored){
+          const d=difficultyForKey(stored);
+          return {...d,
+            percent:Number.isFinite(Number(e?.difficultyPercent))?Number(e.difficultyPercent):0,
+            base:Number.isFinite(Number(e?.difficultyBase))?Number(e.difficultyBase):Math.max(100,Number(avg)||Number(S.profile?.avgMeters)||1000),
+            points:Number.isFinite(Number(e?.difficultyPoints))?Number(e.difficultyPoints):0
+          };
+        }
+        return baseDifficultyInfoV2.apply(this,arguments);
+      };
+      difficultyLabel=function(e){
+        const d=typeof e==='string'?difficultyForKey(normalizeDifficultyKey(e)):difficultyInfo(e,S?.profile?.avgMeters);
+        return d.icon+' '+d.name;
+      };
+      difficultyCounts=function(arr){
+        return Object.fromEntries(DIFFICULTIES.map(d=>[d.key,(arr||[]).filter(e=>normalizeDifficultyKey(e?.difficulty)===d.key).length]));
+      };
+    }
+  }catch(e){console.warn('SWQ difficulty snapshot binding',e)}
+
+  try{
+    for(const e of (S.trainings||[])){
+      if(!e.difficulty||e.difficulty==='intenso'||!Number.isFinite(Number(e.difficultyPercent))){
+        attachSnapshot(e);
+      }else{
+        e.difficulty=normalizeDifficultyKey(e.difficulty);
+      }
+    }
+    save();
+  }catch(e){console.warn('SWQ difficulty snapshots',e)}
+
+  try{
+    if(typeof window.saveTraining==='function'&&!window.__swqSaveTrainingSnapshotV2){
+      const baseSave=window.saveTraining;
+      window.saveTraining=function(){
+        const before=new Set((S.trainings||[]).map(e=>e.id));
+        const out=baseSave.apply(this,arguments);
+        try{
+          const added=(S.trainings||[]).find(e=>!before.has(e.id));
+          if(added){attachSnapshot(added);save();}
+        }catch(e){}
+        return out;
+      };
+      window.__swqSaveTrainingSnapshotV2=true;
+    }
+  }catch(e){console.warn('SWQ save difficulty snapshot',e)}
+
+  try{
+    if(typeof commitEdit==='function'&&!window.__swqCommitEditFreshDifficultyV2){
+      const baseEdit=commitEdit;
+      window.commitEdit=function(id){
+        const e=S.trainings.find(x=>x.id===id);
+        const old=e?{difficulty:e.difficulty,difficultyPercent:e.difficultyPercent,difficultyBase:e.difficultyBase,difficultyPoints:e.difficultyPoints}:null;
+        if(e){
+          delete e.difficulty;
+          delete e.difficultyPercent;
+          delete e.difficultyBase;
+          delete e.difficultyPoints;
+        }
+        try{
+          const out=baseEdit.apply(this,arguments);
+          if(e){
+            attachSnapshot(e);
+            save();
+          }
+          return out;
+        }catch(err){
+          if(e&&old){
+            Object.assign(e,old);
+            save();
+          }
+          throw err;
+        }
+      };
+      window.__swqCommitEditFreshDifficultyV2=true;
+    }
+  }catch(e){console.warn('SWQ edit difficulty snapshot',e)}
+
+  try{
+    const style=document.createElement('style');
+    style.textContent='.swq-stable-difficulty-wheel .difficulty-legend-row{font-variant-numeric:tabular-nums}.swq-stable-difficulty-wheel .difficulty-donut-legend b{white-space:nowrap}';
+    document.head.appendChild(style);
+  }catch(e){}
+})();
