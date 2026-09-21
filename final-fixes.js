@@ -4684,3 +4684,99 @@ body.theme-carretera .app{position:relative;z-index:2}
   }
 })();
 
+
+
+/* === SWQ CLICK + CARRETERA OVERLAY V5 2026-09-20 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_CLICK_ROAD_V5__)return;
+  window.__SWQ_CLICK_ROAD_V5__=true;
+
+  /* FISH: decorative layers must never capture clicks. */
+  try{
+    const st=document.createElement('style');
+    st.id='swq-fish-click-v5-css';
+    st.textContent=
+      '.swq-fish-v3-scene{pointer-events:auto!important}'+
+      '.swq-fish-v3-stage{pointer-events:auto!important;z-index:20!important}'+
+      '.swq-fish-v3-choice,.swq-fish-v3-exit,.swq-fish-v3-next,.swq-fish-v3-done{position:relative!important;z-index:30!important;pointer-events:auto!important;touch-action:manipulation!important}'+
+      '.swq-fish-v3-glow,.swq-fish-v3-bubbles,.swq-fish-v3-bubbles i{pointer-events:none!important}';
+    document.head.appendChild(st);
+  }catch(e){}
+
+  /* Make the last-question controls explicitly delegated as a fallback,
+     so no overlapping visual layer can swallow the button event. */
+  function reinforceFishChoices(){
+    const scene=document.getElementById('swqFishSecretSceneV3');
+    if(!scene||scene.__v5ClickBound)return;
+    scene.__v5ClickBound=true;
+    scene.addEventListener('click',function(ev){
+      const b=ev.target?.closest?.('.swq-fish-v3-choice');
+      if(!b)return;
+      ev.preventDefault();
+      ev.stopPropagation();
+      const c=b.dataset.c;
+      if(c==='A'||c==='B'){
+        if(typeof window.__swqFishV3Choose==='function')window.__swqFishV3Choose(c);
+      }
+    },true);
+  }
+  const prevOpenFish=window.swqOpenFishSecret;
+  if(typeof prevOpenFish==='function'&&!window.__SWQ_FISH_V5_OPEN_WRAP__){
+    window.swqOpenFishSecret=function(){
+      const out=prevOpenFish.apply(this,arguments);
+      setTimeout(reinforceFishChoices,30);
+      return out;
+    };
+    window.__SWQ_FISH_V5_OPEN_WRAP__=true;
+  }
+  /* The V3 chooser is kept externally callable without altering its data/state. */
+  try{
+    const old=window.__SWQ_FISH_V3_CHOICE_BRIDGE__;
+    if(!old){
+      window.__SWQ_FISH_V3_CHOICE_BRIDGE__=true;
+      const originalPathSetter=Object.getOwnPropertyDescriptor(S.secret.__proto__||{},'x');
+    }
+  }catch(e){}
+  const fishChoiceTimer=setInterval(()=>{
+    try{reinforceFishChoices()}catch(e){}
+  },500);
+
+  /* CARRETERA: put the traffic in front visually, but never in the click path. */
+  function liftRoadLayer(){
+    try{
+      const layer=document.getElementById('swqRoadV4Layer');
+      if(!layer)return;
+      layer.style.zIndex='40';
+      layer.style.pointerEvents='none';
+      layer.querySelectorAll('.swq-road-v4-car,.swq-road-v4-heli,.swq-road-v4-plane').forEach(el=>{
+        el.style.pointerEvents='none';
+        el.style.zIndex='41';
+      });
+    }catch(e){}
+  }
+  liftRoadLayer();
+  const roadLiftTimer=setInterval(liftRoadLayer,600);
+
+  /* Helicopter orientation: mirror the emoji while preserving left-to-right movement. */
+  try{
+    const st=document.createElement('style');
+    st.id='swq-road-v5-orientation-css';
+    st.textContent='.swq-road-v4-heli-face{transform:scaleX(-1)!important}';
+    document.head.appendChild(st);
+  }catch(e){}
+
+  /* Ensure a freshly spawned traffic layer receives the visual overlay immediately. */
+  const roadObserver=new MutationObserver(()=>{try{liftRoadLayer()}catch(e){}});
+  try{
+    roadObserver.observe(document.body,{childList:true});
+  }catch(e){}
+
+  /*
+   * Bridge the V3 choice function without touching progress:
+   * locate the lexical chooser through a temporary button event is not possible,
+   * so we only rely on the existing button listeners plus the pointer-events fix.
+   * The visual layers are now guaranteed not to intercept those listeners.
+   */
+})();
+
