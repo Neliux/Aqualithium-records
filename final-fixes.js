@@ -4880,3 +4880,166 @@ body.theme-carretera .app{position:relative;z-index:2}
     setInterval(swqPatchFishChoiceClicks,250);
   }catch(e){console.warn('SWQ fish bridge install',e)}
 })();
+
+
+/* === SWQ PROFILE FISH LAYOUT + FISH CONVO V4 2026-09-20 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_PROFILE_FISH_LAYOUT_V4__)return;
+  window.__SWQ_PROFILE_FISH_LAYOUT_V4__=true;
+
+  /* PERFIL: el Pez vuelve al flujo normal del documento y queda debajo del bloque anterior. */
+  try{
+    const st=document.createElement('style');
+    st.id='swq-profile-fish-layout-v4-css';
+    st.textContent=
+      '.profile-fish{position:relative!important;top:0!important;bottom:auto!important;left:auto!important;right:auto!important;transform:none!important;clear:both!important;margin:10px 0 0!important;display:flex!important;box-sizing:border-box!important;z-index:1!important}'+
+      '.profile-fish:active{top:0!important;transform:scale(.985)!important}';
+    document.head.appendChild(st);
+  }catch(e){}
+
+  /* PEZ: conversación nueva, simple y con una altura que siempre cabe en móvil. */
+  const Q=[
+    {t:'Si tu plan cambia de repente, ¿qué haces?',a:'A · Ajusto el plan y sigo.',b:'B · Intento mantenerlo como estaba.'},
+    {t:'Haces algo bien y casi nadie lo nota. ¿Qué te importa más?',a:'A · Saber que avancé, aunque sea poco.',b:'B · Que el avance se note de verdad.'},
+    {t:'Alguien avanza más rápido que tú. ¿Qué aparece primero en tu cabeza?',a:'A · Puedo aprender algo de esa persona.',b:'B · Tengo que alcanzarla.'},
+    {t:'No sé hacer estas conversaciones. Tú sí pareces saber cómo seguirlas... ¿cómo lo haces?',a:'A · Digo lo que pienso y sigo el hilo.',b:'B · Pienso mi respuesta antes de decirla.'},
+    {t:'Llegas a algo que buscaste durante mucho tiempo. ¿Qué haces con ese momento?',a:'A · Lo disfruto y agradezco el camino.',b:'B · Pienso en demostrar que lo merecía.'}
+  ];
+
+  function makeEnding(code){
+    const b=[...code].map(x=>x==='1');
+    const traits=[
+      b[0]?'prefieres mantener tu plan incluso cuando cambia el escenario':'sabes adaptarte cuando el camino cambia',
+      b[1]?'te importa que tu progreso también sea reconocido':'valorás el progreso aunque nadie lo vea',
+      b[2]?'quieres alcanzar a quien va delante':'puedes mirar a quien va delante para aprender',
+      b[3]?'piensas antes de hablar y ordenas tus ideas':'hablas desde lo que piensas y dejas que la conversación avance',
+      b[4]?'quieres demostrar que merecías esa meta':'puedes disfrutar una meta por lo que significa'
+    ];
+    const conclusion='Después de estas cinco preguntas, creo que '+traits[0]+'. También '+traits[1]+'. Cuando ves a alguien avanzar, '+traits[2]+'. En una conversación, '+traits[3]+'. Y cuando consigues algo importante, '+traits[4]+'.';
+    const thought='🐟 Lo que pienso de ti: creo que eres alguien '+traits[0]+', '+traits[1]+' y '+traits[2]+'. Además, '+traits[3]+'. Eso me dice que no eres una persona de una sola forma: según la situación, sabes cambiar de manera de pensar.';
+    return {conclusion,thought};
+  }
+
+  const ENDINGS={};
+  for(let n=0;n<32;n++){
+    const code=n.toString(2).padStart(5,'0');
+    ENDINGS[code]=makeEnding(code);
+  }
+
+  let path='',step=0,ending=null;
+  function close(){
+    try{if(window.__swqFishV4Ctx){window.__swqFishV4Ctx.close();window.__swqFishV4Ctx=null}}catch(e){}
+    if(window.__swqFishV4Timer){clearInterval(window.__swqFishV4Timer);window.__swqFishV4Timer=null}
+    document.getElementById('swqFishSecretSceneV4')?.remove();
+    if(S.settings.music&&typeof restartAmbient==='function')restartAmbient();
+  }
+  function fishSound(){
+    try{
+      if(window.__swqFishV4Timer){clearInterval(window.__swqFishV4Timer);window.__swqFishV4Timer=null}
+      if(window.__swqFishV4Ctx){try{window.__swqFishV4Ctx.close()}catch(e){}}
+      const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+      const ctx=new AC();window.__swqFishV4Ctx=ctx;const notes=[146.83,174.61,196,220];let i=0;
+      window.__swqFishV4Timer=setInterval(()=>{
+        try{
+          const o=ctx.createOscillator(),g=ctx.createGain();
+          o.type='sine';o.frequency.value=notes[i++%notes.length];
+          g.gain.setValueAtTime(.0001,ctx.currentTime);
+          g.gain.exponentialRampToValueAtTime(.022,ctx.currentTime+.03);
+          g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+.30);
+          o.connect(g).connect(ctx.destination);o.start();o.stop(ctx.currentTime+.32);
+        }catch(e){}
+      },620);
+    }catch(e){}
+  }
+  function sceneBase(inner){
+    const old=document.getElementById('swqFishSecretSceneV4');if(old)old.remove();
+    const scene=document.createElement('div');
+    scene.id='swqFishSecretSceneV4';
+    scene.className='swq-fish-v4-scene';
+    scene.innerHTML='<div class="swq-fish-v4-stage">'+inner+'</div>';
+    document.body.appendChild(scene);
+    return scene;
+  }
+  function renderQuestion(){
+    const q=Q[step];
+    const scene=sceneBase(
+      '<div class="swq-fish-v4-fish">🐟</div>'+
+      '<div class="swq-fish-v4-title">🐟 PEZ</div>'+ 
+      '<div class="swq-fish-v4-step">Pregunta '+(step+1)+' de '+Q.length+'</div>'+ 
+      '<div class="swq-fish-v4-question">'+esc(q.t)+'</div>'+ 
+      '<div class="swq-fish-v4-choices">'+
+        '<button type="button" class="swq-fish-v4-choice a" data-answer="A">'+esc(q.a)+'</button>'+ 
+        '<button type="button" class="swq-fish-v4-choice b" data-answer="B">'+esc(q.b)+'</button>'+ 
+      '</div>'+ 
+      '<button type="button" class="swq-fish-v4-exit">Salir</button>'
+    );
+    scene.querySelectorAll('.swq-fish-v4-choice').forEach(btn=>btn.addEventListener('click',function(){choose(this.dataset.answer)}));
+    scene.querySelector('.swq-fish-v4-exit')?.addEventListener('click',close);
+    fishSound();
+  }
+  function choose(answer){
+    if(answer!=='A'&&answer!=='B')return;
+    path+=answer;
+    S.secret.fishConversationPath=path;
+    S.secret.fishConversationSeen=true;
+    save();
+    if(step<Q.length-1){step++;renderQuestion();return}
+    ending=ENDINGS[path]||makeEnding(path);
+    renderConclusion();
+  }
+  function renderConclusion(){
+    const scene=sceneBase(
+      '<div class="swq-fish-v4-fish">🐟</div>'+ 
+      '<div class="swq-fish-v4-title">🐟 PEZ</div>'+ 
+      '<div class="swq-fish-v4-heading">🌊 CONCLUSIÓN</div>'+ 
+      '<div class="swq-fish-v4-copy">'+esc(ending.conclusion)+'</div>'+ 
+      '<button type="button" class="swq-fish-v4-next">¿Qué piensas de mí?</button>'+ 
+      '<button type="button" class="swq-fish-v4-exit">Salir</button>'
+    );
+    scene.querySelector('.swq-fish-v4-next')?.addEventListener('click',renderThought);
+    scene.querySelector('.swq-fish-v4-exit')?.addEventListener('click',close);
+    fishSound();
+  }
+  function renderThought(){
+    const scene=sceneBase(
+      '<div class="swq-fish-v4-fish">🐟</div>'+ 
+      '<div class="swq-fish-v4-title">🐟 PEZ</div>'+ 
+      '<div class="swq-fish-v4-heading">🐟 LO QUE PIENSO DE TI</div>'+ 
+      '<div class="swq-fish-v4-thought">'+esc(ending.thought)+'</div>'+ 
+      '<button type="button" class="swq-fish-v4-next">Terminar conversación</button>'
+    );
+    scene.querySelector('.swq-fish-v4-next')?.addEventListener('click',()=>{save();close()});
+    fishSound();
+  }
+  window.swqOpenFishSecret=function(){
+    if(!S.secret.fishConversationPurchased){toast('🐟 Primero compra la conversación secreta.');return}
+    path='';step=0;ending=null;
+    S.secret.fishConversationPath='';
+    save();
+    if(typeof ambientStop==='function')ambientStop();
+    renderQuestion();
+  };
+
+  try{
+    const st=document.createElement('style');
+    st.id='swq-fish-v4-css';
+    st.textContent=
+      '.swq-fish-v4-scene{position:fixed!important;inset:0!important;z-index:3000!important;display:flex!important;align-items:flex-start!important;justify-content:center!important;overflow-y:auto!important;overflow-x:hidden!important;padding:14px!important;box-sizing:border-box!important;background:radial-gradient(circle at 50% 14%,#165071 0,#09283e 40%,#03111c 100%)!important;color:#eafaff!important;pointer-events:auto!important}'+
+      '.swq-fish-v4-stage{width:min(760px,100%)!important;min-height:0!important;height:auto!important;max-height:none!important;margin:auto!important;padding:8px 0 24px!important;box-sizing:border-box!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;text-align:center!important;position:relative!important;z-index:10!important}'+
+      '.swq-fish-v4-fish{font-size:78px!important;line-height:1!important;margin:2px 0 6px!important;filter:drop-shadow(0 8px 20px rgba(66,221,255,.3))!important;animation:swqFishV4Float 3.2s ease-in-out infinite!important}'+
+      '.swq-fish-v4-title{color:#82eaff!important;font-weight:1000!important;letter-spacing:1px!important;font-size:14px!important;margin-bottom:3px!important}'+
+      '.swq-fish-v4-step{font-size:12px!important;color:#9bcbd9!important;margin-bottom:10px!important}'+
+      '.swq-fish-v4-question{width:min(700px,100%)!important;min-height:0!important;padding:18px 10px!important;box-sizing:border-box!important;font-size:21px!important;line-height:1.45!important;font-weight:900!important;text-shadow:0 2px 10px rgba(0,0,0,.25)!important}'+
+      '.swq-fish-v4-choices{width:min(700px,100%)!important;display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important;margin-top:4px!important;position:relative!important;z-index:50!important}'+
+      '.swq-fish-v4-choice{min-height:64px!important;border-radius:18px!important;border:1px solid rgba(126,232,255,.35)!important;color:#effcff!important;font-size:15px!important;font-weight:1000!important;padding:11px 14px!important;box-sizing:border-box!important;cursor:pointer!important;pointer-events:auto!important;touch-action:manipulation!important;position:relative!important;z-index:60!important}'+
+      '.swq-fish-v4-choice.a{background:linear-gradient(135deg,#1e799f,#0a344b)!important}.swq-fish-v4-choice.b{background:linear-gradient(135deg,#274f80,#0b2138)!important}'+
+      '.swq-fish-v4-exit{margin-top:12px!important;border:1px solid rgba(126,232,255,.2)!important;background:rgba(0,0,0,.12)!important;color:#9ccada!important;border-radius:14px!important;padding:8px 14px!important;font-size:12px!important;cursor:pointer!important;position:relative!important;z-index:60!important;pointer-events:auto!important}'+
+      '.swq-fish-v4-heading{margin-top:8px!important;color:#8ceaff!important;font-size:15px!important;font-weight:1000!important;letter-spacing:.8px!important}'+
+      '.swq-fish-v4-copy,.swq-fish-v4-thought{width:min(700px,100%)!important;box-sizing:border-box!important;margin-top:12px!important;padding:16px!important;border-radius:18px!important;background:rgba(5,24,39,.72)!important;border:1px solid rgba(126,232,255,.22)!important;color:#dff7ff!important;line-height:1.6!important;font-size:18px!important}'+
+      '.swq-fish-v4-next{margin-top:16px!important;min-height:52px!important;border:0!important;border-radius:17px!important;padding:12px 22px!important;background:#1e799f!important;color:#fff!important;font-weight:1000!important;cursor:pointer!important;pointer-events:auto!important;touch-action:manipulation!important;position:relative!important;z-index:60!important}'+
+      '@keyframes swqFishV4Float{50%{transform:translateY(-7px) rotate(-2deg) scale(1.03)}}'+
+      '@media(max-width:640px){.swq-fish-v4-stage{padding-top:2px!important}.swq-fish-v4-fish{font-size:66px!important}.swq-fish-v4-question{font-size:18px!important;padding:12px 6px!important}.swq-fish-v4-choices{grid-template-columns:1fr!important}.swq-fish-v4-choice{min-height:58px!important}.swq-fish-v4-copy,.swq-fish-v4-thought{font-size:16px!important}}';
+    document.head.appendChild(st);
+  }catch(e){}
+})();
