@@ -4733,3 +4733,150 @@ body.theme-carretera .app{position:relative;z-index:2}
     obs.observe(document.body,{childList:true});
   }catch(e){}
 })();
+
+
+/* === SWQ SIMPLE STYLE + FISH CLICK FIX 2026-09-20 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_SIMPLE_STYLE_FISH_FIX_20260920__)return;
+  window.__SWQ_SIMPLE_STYLE_FISH_FIX_20260920__=true;
+
+  /* PEZ MOTIVADOR: noticeably higher, without shrinking the card or changing its size. */
+  try{
+    const st=document.createElement('style');
+    st.id='swq-simple-fish-position-css';
+    st.textContent='.profile-fish{position:relative!important;top:-22px!important;margin-top:0!important}.profile-fish:active{top:-22px!important}';
+    document.head.appendChild(st);
+  }catch(e){}
+
+  /* ESTILO: one native selector, one apply button, no dependency on modal(). */
+  function swqSimpleOwnedThemes(){
+    const out=['Aqua'];
+    try{
+      if(typeof THEMES!=='undefined'){
+        Object.keys(THEMES).forEach(k=>{
+          if(k!=='Aqua'&&S.purchases?.['theme_'+k])out.push(k);
+        });
+      }
+    }catch(e){}
+    return [...new Set(out)].filter(k=>typeof THEMES!=='undefined'&&THEMES[k]);
+  }
+
+  function swqSimpleThemeName(k){
+    try{
+      if(typeof swqThemeName==='function')return swqThemeName(k);
+    }catch(e){}
+    return k.replace(/([a-z])([A-Z])/g,'$1 $2');
+  }
+
+  function swqSimpleApplyTheme(k){
+    try{
+      if(typeof THEMES==='undefined'||!THEMES[k])return;
+      if(k!=='Aqua'&&!S.purchases?.['theme_'+k]){
+        toast('🔒 Ese estilo todavía no está desbloqueado.');
+        return;
+      }
+      S.settings.theme=k;
+      save();
+      if(typeof applyTheme==='function')applyTheme();
+      try{closeModal();}catch(e){}
+      document.getElementById('swqSimpleThemeOverlay')?.remove();
+      render();
+      if(k==='RandomBasic'){
+        try{if(typeof applyRandomBasic==='function')applyRandomBasic();}catch(e){}
+        setTimeout(()=>{try{if(typeof startDice==='function')startDice();}catch(e){}},60);
+      }
+    }catch(e){console.warn('SWQ simple theme apply',e)}
+  }
+
+  function swqSimpleCloseTheme(){
+    document.getElementById('swqSimpleThemeOverlay')?.remove();
+  }
+
+  function swqSimpleOpenTheme(){
+    try{
+      document.getElementById('swqSimpleThemeOverlay')?.remove();
+      const keys=swqSimpleOwnedThemes();
+      const overlay=document.createElement('div');
+      overlay.id='swqSimpleThemeOverlay';
+      overlay.style.cssText='position:fixed;inset:0;z-index:2500;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(2,9,16,.76);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-sizing:border-box';
+      const panel=document.createElement('div');
+      panel.style.cssText='width:min(430px,100%);max-height:88vh;overflow:auto;padding:18px;border:1px solid rgba(126,232,255,.24);border-radius:22px;background:linear-gradient(160deg,rgba(10,31,47,.98),rgba(4,14,23,.99));box-shadow:0 24px 70px rgba(0,0,0,.55);color:#effcff';
+      panel.innerHTML=
+        '<div class="kicker">🎨 ESTILO</div>'+
+        '<h2 style="margin:4px 0 8px">Cambiar estilo</h2>'+
+        '<div class="sub">Selecciona un estilo desbloqueado y aplícalo.</div>'+
+        '<div style="margin-top:12px">'+
+          '<select id="swqSimpleThemeSelect" style="width:100%;min-height:48px;padding:10px;border-radius:14px;background:#091b2a;color:#effcff;border:1px solid rgba(126,232,255,.28);font-size:15px"></select>'+
+        '</div>'+
+        '<button type="button" id="swqSimpleThemeApply" class="btn primary" style="width:100%;margin-top:10px">Aplicar estilo</button>'+
+        '<button type="button" id="swqSimpleThemeClose" class="btn secondary" style="width:100%;margin-top:8px">Cerrar</button>';
+      overlay.appendChild(panel);
+      document.body.appendChild(overlay);
+
+      const select=panel.querySelector('#swqSimpleThemeSelect');
+      keys.forEach(k=>{
+        const o=document.createElement('option');
+        o.value=k;
+        o.textContent=(THEMES[k]?.emoji||'🎨')+' '+swqSimpleThemeName(k);
+        if(S.settings.theme===k)o.selected=true;
+        select.appendChild(o);
+      });
+      panel.querySelector('#swqSimpleThemeApply')?.addEventListener('click',()=>swqSimpleApplyTheme(select.value||'Aqua'));
+      panel.querySelector('#swqSimpleThemeClose')?.addEventListener('click',swqSimpleCloseTheme);
+      overlay.addEventListener('click',e=>{if(e.target===overlay)swqSimpleCloseTheme()});
+    }catch(e){console.warn('SWQ simple theme open',e)}
+  }
+
+  window.swqQuickTheme=swqSimpleOpenTheme;
+  window.swqApplyQuickTheme=swqSimpleApplyTheme;
+
+  /* Keep every rendered profile button pointing at the same simple selector. */
+  function swqSimpleRebindThemeButton(){
+    try{
+      const b=document.getElementById('swqQuickThemeButton');
+      if(!b)return;
+      b.onclick=function(ev){
+        ev?.preventDefault?.();
+        ev?.stopPropagation?.();
+        swqSimpleOpenTheme();
+      };
+    }catch(e){}
+  }
+  swqSimpleRebindThemeButton();
+  setInterval(swqSimpleRebindThemeButton,1000);
+
+  /* PEZ: the existing scene already contains the correct 5-question / 32-ending flow.
+     This bridge makes the A/B choice work even when another click listener interferes.
+     It calls the original button handler directly, then blocks the outer click so it cannot fire twice. */
+  function swqPatchFishChoiceClicks(){
+    const scene=document.getElementById('swqFishSecretSceneV3');
+    if(!scene||scene.__swqFishChoiceBridge)return;
+    scene.__swqFishChoiceBridge=true;
+    scene.addEventListener('click',function(ev){
+      const btn=ev.target?.closest?.('.swq-fish-v3-choice');
+      if(!btn)return;
+      if(scene.__swqFishBridgeBusy)return;
+      scene.__swqFishBridgeBusy=true;
+      try{btn.click();}catch(e){console.warn('SWQ fish choice bridge',e)}
+      scene.__swqFishBridgeBusy=false;
+      ev.preventDefault();
+      ev.stopImmediatePropagation();
+    },true);
+  }
+
+  try{
+    const originalOpenFish=window.swqOpenFishSecret;
+    if(typeof originalOpenFish==='function'&&!window.__swqFishOpenBridge20260920){
+      window.swqOpenFishSecret=function(){
+        const result=originalOpenFish.apply(this,arguments);
+        swqPatchFishChoiceClicks();
+        setTimeout(swqPatchFishChoiceClicks,0);
+        return result;
+      };
+      window.__swqFishOpenBridge20260920=true;
+    }
+    swqPatchFishChoiceClicks();
+    setInterval(swqPatchFishChoiceClicks,250);
+  }catch(e){console.warn('SWQ fish bridge install',e)}
+})();
