@@ -5449,3 +5449,189 @@ body.theme-carretera .app{position:relative;z-index:2}
     }catch(e){console.warn('SWQ random style startup',e)}
   },220);
 })();
+
+
+/* === SWQ AUTHORITATIVE RANK REWARD GUARD + RANDOM PURCHASED STYLE 2026-09-22 v20 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_AUTH_V20__)return;
+  window.__SWQ_AUTH_V20__=true;
+
+  /* ===== RANGOS: no volver a cobrar rangos anteriores ===== */
+  try{
+    const currentIdx=Math.max(0,currentRank().i);
+
+    /*
+      La versión anterior podía conservar un cursor menor que el rango real.
+      En una partida ya existente no podemos reconstruir de forma fiable qué
+      recompensas antiguas fueron cobradas, así que este parche fija el punto
+      de partida en el rango actual: desde ahora solo se pagan rangos nuevos.
+    */
+    const claimed=new Set(Array.isArray(S.rankRewardsClaimed)?S.rankRewardsClaimed:[]);
+    if(typeof SWQ_RANK_REWARDS!=='undefined'){
+      SWQ_RANK_REWARDS.forEach(reward=>{
+        const ri=RANKS.findIndex(r=>r.c===reward.c);
+        if(ri>=0&&ri<=currentIdx)claimed.add(reward.c);
+      });
+    }
+    S.rankRewardsClaimed=[...claimed];
+    S.__swqRankRewardHighWater=currentIdx;
+    S.rankRewardCoins=0;
+    S.rankRewardXP=0;
+    S.__swqRankRewardGuardV3=true;
+    save();
+  }catch(e){console.warn('SWQ reward guard v20',e)}
+
+  /*
+    Punto importante: al empezar un nuevo gainXP, el cursor debe ser exactamente
+    el rango anterior, nunca uno menor. Así un salto normal 3 -> 4 entrega solo
+    la recompensa de 4; un salto 3 -> 5 entrega 4 y 5, y nada anterior.
+  */
+  try{
+    if(typeof gainXP==='function'&&!window.__swqGainXPAuthV20){
+      const baseGainXPAuthV20=gainXP;
+      gainXP=function(amount){
+        try{
+          S.__swqRankRewardHighWater=Math.max(-1,currentRank().i);
+        }catch(e){}
+        return baseGainXPAuthV20.apply(this,arguments);
+      };
+      window.__swqGainXPAuthV20=true;
+    }
+  }catch(e){console.warn('SWQ gainXP reward guard v20',e)}
+
+  /* ===== ESTILO ALEATORIO: únicamente estilos comprados ===== */
+  try{
+    if(!S.settings)S.settings={};
+    S.settings.randomThemeOnStart=!!S.settings.randomThemeOnStart;
+
+    /* Desactiva el sistema anterior para que no pueda cambiar dos veces al abrir. */
+    S.settings.randomStyleOnStart=false;
+
+    function boughtThemesV20(){
+      const out=['Aqua'];
+      try{
+        Object.keys(THEMES||{}).forEach(k=>{
+          if(k==='Aqua')return;
+          if(S.purchases?.['theme_'+k]===true)out.push(k);
+        });
+      }catch(e){}
+      return [...new Set(out)].filter(k=>THEMES&&THEMES[k]);
+    }
+
+    function applyRandomPurchasedStyleV20(){
+      try{
+        if(!S.settings.randomThemeOnStart)return false;
+        const owned=boughtThemesV20();
+        if(owned.length<2)return false;
+
+        const current=String(S.settings.theme||'Aqua');
+        const choices=owned.filter(k=>k!==current);
+        if(!choices.length)return false;
+
+        const next=choices[Math.floor(Math.random()*choices.length)];
+        if(!THEMES[next])return false;
+
+        S.settings.theme=next;
+        S.settings.randomStyleOnStart=false;
+        save();
+        if(typeof applyTheme==='function')applyTheme();
+
+        if(next==='RandomBasic'){
+          try{if(typeof applyRandomBasic==='function')applyRandomBasic();}catch(e){}
+          setTimeout(()=>{try{if(typeof startDice==='function')startDice();}catch(e){}},80);
+        }
+        return true;
+      }catch(e){
+        console.warn('SWQ purchased random style v20',e);
+        return false;
+      }
+    }
+
+    function hideOldRandomStyleUIV20(){
+      document.querySelectorAll('#swqRandomStyleToggle,#swqRandomStyleSettingsToggle').forEach(el=>{
+        const host=el.closest('label')||el.parentElement;
+        if(host)host.style.display='none';
+      });
+    }
+
+    function syncRandomStyleSettingV20(checked){
+      S.settings.randomThemeOnStart=!!checked;
+      S.settings.randomStyleOnStart=false;
+      save();
+      toast(S.settings.randomThemeOnStart?'🎲 Estilo aleatorio activado.':'🎨 Estilo aleatorio desactivado.',2200);
+    }
+
+    function injectRandomStyleWindowV20(){
+      try{
+        hideOldRandomStyleUIV20();
+
+        const overlay=document.getElementById('swqSimpleThemeOverlay');
+        if(overlay){
+          const applyBtn=overlay.querySelector('#swqSimpleThemeApply');
+          if(applyBtn&&!overlay.querySelector('#swqRandomThemeSwitchV20')){
+            const row=document.createElement('label');
+            row.id='swqRandomThemeSwitchV20';
+            row.style.cssText='display:flex;align-items:center;gap:8px;margin:8px 0 0;padding:8px 10px;border:1px solid rgba(126,232,255,.16);border-radius:11px;background:rgba(126,232,255,.035);font-size:12px;font-weight:800;line-height:1.2;cursor:pointer';
+            row.innerHTML='<input id="swqRandomThemeToggleV20" type="checkbox" style="width:auto;flex:0 0 auto;margin:0" '+(S.settings.randomThemeOnStart?'checked':'')+'><span>🎲 Aleatorio al entrar<small style="display:block;opacity:.66;font-weight:500;margin-top:2px">Solo estilos que ya compraste.</small></span>';
+            applyBtn.parentNode.insertBefore(row,applyBtn);
+            row.querySelector('#swqRandomThemeToggleV20')?.addEventListener('change',e=>syncRandomStyleSettingV20(e.target.checked));
+          }
+        }
+
+        const modalRoot=document.querySelector('#modal .modal');
+        if(modalRoot){
+          const old=modalRoot.querySelector('#swqRandomThemeSettingsRow');
+          const saveButton=[...modalRoot.querySelectorAll('button')].find(b=>b.textContent.trim()==='Guardar');
+          if(!modalRoot.querySelector('#swqRandomThemeSettingsRowV20')){
+            const row=document.createElement('label');
+            row.id='swqRandomThemeSettingsRowV20';
+            row.style.cssText='display:flex;align-items:center;gap:8px;margin:9px 0;padding:8px 10px;border:1px solid rgba(126,232,255,.16);border-radius:11px;background:rgba(126,232,255,.035);font-size:12px;font-weight:800;line-height:1.2;cursor:pointer';
+            row.innerHTML='<input id="swqRandomThemeSettingsToggleV20" type="checkbox" style="width:auto;flex:0 0 auto;margin:0" '+(S.settings.randomThemeOnStart?'checked':'')+'><span>🎲 Aleatorio al entrar<small style="display:block;opacity:.66;font-weight:500;margin-top:2px">Solo estilos que ya compraste.</small></span>';
+            if(saveButton)modalRoot.insertBefore(row,saveButton);else modalRoot.appendChild(row);
+            row.querySelector('#swqRandomThemeSettingsToggleV20')?.addEventListener('change',e=>syncRandomStyleSettingV20(e.target.checked));
+          }else{
+            const cb=modalRoot.querySelector('#swqRandomThemeSettingsToggleV20');
+            if(cb&&cb.checked!==!!S.settings.randomThemeOnStart)cb.checked=!!S.settings.randomThemeOnStart;
+          }
+          if(old)old.style.display='none';
+        }
+      }catch(e){}
+    }
+
+    /* Mantiene un solo interruptor visible aunque los parches anteriores reconstruyan el modal. */
+    try{
+      const obs=new MutationObserver(()=>injectRandomStyleWindowV20());
+      obs.observe(document.body,{childList:true,subtree:true});
+      setInterval(injectRandomStyleWindowV20,700);
+    }catch(e){}
+
+    let applied=false,tries=0;
+    function tryApplyOnceV20(){
+      if(applied)return;
+      tries++;
+      try{
+        if(!S.settings.randomThemeOnStart)return;
+        if(!S.profile||typeof currentRank!=='function')return;
+        if(applyRandomPurchasedStyleV20())applied=true;
+      }catch(e){}
+      if(!applied&&tries<15)setTimeout(tryApplyOnceV20,500);
+    }
+
+    /* Después de una sincronización de cuenta también puede haber llegado el perfil. */
+    if(typeof applyCloudGameState==='function'&&!window.__swqRandomCloudV20){
+      const baseCloudRandomV20=applyCloudGameState;
+      applyCloudGameState=function(gs){
+        const out=baseCloudRandomV20.apply(this,arguments);
+        setTimeout(tryApplyOnceV20,120);
+        return out;
+      };
+      window.__swqRandomCloudV20=true;
+    }
+
+    setTimeout(tryApplyOnceV20,260);
+    setTimeout(injectRandomStyleWindowV20,300);
+    S.settings.randomStyleOnStart=false;
+    save();
+  }catch(e){console.warn('SWQ random purchase style v20',e)}
+})();
