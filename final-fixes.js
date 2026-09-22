@@ -5635,3 +5635,61 @@ body.theme-carretera .app{position:relative;z-index:2}
     save();
   }catch(e){console.warn('SWQ random purchase style v20',e)}
 })();
+
+
+/* === SWQ RANDOM STYLE V20 UI DEDUPE 2026-09-22 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_RANDOM_STYLE_V20_UI_DEDUPE__)return;
+  window.__SWQ_RANDOM_STYLE_V20_UI_DEDUPE__=true;
+
+  function hideLegacyRandomControls(){
+    try{
+      [
+        '#swqRandomStyleToggle',
+        '#swqRandomStyleSettingsToggle',
+        '#swqRandomThemeToggle',
+        '#swqRandomThemeSettingsToggle',
+        '#swqRandomThemeSwitch',
+        '#swqRandomThemeSettingsRow'
+      ].forEach(sel=>{
+        document.querySelectorAll(sel).forEach(el=>{
+          const host=el.closest('label')||el;
+          host.style.display='none';
+        });
+      });
+    }catch(e){}
+  }
+
+  function syncLegacySaveCheckboxes(){
+    try{
+      const checked=!!S.settings?.randomThemeOnStart;
+      const a=document.getElementById('swqRandomThemeToggle');
+      const b=document.getElementById('swqRandomThemeSettingsToggle');
+      const c=document.getElementById('swqRandomStyleToggle');
+      const d=document.getElementById('swqRandomStyleSettingsToggle');
+      if(a)a.checked=checked;
+      if(b)b.checked=checked;
+      if(c)c.checked=false;
+      if(d)d.checked=false;
+    }catch(e){}
+  }
+
+  try{
+    const obs=new MutationObserver(()=>{hideLegacyRandomControls();syncLegacySaveCheckboxes()});
+    obs.observe(document.body,{childList:true,subtree:true});
+    setInterval(()=>{hideLegacyRandomControls();syncLegacySaveCheckboxes()},700);
+  }catch(e){}
+
+  try{
+    if(typeof saveSettings==='function'&&!window.__swqRandomSaveSyncV20){
+      const baseSaveSyncV20=saveSettings;
+      saveSettings=function(){
+        syncLegacySaveCheckboxes();
+        S.settings.randomStyleOnStart=false;
+        return baseSaveSyncV20.apply(this,arguments);
+      };
+      window.__swqRandomSaveSyncV20=true;
+    }
+  }catch(e){}
+})();
