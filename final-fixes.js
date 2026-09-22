@@ -1304,28 +1304,84 @@ body.theme-carretera .app{position:relative;z-index:2}
 
     function swqGrantRankMilestones(showToast=false){
       swqEnsureV9State();
-      let changed=false,events=[];
-      let guard=0;
-      while(guard++<30){
-        const idx=currentRank().i;
-        let next=null;
-        for(const reward of SWQ_RANK_REWARDS){
-          const ri=RANKS.findIndex(r=>r.c===reward.c);
-          if(ri<=idx&&!S.rankRewardsClaimed.includes(reward.c)){next=reward;break;}
-        }
-        if(!next)break;
-        S.rankRewardsClaimed.push(next.c);
-        changed=true;
-        if(next.coins){S.rankRewardCoins+=next.coins;S.coins+=next.coins;events.push('+'+fmt(next.coins)+' 🪙');}
-        if(next.xp){S.rankRewardXP+=next.xp;S.xp+=next.xp;S.level=levelFromXP(S.xp);events.push('+'+fmt(next.xp)+' XP');}
-        if(next.give){swqGiveConsumable(next.give,1);events.push(SWQ_CONSUMABLES[next.give].icon+' '+SWQ_CONSUMABLES[next.give].name);}
-        if(next.giveMany)next.giveMany.forEach(k=>{swqGiveConsumable(k,1);events.push(SWQ_CONSUMABLES[k].icon+' '+SWQ_CONSUMABLES[k].name);});
-        if(next.randomConsumable){const k=swqRewardRandomConsumable();events.push('🎁 '+(k==='recuperador'?'Recuperador de racha':SWQ_CONSUMABLES[k].name));}
-        if(next.unlockStyle){swqUnlockStyle(next.unlockStyle);events.push('🎨 '+SWQ_NEW_STYLES[next.unlockStyle].name+' disponible en la tienda');}
-        if(next.unlockConsumable){S.shopUnlocks[next.unlockConsumable]=true;events.push('🔁 Ficha de Repetición disponible en la tienda');}
-        S.level=levelFromXP(S.xp);
+
+      /* Cursor de alto nivel: las recompensas solo se cobran al cruzar rangos nuevos. */
+      const currentIdx=Math.max(0,currentRank().i);
+      let cursor=Number.isFinite(Number(S.__swqRankRewardHighWater))
+        ?Math.max(-1,Number(S.__swqRankRewardHighWater))
+        :currentIdx;
+
+      if(!Number.isFinite(Number(S.__swqRankRewardHighWater))){
+        /* Migración segura: una partida ya existente no recibe recompensas retroactivas. */
+        S.__swqRankRewardHighWater=currentIdx;
       }
-      swqEnsureV9State();
+
+      const claimed=new Set(Array.isArray(S.rankRewardsClaimed)?S.rankRewardsClaimed:[]);
+      let changed=false,events=[];
+
+      /* Repara listas incompletas provenientes de local/cloud sin volver a pagar. */
+      for(const reward of SWQ_RANK_REWARDS){
+        const ri=RANKS.findIndex(r=>r.c===reward.c);
+        if(ri>=0&&ri<=cursor&&!claimed.has(reward.c)){
+          claimed.add(reward.c);
+          changed=true;
+        }
+      }
+
+      if(currentIdx>cursor){
+        for(let ri=cursor+1;ri<=currentIdx;ri++){
+          const reward=SWQ_RANK_REWARDS.find(x=>RANKS.findIndex(r=>r.c===x.c)===ri);
+          if(!reward)continue;
+          if(claimed.has(reward.c))continue;
+
+          claimed.add(reward.c);
+          changed=true;
+
+          if(reward.coins){
+            S.rankRewardCoins+=reward.coins;
+            S.coins+=reward.coins;
+            events.push('+'+fmt(reward.coins)+' 🪙');
+          }
+          if(reward.xp){
+            S.rankRewardXP+=reward.xp;
+            S.xp+=reward.xp;
+            S.level=levelFromXP(S.xp);
+            events.push('+'+fmt(reward.xp)+' XP');
+          }
+          if(reward.give){
+            swqGiveConsumable(reward.give,1);
+            const it=SWQ_CONSUMABLES[reward.give];
+            if(it)events.push(it.icon+' '+it.name);
+          }
+          if(reward.giveMany)reward.giveMany.forEach(k=>{
+            swqGiveConsumable(k,1);
+            const it=SWQ_CONSUMABLES[k];
+            if(it)events.push(it.icon+' '+it.name);
+          });
+          if(reward.randomConsumable){
+            const k=swqRewardRandomConsumable();
+            events.push('🎁 '+(k==='recuperador'?'Recuperador de racha':SWQ_CONSUMABLES[k].name));
+          }
+          if(reward.unlockStyle){
+            swqUnlockStyle(reward.unlockStyle);
+            const it=SWQ_NEW_STYLES[reward.unlockStyle];
+            if(it)events.push('🎨 '+it.name+' disponible en la tienda');
+          }
+          if(reward.unlockConsumable){
+            S.shopUnlocks[reward.unlockConsumable]=true;
+            events.push('🔁 Ficha de Repetición disponible en la tienda');
+          }
+        }
+        S.__swqRankRewardHighWater=ri;
+      }
+
+      S.__swqRankRewardHighWater=Math.max(
+        Number(S.__swqRankRewardHighWater)||-1,
+        currentIdx
+      );
+      S.rankRewardsClaimed=[...claimed];
+      S.level=levelFromXP(S.xp);
+
       if(changed)save();
       if(changed&&showToast)toast('🎁 Recompensas de rango actualizadas: '+events.join(' · '),5000);
       return {changed,events};
@@ -1566,11 +1622,17 @@ body.theme-carretera .app{position:relative;z-index:2}
     if(!window.__swqGainXPV9Wrapped){
       gainXP=function(amount){
         const before=currentRank().i;
+        if(!Number.isFinite(Number(S.__swqRankRewardHighWater))){
+          S.__swqRankRewardHighWater=before;
+        }else{
+          S.__swqRankRewardHighWater=Math.min(Number(S.__swqRankRewardHighWater),before);
+        }
         const result=baseGainXPV9.apply(this,arguments);
         const after=currentRank().i;
-        if(after>before){
-          const info=swqGrantRankMilestones(false);
-          if(info.changed){S.__swqLastRankRewardEvents=info.events||[];toast('🏆 Nuevo rango: '+currentRank().r.n+' · recompensas añadidas a tu inventario.',4200);}
+        const info=swqGrantRankMilestones(false);
+        if(after>before&&info.changed){
+          S.__swqLastRankRewardEvents=info.events||[];
+          toast('🏆 Nuevo rango: '+currentRank().r.n+' · recompensa(s) añadida(s) al inventario.',4200);
         }
         swqEnsureV9State();
         return result;
@@ -5196,4 +5258,195 @@ body.theme-carretera .app{position:relative;z-index:2}
 
   setTimeout(applyRandomStyleOnEntry,420);
   window.swqSetRandomStyleOnStart=setRandomStyleEnabled;
+})();
+
+/* === SWQ RANK REWARD GUARD + RANDOM START STYLE 2026-09-22 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_RANK_REWARD_GUARD_RANDOM_STYLE_20260922__)return;
+  window.__SWQ_RANK_REWARD_GUARD_RANDOM_STYLE_20260922__=true;
+
+  function ensureRandomThemeSetting(){
+    if(!S.settings)S.settings={};
+    if(typeof S.settings.randomThemeOnStart!=='boolean')S.settings.randomThemeOnStart=false;
+  }
+
+  /* Guarda el cursor de recompensas también en la partida sincronizada. */
+  try{
+    if(typeof cloudGameState==='function'&&!window.__swqCloudRankCursorWrapped){
+      const baseCloudGameState=cloudGameState;
+      cloudGameState=function(){
+        const out=baseCloudGameState.apply(this,arguments)||{};
+        out.rankRewardHighWater=Number.isFinite(Number(S.__swqRankRewardHighWater))
+          ?Number(S.__swqRankRewardHighWater)
+          :Math.max(0,currentRank().i);
+        return out;
+      };
+      window.__swqCloudRankCursorWrapped=true;
+    }
+    if(typeof applyCloudGameState==='function'&&!window.__swqCloudRankCursorApplyWrapped){
+      const baseApplyCloudGameState=applyCloudGameState;
+      applyCloudGameState=function(gs){
+        const localCursor=Number.isFinite(Number(S.__swqRankRewardHighWater))
+          ?Number(S.__swqRankRewardHighWater)
+          :-1;
+        const remoteCursor=Number.isFinite(Number(gs?.rankRewardHighWater))
+          ?Number(gs.rankRewardHighWater)
+          :-1;
+        const remoteHasCursor=remoteCursor>=0;
+        const out=baseApplyCloudGameState.apply(this,arguments);
+        const nowRank=Math.max(0,currentRank().i);
+
+        let merged=Math.max(localCursor,remoteCursor);
+        if(!remoteHasCursor)merged=Math.max(merged,nowRank);
+        merged=Math.min(Math.max(0,merged),nowRank);
+
+        S.__swqRankRewardHighWater=merged;
+        const set=new Set(Array.isArray(S.rankRewardsClaimed)?S.rankRewardsClaimed:[]);
+        if(typeof SWQ_RANK_REWARDS!=='undefined'){
+          SWQ_RANK_REWARDS.forEach(reward=>{
+            const ri=RANKS.findIndex(r=>r.c===reward.c);
+            if(ri>=0&&ri<=merged)set.add(reward.c);
+          });
+        }
+        S.rankRewardsClaimed=[...set];
+        save();
+        return out;
+      };
+      window.__swqCloudRankCursorApplyWrapped=true;
+    }
+  }catch(e){console.warn('SWQ rank cloud cursor',e)}
+
+  try{
+    if(!Number.isFinite(Number(S.__swqRankRewardHighWater))){
+      S.__swqRankRewardHighWater=Math.max(0,currentRank().i);
+    }
+    const cursor=Math.max(0,Number(S.__swqRankRewardHighWater)||0);
+    const set=new Set(Array.isArray(S.rankRewardsClaimed)?S.rankRewardsClaimed:[]);
+    if(typeof SWQ_RANK_REWARDS!=='undefined'){
+      SWQ_RANK_REWARDS.forEach(reward=>{
+        const ri=RANKS.findIndex(r=>r.c===reward.c);
+        if(ri>=0&&ri<=cursor)set.add(reward.c);
+      });
+      S.rankRewardsClaimed=[...set];
+    }
+    save();
+  }catch(e){}
+
+  /* ===== Estilo aleatorio al entrar ===== */
+  function ownedTheme(k){
+    if(k==='Aqua')return true;
+    return !!(S.purchases?.['theme_'+k]||S.shopUnlocks?.['theme_'+k]);
+  }
+  function ownedThemes(){
+    const out=[];
+    try{
+      Object.keys(THEMES||{}).forEach(k=>{
+        if(THEMES[k]&&ownedTheme(k))out.push(k);
+      });
+    }catch(e){}
+    return [...new Set(out)];
+  }
+  function applyRandomStartTheme(){
+    ensureRandomThemeSetting();
+    if(!S.profile||!S.settings.randomThemeOnStart)return false;
+    const owned=ownedThemes();
+    if(owned.length<2)return false;
+    const previous=String(S.settings.theme||'Aqua');
+    const options=owned.filter(k=>k!==previous);
+    if(!options.length)return false;
+    const next=options[Math.floor(Math.random()*options.length)];
+    S.settings.theme=next;
+    save();
+    try{
+      applyTheme();
+      if(next==='RandomBasic'){
+        try{if(typeof applyRandomBasic==='function')applyRandomBasic();}catch(e){}
+        setTimeout(()=>{try{if(typeof startDice==='function')startDice();}catch(e){}},80);
+      }
+    }catch(e){console.warn('SWQ random start theme apply',e)}
+    return next;
+  }
+
+  function injectStyleWindowSwitch(){
+    try{
+      const overlay=document.getElementById('swqSimpleThemeOverlay');
+      if(!overlay)return false;
+      const applyBtn=overlay.querySelector('#swqSimpleThemeApply');
+      if(!applyBtn||overlay.querySelector('#swqRandomThemeSwitch'))return true;
+      ensureRandomThemeSetting();
+
+      const row=document.createElement('label');
+      row.id='swqRandomThemeSwitch';
+      row.style.cssText='display:flex;align-items:center;gap:8px;margin-top:10px;padding:9px 10px;border:1px solid rgba(126,232,255,.18);border-radius:12px;background:rgba(126,232,255,.045);font-size:12px;font-weight:800;line-height:1.25;cursor:pointer';
+      row.innerHTML='<input id="swqRandomThemeToggle" type="checkbox" style="width:auto;flex:0 0 auto;margin:0" '+(S.settings.randomThemeOnStart?'checked':'')+'><span>🎲 Estilo aleatorio al entrar<small style="display:block;opacity:.68;font-weight:500;margin-top:2px">En cada nueva apertura usa otro estilo que ya tengas.</small></span>';
+      applyBtn.parentNode.insertBefore(row,applyBtn);
+
+      row.querySelector('#swqRandomThemeToggle')?.addEventListener('change',e=>{
+        S.settings.randomThemeOnStart=!!e.target.checked;
+        save();
+        toast(S.settings.randomThemeOnStart?'🎲 Estilo aleatorio activado.':'🎨 Estilo aleatorio desactivado.',2600);
+      });
+      return true;
+    }catch(e){console.warn('SWQ random style window switch',e);return false}
+  }
+
+  try{
+    ensureRandomThemeSetting();
+    if(typeof window.swqQuickTheme==='function'&&!window.__swqRandomQuickThemeWrapped){
+      const baseQuickTheme=window.swqQuickTheme;
+      window.swqQuickTheme=function(){
+        const out=baseQuickTheme.apply(this,arguments);
+        setTimeout(injectStyleWindowSwitch,0);
+        setTimeout(injectStyleWindowSwitch,80);
+        return out;
+      };
+      window.__swqRandomQuickThemeWrapped=true;
+    }
+
+    if(typeof settings==='function'&&!window.__swqRandomSettingsWrapped){
+      const baseSettings=settings;
+      settings=function(){
+        const out=baseSettings.apply(this,arguments);
+        setTimeout(()=>{
+          try{
+            ensureRandomThemeSetting();
+            const modalRoot=document.querySelector('#modal .modal');
+            if(!modalRoot||modalRoot.querySelector('#swqRandomThemeSettingsRow'))return;
+            const row=document.createElement('label');
+            row.id='swqRandomThemeSettingsRow';
+            row.style.cssText='display:flex;align-items:center;gap:8px;margin:9px 0;padding:9px 10px;border:1px solid rgba(126,232,255,.18);border-radius:12px;background:rgba(126,232,255,.04);font-size:12px;font-weight:800;line-height:1.25;cursor:pointer';
+            row.innerHTML='<input id="swqRandomThemeSettingsToggle" type="checkbox" style="width:auto;flex:0 0 auto;margin:0" '+(S.settings.randomThemeOnStart?'checked':'')+'><span>🎲 Estilo aleatorio al entrar<small style="display:block;opacity:.68;font-weight:500;margin-top:2px">Usa únicamente estilos que ya tengas.</small></span>';
+            const saveButton=[...modalRoot.querySelectorAll('button')].find(b=>b.textContent.trim()==='Guardar');
+            if(saveButton)modalRoot.insertBefore(row,saveButton);else modalRoot.appendChild(row);
+            row.querySelector('#swqRandomThemeSettingsToggle')?.addEventListener('change',e=>{
+              S.settings.randomThemeOnStart=!!e.target.checked;
+              save();
+              toast(S.settings.randomThemeOnStart?'🎲 Estilo aleatorio activado.':'🎨 Estilo aleatorio desactivado.',2600);
+            });
+          }catch(e){console.warn('SWQ random settings switch',e)}
+        },0);
+        return out;
+      };
+      window.__swqRandomSettingsWrapped=true;
+    }
+
+    if(typeof saveSettings==='function'&&!window.__swqRandomSaveSettingsWrapped){
+      const baseSaveSettings=saveSettings;
+      saveSettings=function(){
+        const toggle=document.getElementById('swqRandomThemeSettingsToggle');
+        if(toggle)S.settings.randomThemeOnStart=!!toggle.checked;
+        return baseSaveSettings.apply(this,arguments);
+      };
+      window.__swqRandomSaveSettingsWrapped=true;
+    }
+  }catch(e){console.warn('SWQ random style UI',e)}
+
+  /* Solo corre una vez por carga; nunca cambia el estilo durante una sesión. */
+  setTimeout(()=>{
+    try{
+      const next=applyRandomStartTheme();
+      if(next&&typeof render==='function')render();
+    }catch(e){console.warn('SWQ random style startup',e)}
+  },220);
 })();
