@@ -1372,7 +1372,6 @@ body.theme-carretera .app{position:relative;z-index:2}
             events.push('🔁 Ficha de Repetición disponible en la tienda');
           }
         }
-        S.__swqRankRewardHighWater=ri;
       }
 
       S.__swqRankRewardHighWater=Math.max(
