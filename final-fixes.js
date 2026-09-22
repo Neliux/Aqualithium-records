@@ -5116,6 +5116,14 @@ body.theme-carretera .app{position:relative;z-index:2}
     if(block)panel.insertBefore(block,apply||null);
   }
 
+  /* El botón real del perfil abre la función local swqSimpleOpenTheme directamente.
+     Observamos el DOM para añadir el interruptor también en ese camino. */
+  try{
+    const obs=new MutationObserver(()=>{try{addThemeWindowToggle()}catch(e){}});
+    obs.observe(document.body,{childList:true,subtree:true});
+    setInterval(()=>{try{addThemeWindowToggle()}catch(e){}},500);
+  }catch(e){}
+  
   try{
     if(typeof window.swqQuickTheme==='function'&&!window.__swqRandomStyleThemeWrap20260922){
       const baseQuickTheme=window.swqQuickTheme;
