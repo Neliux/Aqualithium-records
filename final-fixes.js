@@ -1207,6 +1207,18 @@ body.theme-carretera .app{position:relative;z-index:2}
       S.activeConsumables=S.activeConsumables||{};
       S.shopUnlocks=S.shopUnlocks||{};
       S.rankRewardsClaimed=Array.isArray(S.rankRewardsClaimed)?S.rankRewardsClaimed:[];
+      /* Migración segura: no entrega retroactivamente todas las recompensas de rangos ya alcanzados.
+         A partir de aquí, solo el siguiente rango nuevo podrá cobrar su recompensa. */
+      if(!S.__swqRankRewardsBaselineV2){
+        const reached=currentRank().i;
+        const claimed=new Set(S.rankRewardsClaimed);
+        SWQ_RANK_REWARDS.forEach(reward=>{
+          const ri=RANKS.findIndex(r=>r.c===reward.c);
+          if(ri>=0&&ri<=reached)claimed.add(reward.c);
+        });
+        S.rankRewardsClaimed=[...claimed];
+        S.__swqRankRewardsBaselineV2=true;
+      }
       if(!Number.isFinite(Number(S.rankRewardCoins)))S.rankRewardCoins=0;
       if(!Number.isFinite(Number(S.rankRewardXP)))S.rankRewardXP=0;
       if(!Number.isFinite(Number(S.itemBonusCoins)))S.itemBonusCoins=0;
@@ -1765,9 +1777,9 @@ body.theme-carretera .app{position:relative;z-index:2}
     const baseRebuildProfileV9=rebuildProfile;
     if(!window.__swqRebuildProfileV9Wrapped){
       rebuildProfile=function(){
+        /* Las recompensas ya se aplican una sola vez en gainXP/rank-reward.
+           Este recálculo no debe volver a sumarlas. */
         const out=baseRebuildProfileV9.apply(this,arguments);
-        S.xp+=Number(S.rankRewardXP||0)+Number(S.itemBonusXP||0);
-        S.coins+=Number(S.rankRewardCoins||0)+Number(S.itemBonusCoins||0);
         S.level=levelFromXP(S.xp);save();return out;
       };
       window.__swqRebuildProfileV9Wrapped=true;
@@ -1775,9 +1787,9 @@ body.theme-carretera .app{position:relative;z-index:2}
     const baseRecalcAllV9=recalcAll;
     if(!window.__swqRecalcAllV9Wrapped){
       recalcAll=function(){
+        /* Igual que rebuildProfile: recalcular estadísticas no vuelve a pagar
+           recompensas de rango ni cristales usados anteriormente. */
         const out=baseRecalcAllV9.apply(this,arguments);
-        S.xp+=Number(S.rankRewardXP||0)+Number(S.itemBonusXP||0);
-        S.coins+=Number(S.rankRewardCoins||0)+Number(S.itemBonusCoins||0);
         S.level=levelFromXP(S.xp);save();return out;
       };
       window.__swqRecalcAllV9Wrapped=true;
@@ -5042,4 +5054,138 @@ body.theme-carretera .app{position:relative;z-index:2}
       '@media(max-width:640px){.swq-fish-v4-stage{padding-top:2px!important}.swq-fish-v4-fish{font-size:66px!important}.swq-fish-v4-question{font-size:18px!important;padding:12px 6px!important}.swq-fish-v4-choices{grid-template-columns:1fr!important}.swq-fish-v4-choice{min-height:58px!important}.swq-fish-v4-copy,.swq-fish-v4-thought{font-size:16px!important}}';
     document.head.appendChild(st);
   }catch(e){}
+})();
+
+/* === SWQ RANK REWARDS FIX + RANDOM STYLE ON ENTRY 2026-09-22 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_RANK_RANDOM_STYLE_FIX_20260922__)return;
+  window.__SWQ_RANK_RANDOM_STYLE_FIX_20260922__=true;
+
+  try{
+    S.settings=S.settings||{};
+    if(typeof S.settings.randomStyleOnStart!=='boolean')S.settings.randomStyleOnStart=false;
+    save();
+  }catch(e){}
+
+  /* Los contadores antiguos ya no participan en pagos automáticos. */
+  try{
+    if(Number.isFinite(Number(S.rankRewardCoins)))S.rankRewardCoins=0;
+    if(Number.isFinite(Number(S.rankRewardXP)))S.rankRewardXP=0;
+    save();
+  }catch(e){}
+
+  function ownedThemes(){
+    const out=['Aqua'];
+    try{
+      Object.keys(THEMES||{}).forEach(k=>{
+        if(k!=='Aqua'&&S.purchases?.['theme_'+k])out.push(k);
+      });
+    }catch(e){}
+    return [...new Set(out)].filter(k=>THEMES&&THEMES[k]);
+  }
+
+  function setRandomStyleEnabled(enabled){
+    S.settings.randomStyleOnStart=!!enabled;
+    save();
+    toast(enabled?'🎲 Estilo aleatorio al entrar: ACTIVADO':'🎲 Estilo aleatorio al entrar: DESACTIVADO',2400);
+  }
+
+  function renderRandomToggle(){
+    try{
+      const host=document.createElement('div');
+      host.style.cssText='margin-top:12px;padding:10px 12px;border:1px solid rgba(126,232,255,.16);border-radius:14px;background:rgba(255,255,255,.035)';
+      host.innerHTML=
+        '<label style="display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer">'+
+          '<span><b>🎲 Estilo aleatorio al entrar</b><span style="display:block;font-size:12px;opacity:.72;margin-top:2px">Elige automáticamente otro estilo que ya hayas comprado cada vez que abras el juego.</span></span>'+
+          '<input id="swqRandomStyleToggle" type="checkbox" style="width:20px;height:20px;accent-color:#42ddff;flex:0 0 auto" '+(S.settings.randomStyleOnStart?'checked':'')+'>'+
+        '</label>';
+      const cb=host.querySelector('#swqRandomStyleToggle');
+      cb?.addEventListener('change',()=>setRandomStyleEnabled(cb.checked));
+      return host;
+    }catch(e){return null}
+  }
+
+  function addThemeWindowToggle(){
+    const overlay=document.getElementById('swqSimpleThemeOverlay');
+    if(!overlay||overlay.querySelector('#swqRandomStyleToggle'))return;
+    const panel=overlay.querySelector('div');
+    if(!panel)return;
+    const apply=panel.querySelector('#swqSimpleThemeApply');
+    const block=renderRandomToggle();
+    if(block)panel.insertBefore(block,apply||null);
+  }
+
+  try{
+    if(typeof window.swqQuickTheme==='function'&&!window.__swqRandomStyleThemeWrap20260922){
+      const baseQuickTheme=window.swqQuickTheme;
+      window.swqQuickTheme=function(){
+        const out=baseQuickTheme.apply(this,arguments);
+        setTimeout(addThemeWindowToggle,0);
+        return out;
+      };
+      window.__swqRandomStyleThemeWrap20260922=true;
+    }
+  }catch(e){console.warn('SWQ random style selector',e)}
+
+  try{
+    if(typeof window.settings==='function'&&!window.__swqRandomStyleSettingsWrap20260922){
+      const baseSettings=window.settings;
+      window.settings=function(){
+        const out=baseSettings.apply(this,arguments);
+        setTimeout(()=>{
+          try{
+            const modal=document.querySelector('#modal');
+            if(!modal||modal.querySelector('#swqRandomStyleToggle'))return;
+            const host=renderRandomToggle();
+            const music=modal.querySelector('#sMusic');
+            const parent=music?.closest?.('.checkrow');
+            if(host){
+              if(parent&&parent.parentNode)parent.parentNode.insertBefore(host,parent.nextSibling);
+              else modal.querySelector('.field')?.after(host);
+            }
+          }catch(e){}
+        },0);
+        return out;
+      };
+      window.__swqRandomStyleSettingsWrap20260922=true;
+    }
+  }catch(e){}
+
+  try{
+    if(typeof window.saveSettings==='function'&&!window.__swqRandomStyleSaveWrap20260922){
+      const baseSaveSettings=window.saveSettings;
+      window.saveSettings=function(){
+        const cb=document.getElementById('swqRandomStyleToggle');
+        if(cb)S.settings.randomStyleOnStart=!!cb.checked;
+        return baseSaveSettings.apply(this,arguments);
+      };
+      window.__swqRandomStyleSaveWrap20260922=true;
+    }
+  }catch(e){}
+
+  let entryApplied=false;
+  function applyRandomStyleOnEntry(){
+    if(entryApplied)return;
+    entryApplied=true;
+    try{
+      if(!S.settings.randomStyleOnStart)return;
+      const keys=ownedThemes();
+      if(keys.length<=1)return;
+      const current=S.settings.theme;
+      const choices=keys.filter(k=>k!==current);
+      const next=choices[Math.floor(Math.random()*choices.length)]||keys[0];
+      if(!THEMES[next])return;
+      S.settings.theme=next;
+      save();
+      if(typeof applyTheme==='function')applyTheme();
+      if(next==='RandomBasic'){
+        try{if(typeof applyRandomBasic==='function')applyRandomBasic();}catch(e){}
+        setTimeout(()=>{try{if(typeof startDice==='function')startDice();}catch(e){}},80);
+      }
+    }catch(e){console.warn('SWQ random style on entry',e)}
+  }
+
+  setTimeout(applyRandomStyleOnEntry,420);
+  window.swqSetRandomStyleOnStart=setRandomStyleEnabled;
 })();
