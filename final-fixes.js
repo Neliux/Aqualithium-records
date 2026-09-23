@@ -6226,26 +6226,11 @@ body.theme-carretera .app{position:relative;z-index:2}
     if(!S.purchases)S.purchases={};
     if(!S.settings)S.settings={};
 
-    /* Migración segura: Mystery queda eliminado y cualquier progreso previo se conserva como ???. */
-    if(S.purchases?.theme_Mystery){
-      S.purchases['theme_???']=true;
-      delete S.purchases.theme_Mystery;
-    }
-    if(S.settings?.theme==='Mystery')S.settings.theme='???';
-    try{
-      if(typeof THEMES!=='undefined'&&THEMES.Mystery)delete THEMES.Mystery;
-      if(typeof SHOP!=='undefined'&&Array.isArray(SHOP)){
-        for(let i=SHOP.length-1;i>=0;i--){
-          if(SHOP[i]?.id==='theme_Mystery')SHOP.splice(i,1);
-        }
-      }
-    }catch(e){}
-
     function ownedStyles(){
       const out=['Aqua'];
       try{
         Object.keys(THEMES||{}).forEach(k=>{
-          if(k==='Mystery')return;
+          
           if(k!=='Aqua'&&S.purchases?.['theme_'+k]===true)out.push(k);
         });
       }catch(e){}
@@ -6359,7 +6344,7 @@ body.theme-carretera .app{position:relative;z-index:2}
       const out=['Aqua'];
       try{
         Object.keys(THEMES||{}).forEach(k=>{
-          if(k==='Mystery')return;
+          
           if(k!=='Aqua'&&S.purchases?.['theme_'+k]===true)out.push(k);
         });
       }catch(e){}
@@ -6410,23 +6395,6 @@ body.theme-carretera .app{position:relative;z-index:2}
   if(window.__SWQ_FINAL_V25__)return;
   window.__SWQ_FINAL_V25__=true;
 
-  /* ---------- Mystery is gone; preserve any old ownership as ??? ---------- */
-  try{
-    S.purchases=S.purchases||{};
-    S.settings=S.settings||{};
-    if(S.purchases.theme_Mystery){
-      S.purchases['theme_???']=true;
-      delete S.purchases.theme_Mystery;
-    }
-    if(S.settings.theme==='Mystery')S.settings.theme='???';
-    if(typeof THEMES!=='undefined'&&THEMES.Mystery)delete THEMES.Mystery;
-    if(typeof SHOP!=='undefined'&&Array.isArray(SHOP)){
-      for(let i=SHOP.length-1;i>=0;i--){
-        if(SHOP[i]?.id==='theme_Mystery')SHOP.splice(i,1);
-      }
-    }
-  }catch(e){console.warn('SWQ V25 Mystery cleanup',e)}
-
   /* ---------- ??? is the only surviving secret style ---------- */
   try{
     if(typeof THEMES!=='undefined'){
@@ -6460,7 +6428,7 @@ body.theme-carretera .app{position:relative;z-index:2}
     if(typeof nonAchievementThemesForRoulette==='function'&&!window.__swqUnknownRouletteV25){
       const baseRouletteV25=nonAchievementThemesForRoulette;
       nonAchievementThemesForRoulette=function(){
-        return baseRouletteV25.apply(this,arguments).filter(k=>k!=='???'&&k!=='Mystery');
+        return baseRouletteV25.apply(this,arguments).filter(k=>k!=='???');
       };
       window.__swqUnknownRouletteV25=true;
     }
@@ -6515,7 +6483,7 @@ body.theme-carretera .app{position:relative;z-index:2}
       const out=['Aqua'];
       try{
         Object.keys(THEMES||{}).forEach(k=>{
-          if(k==='Aqua'||k==='Mystery')return;
+          if(k==='Aqua')return;
           if(S.purchases?.['theme_'+k]===true)out.push(k);
         });
       }catch(e){}
@@ -6651,4 +6619,202 @@ body.theme-carretera .app{position:relative;z-index:2}
   }catch(e){console.warn('SWQ V25 random font',e)}
 
   try{save()}catch(e){}
+})();
+
+/* === SWQ FINAL V26: SIMPLE STYLE PICKER + CLEAN UNKNOWN STYLE + REAL ENTRY FONT 2026-09-22 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_FINAL_V26__)return;
+  window.__SWQ_FINAL_V26__=true;
+
+  try{
+    function ownedStylesV26(){
+      const out=['Aqua'];
+      try{
+        Object.keys(THEMES||{}).forEach(k=>{
+          if(k==='Aqua')return;
+          if(S.purchases?.['theme_'+k]===true)out.push(k);
+        });
+      }catch(e){}
+      return [...new Set(out)].filter(k=>THEMES?.[k]);
+    }
+    function themeLabelV26(k){
+      if(k==='???')return '???';
+      try{
+        const item=SHOP?.find?.(x=>x?.id==='theme_'+k);
+        return item?.name||(typeof swqThemeName==='function'?swqThemeName(k):k);
+      }catch(e){return k}
+    }
+    function applyStyleV26(k){
+      try{
+        if(!THEMES?.[k])return;
+        if(k!=='Aqua'&&!S.purchases?.['theme_'+k]){
+          toast('🔒 Ese estilo todavía no está desbloqueado.');
+          return;
+        }
+        S.settings.theme=k;
+        S.settings.randomThemeOnStart=false;
+        S.settings.randomStyleOnStart=false;
+        save();
+        if(typeof applyTheme==='function')applyTheme();
+        if(k==='RandomBasic'){
+          try{window.__SWQ_RANDOM_BASIC_SESSION_COLOR__=false}catch(e){}
+          try{if(typeof applyRandomBasic==='function')applyRandomBasic()}catch(e){}
+          setTimeout(()=>{try{if(typeof startDice==='function')startDice()}catch(e){}},70);
+        }else{
+          try{if(typeof stopDice==='function')stopDice()}catch(e){}
+        }
+        closeModal();
+        document.getElementById('swqSimpleThemeOverlay')?.remove();
+        render();
+      }catch(e){console.warn('SWQ V26 apply style',e)}
+    }
+    function openStylePickerV26(){
+      try{
+        document.getElementById('swqSimpleThemeOverlay')?.remove();
+        const keys=ownedStylesV26();
+        const buttons=keys.map(k=>{
+          const active=S.settings.theme===k;
+          return '<button type="button" class="btn '+(active?'primary':'secondary')+' swq-v26-theme-choice" data-theme-key="'+esc(k)+'" style="width:100%;min-height:52px;text-align:left">'+
+            esc(THEMES[k]?.emoji||'🎨')+' '+esc(themeLabelV26(k))+(active?' · ACTUAL':'')+
+          '</button>';
+        }).join('');
+        modal(
+          '<div class="kicker">🎨 ESTILO</div>'+
+          '<h2>Cambiar estilo</h2>'+
+          '<div class="sub" style="margin:5px 0 10px">Elige uno de tus estilos.</div>'+
+          '<div style="display:grid;grid-template-columns:1fr;gap:8px;max-height:68vh;overflow:auto">'+buttons+'</div>'+
+          '<button type="button" id="swqV26StyleClose" class="btn secondary" style="margin-top:10px;width:100%">Cerrar</button>'
+        );
+        document.querySelectorAll('.swq-v26-theme-choice').forEach(btn=>{
+          btn.addEventListener('click',()=>applyStyleV26(btn.dataset.themeKey||'Aqua'));
+        });
+        document.getElementById('swqV26StyleClose')?.addEventListener('click',closeModal);
+      }catch(e){console.warn('SWQ V26 style picker',e)}
+    }
+    window.swqQuickTheme=openStylePickerV26;
+    window.swqApplyQuickTheme=applyStyleV26;
+    window.equipTheme=applyStyleV26;
+    try{equipTheme=applyStyleV26}catch(e){}
+    function rebindStyleButtonV26(){
+      try{
+        const old=document.getElementById('swqQuickThemeButton');
+        if(!old)return;
+        if(old.dataset.swqV26StyleButton==='1')return;
+        const b=old.cloneNode(true);
+        b.dataset.swqV26StyleButton='1';
+        b.removeAttribute('onclick');
+        b.onclick=function(ev){
+          ev?.preventDefault?.();
+          ev?.stopPropagation?.();
+          openStylePickerV26();
+        };
+        b.textContent='🎨 Cambiar estilo';
+        old.replaceWith(b);
+      }catch(e){}
+    }
+    rebindStyleButtonV26();
+    setInterval(rebindStyleButtonV26,600);
+  }catch(e){console.warn('SWQ V26 style picker setup',e)}
+
+  try{
+    const unknownMessagesV26=[
+      'Tu natación convertida en algo... ligeramente distinto.',
+      'Todo está en orden. Más o menos.',
+      'El botón también decidió cambiar de humor.',
+      'La piscina tiene una opinión al respecto.',
+      'No pasó nada. Probablemente.',
+      '¿Por qué dice eso? Buena pregunta.',
+      'El pez dijo que esto era normal.',
+      'Hoy el menú se siente un poco extraño.',
+      '???'
+    ];
+    function syncUnknownTextV26(){
+      const active=S.settings?.theme==='???';
+      const sub=document.querySelector('.brand .sub');
+      if(!sub)return;
+      if(active){
+        sub.textContent=unknownMessagesV26[Math.floor(Math.random()*unknownMessagesV26.length)];
+        sub.dataset.swqUnknownTextV26='1';
+        document.title='Swim Quest · ???';
+      }else{
+        sub.textContent='Tu natación convertida en videojuego.';
+        delete sub.dataset.swqUnknownTextV26;
+        document.title='Swim Quest';
+      }
+    }
+    syncUnknownTextV26();
+    setInterval(syncUnknownTextV26,5200);
+    if(typeof render==='function'&&!window.__SWQ_UNKNOWN_TEXT_RENDER_V26){
+      const baseRenderV26=render;
+      render=function(){
+        const out=baseRenderV26.apply(this,arguments);
+        setTimeout(syncUnknownTextV26,0);
+        return out;
+      };
+      window.__SWQ_UNKNOWN_TEXT_RENDER_V26=true;
+    }
+  }catch(e){console.warn('SWQ V26 unknown text',e)}
+
+  try{
+    const modes=['junta','pixel','bonita','normal','mayuscula','serif'];
+    const storageKey='swq_random_font_mode_v26';
+    if(!document.getElementById('swq-random-font-v26-css')){
+      const st=document.createElement('style');
+      st.id='swq-random-font-v26-css';
+      st.textContent=
+        'body.swq-v26-font-junta,body.swq-v26-font-junta *{font-family:"Arial Narrow","Roboto Condensed","Helvetica Neue",Arial,sans-serif!important;letter-spacing:-.025em!important}'+
+        'body.swq-v26-font-pixel,body.swq-v26-font-pixel *{font-family:"Courier New","Lucida Console",monospace!important}'+
+        'body.swq-v26-font-bonita,body.swq-v26-font-bonita *{font-family:"Trebuchet MS","Segoe UI",sans-serif!important;letter-spacing:.008em!important}'+
+        'body.swq-v26-font-normal,body.swq-v26-font-normal *{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif!important;letter-spacing:normal!important}'+
+        'body.swq-v26-font-mayuscula,body.swq-v26-font-mayuscula *{font-family:Impact,"Arial Black",Arial,sans-serif!important;letter-spacing:.018em!important;text-transform:uppercase!important}'+
+        'body.swq-v26-font-mayuscula input,body.swq-v26-font-mayuscula textarea,body.swq-v26-font-mayuscula select{font-family:inherit!important;text-transform:none!important}'+
+        'body.swq-v26-font-serif,body.swq-v26-font-serif *{font-family:Georgia,"Times New Roman",serif!important;letter-spacing:.006em!important}'+
+        'body.theme-???{font-family:inherit!important}body.theme-??? *{font-family:inherit!important}';
+      document.head.appendChild(st);
+    }
+    let currentFontV26='',wasHidden=false;
+    function setFontV26(mode){
+      if(!document.body||!modes.includes(mode))return;
+      currentFontV26=mode;
+      modes.forEach(x=>document.body.classList.remove('swq-v26-font-'+x));
+      document.body.classList.add('swq-v26-font-'+mode);
+      try{localStorage.setItem(storageKey,mode)}catch(e){}
+    }
+    function pickFontV26(){
+      let last='';
+      try{last=localStorage.getItem(storageKey)||''}catch(e){}
+      const choices=modes.filter(x=>x!==last);
+      setFontV26(choices[Math.floor(Math.random()*choices.length)]);
+    }
+    pickFontV26();
+    document.addEventListener('visibilitychange',()=>{
+      if(document.visibilityState==='hidden')wasHidden=true;
+      else if(wasHidden){wasHidden=false;pickFontV26();}
+    });
+    window.addEventListener('pagehide',()=>{wasHidden=true;});
+    window.addEventListener('pageshow',e=>{
+      if(e?.persisted||wasHidden){wasHidden=false;pickFontV26();}
+    });
+  }catch(e){console.warn('SWQ V26 random font',e)}
+
+  try{
+    const unknown=SHOP?.find?.(x=>x?.id==='theme_???');
+    if(unknown)unknown.price=999;
+    if(typeof discountedPrice==='function'&&!window.__SWQ_V26_UNKNOWN_PRICE_GUARD__){
+      const base=discountedPrice;
+      discountedPrice=function(it){
+        if(it?.id==='theme_???')return 999;
+        return base.apply(this,arguments);
+      };
+      window.__SWQ_V26_UNKNOWN_PRICE_GUARD__=true;
+    }
+    if(typeof nonAchievementThemesForRoulette==='function'&&!window.__SWQ_V26_UNKNOWN_ROULETTE_GUARD__){
+      const baseRoulette=nonAchievementThemesForRoulette;
+      nonAchievementThemesForRoulette=function(){
+        return baseRoulette.apply(this,arguments).filter(k=>k!=='???');
+      };
+      window.__SWQ_V26_UNKNOWN_ROULETTE_GUARD__=true;
+    }
+  }catch(e){}
 })();
