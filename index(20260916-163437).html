@@ -1510,7 +1510,7 @@ const ACHIEVEMENTS=[
  {id:"rankPoseidon",icon:"🔱",title:"El océano te reconoce",desc:"Alcanza Poseidón.",reward:{coins:350},ok:()=>currentRank().r.c==="poseidon"||RANKS.findIndex(r=>r.c===currentRank().r.c)>=RANKS.findIndex(r=>r.c==="poseidon")},
  {id:"dailyLucky",icon:"🎰",title:"Golpe de suerte",desc:"Recibe un tema como recompensa diaria.",reward:{coins:100},ok:()=>S.dailyReward?.kind==="theme"&&S.dailyReward?.claimed},
  {id:"pear",icon:"🍐",title:"La Pera",desc:"Compra la Pera en la tienda.",reward:{theme:"Pera",coins:120},ok:()=>!!S.purchases.pear},
- {id:"coach_pool",icon:"🤡",title:"Tira a tu coach dentro de la piscina",desc:"Una curiosidad absurdamente imposible. No tiene recompensa.",reward:{coins:80},ok:()=>false,impossible:true},
+
  {id:"fish25",icon:"🐟",title:"Amigo del pez",desc:"Haz clic en el Pez Motivador 25 veces.",reward:{coins:80},ok:()=>Number(localStorage.getItem("SWIM_QUEST_FISH_CLICKS")||0)>=25},
  {id:"fish_shop",icon:"🛒",title:"Cliente prohibido",desc:"Entra por primera vez a la tienda secreta del Pez.",reward:{coins:100,xp:250},secret:true,ok:()=>false},
  {id:"pear_days",icon:"🍐",title:"Habitual de la Pera",desc:"Visita la escena de la Pera en 5 días diferentes.",reward:{coins:170},ok:()=>Number(localStorage.getItem("SWIM_QUEST_PEAR_DAYS")||0)>=5},
