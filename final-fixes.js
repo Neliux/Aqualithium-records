@@ -8156,21 +8156,20 @@ body.theme-carretera .app{position:relative;z-index:2}
   if(window.__SWQ_FINAL_V33_XP_COINS_BALANCE__)return;
   window.__SWQ_FINAL_V33_XP_COINS_BALANCE__=true;
 
-  /*
-     El cálculo anterior de XP funciona correctamente: el entrenamiento
-     guardado llama a trainingXP(e) y después gainXP(e.xp). Aquí solo se
-     aplica el aumento solicitado, sin cambiar ninguna otra recompensa.
-  */
+  let baseTrainingXPV33=null;
+  let baseDraftXPV33=null;
+
+  /* El cálculo de XP ya funciona: saveTraining calcula e.xp y gainXP(e.xp) lo aplica. */
   try{
     if(typeof trainingXP==='function'&&!window.__SWQ_V33_TRAINING_XP__){
-      const baseTrainingXPV33=trainingXP;
+      baseTrainingXPV33=trainingXP;
       trainingXP=function(e,state=null){
         return Math.round(Math.max(0,Number(baseTrainingXPV33.apply(this,arguments))||0)*1.15);
       };
       window.__SWQ_V33_TRAINING_XP__=true;
 
       if(typeof draftXP==='function'){
-        const baseDraftXPV33=draftXP;
+        baseDraftXPV33=draftXP;
         draftXP=function(){
           return Math.round(Math.max(0,Number(baseDraftXPV33.apply(this,arguments))||0)*1.15);
         };
@@ -8179,30 +8178,32 @@ body.theme-carretera .app{position:relative;z-index:2}
   }catch(e){console.warn('SWQ V33 training XP balance',e)}
 
   /*
-     Las monedas se calculan usando el XP anterior al +15% y después se
-     aplica -15%. Así el aumento de XP no compensa accidentalmente la bajada
-     de monedas. El límite de 0 monedas por menos de 50 m se conserva.
+    Monedas: se parte del XP anterior al aumento del 15% y luego se aplica
+    -15%, evitando que el aumento de XP compense la reducción de monedas.
+    El límite de 0 monedas por menos de 50 m se mantiene.
   */
   try{
-    if(typeof trainingXP==='function'&&typeof trainingCoinMultiplier==='function'&&!window.__SWQ_V33_TRAINING_COINS__){
-      const baseTrainingXPForCoinsV33=typeof baseTrainingXPV33==='function'?baseTrainingXPV33:trainingXP;
+    if(typeof trainingCoinMultiplier==='function'&&!window.__SWQ_V33_TRAINING_COINS__){
+      const xpForCoins=baseTrainingXPV33||trainingXP;
+
       trainingCoins=function(e){
         const meters=(e?.series||[]).reduce((sum,s)=>sum+
           Math.max(0,Number(s?.distance)||0)*Math.max(0,Number(s?.reps)||0),0);
         if(meters<50)return 0;
-        const oldXp=Math.max(0,Number(baseTrainingXPForCoinsV33.apply(this,arguments))||0);
+        const oldXp=Math.max(0,Number(xpForCoins.apply(this,arguments))||0);
         return Math.max(25,Math.round(oldXp*.132*trainingCoinMultiplier()*.85));
       };
 
-      if(typeof draftXP==='function'&&typeof draftMeters==='function'){
-        const baseDraftXPForCoinsV33=typeof baseDraftXPV33==='function'?baseDraftXPV33:draftXP;
+      if(typeof draftMeters==='function'&&typeof draftXP==='function'){
+        const draftXpForCoins=baseDraftXPV33||draftXP;
         draftCoins=function(){
           const meters=Number(draftMeters())||0;
           if(meters<50)return 0;
-          const oldXp=Math.max(0,Number(baseDraftXPForCoinsV33.apply(this,arguments))||0);
+          const oldXp=Math.max(0,Number(draftXpForCoins.apply(this,arguments))||0);
           return Math.max(25,Math.round(oldXp*.132*trainingCoinMultiplier()*.85));
         };
       }
+
       window.__SWQ_V33_TRAINING_COINS__=true;
     }
   }catch(e){console.warn('SWQ V33 training coin balance',e)}
