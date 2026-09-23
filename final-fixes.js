@@ -7008,3 +7008,485 @@ body.theme-carretera .app{position:relative;z-index:2}
     save();
   }catch(e){}
 })();
+
+
+/* === SWQ FINAL V28: CLEAN STYLE SELECTOR + PERSISTENT RANDOM ENTRY 2026-09-23 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_FINAL_V28_STYLE_SYSTEM__)return;
+  window.__SWQ_FINAL_V28_STYLE_SYSTEM__=true;
+
+  const RANDOM_KEY_V28='SWQ_RANDOM_STYLE_ENTRY_V28';
+  let randomDesiredV28=false;
+  let entryLockV28=true;
+  let entryFinishedV28=false;
+  const entryLockUntilV28=Date.now()+8000;
+
+  function readRandomV28(){
+    let stored=null;
+    try{
+      const raw=localStorage.getItem(RANDOM_KEY_V28);
+      if(raw==='1'||raw==='0')stored=raw==='1';
+    }catch(e){}
+    if(stored!==null)return stored;
+    return !!(
+      S.settings?.randomThemeOnStartEnabled ??
+      S.settings?.randomThemeOnStart ??
+      S.settings?.randomStyleOnStart
+    );
+  }
+
+  function ownedStylesV28(){
+    const out=['Aqua'];
+    try{
+      Object.keys(THEMES||{}).forEach(k=>{
+        if(k==='Aqua')return;
+        if(S.purchases?.['theme_'+k]===true||S.shopUnlocks?.['theme_'+k]===true)out.push(k);
+      });
+    }catch(e){}
+    return [...new Set(out)].filter(k=>THEMES?.[k]);
+  }
+
+  function styleNameV28(k){
+    if(k==='???')return '???';
+    try{
+      const item=SHOP?.find?.(x=>x?.id==='theme_'+k);
+      return item?.name||(typeof swqThemeName==='function'?swqThemeName(k):k);
+    }catch(e){return k}
+  }
+
+  function forceRandomStateV28(value){
+    randomDesiredV28=!!value;
+    try{localStorage.setItem(RANDOM_KEY_V28,randomDesiredV28?'1':'0')}catch(e){}
+    if(!S.settings)S.settings={};
+    S.settings.randomThemeOnStartEnabled=randomDesiredV28;
+    S.settings.randomThemeOnStart=false;
+    S.settings.randomStyleOnStart=false;
+    try{save()}catch(e){}
+  }
+
+  randomDesiredV28=readRandomV28();
+  try{
+    S.settings=S.settings||{};
+    S.settings.randomThemeOnStartEnabled=randomDesiredV28;
+    S.settings.randomThemeOnStart=false;
+    S.settings.randomStyleOnStart=false;
+    save();
+  }catch(e){}
+
+  function setRandomV28(enabled,notify=true){
+    randomDesiredV28=!!enabled;
+    try{localStorage.setItem(RANDOM_KEY_V28,randomDesiredV28?'1':'0')}catch(e){}
+    if(!S.settings)S.settings={};
+    S.settings.randomThemeOnStartEnabled=randomDesiredV28;
+    S.settings.randomThemeOnStart=false;
+    S.settings.randomStyleOnStart=false;
+    try{save()}catch(e){}
+    if(notify){
+      toast(
+        randomDesiredV28
+          ?'🎲 Estilo aleatorio al entrar activado.'
+          :'🎨 Estilo aleatorio al entrar desactivado.',
+        2200
+      );
+    }
+  }
+
+  function syncRandomAfterEntryV28(){
+    if(!S.settings)S.settings={};
+    S.settings.randomThemeOnStartEnabled=randomDesiredV28;
+    S.settings.randomThemeOnStart=false;
+    S.settings.randomStyleOnStart=false;
+    try{save()}catch(e){}
+  }
+
+  function clearUnknownFontV28(){
+    try{
+      if(typeof window.__SWQ_CLEAR_UNKNOWN_FONT_V26==='function'){
+        window.__SWQ_CLEAR_UNKNOWN_FONT_V26();
+      }
+    }catch(e){}
+  }
+
+  function pickUnknownFontV28(){
+    try{
+      if(typeof window.__SWQ_PICK_UNKNOWN_FONT_V26==='function'){
+        window.__SWQ_PICK_UNKNOWN_FONT_V26();
+      }
+    }catch(e){}
+  }
+
+  function applyStyleV28(k,close=true){
+    try{
+      if(!THEMES?.[k])return false;
+      if(k!=='Aqua'&&!(
+        S.purchases?.['theme_'+k]===true ||
+        S.shopUnlocks?.['theme_'+k]===true
+      )){
+        toast('🔒 Ese estilo todavía no está desbloqueado.');
+        return false;
+      }
+
+      S.settings.theme=k;
+      /*
+        Importante: cambiar de estilo NO desactiva el aleatorio al entrar.
+        Ese ajuste pertenece al sistema persistente y se cambia solamente
+        desde su único control.
+      */
+      S.settings.randomThemeOnStart=false;
+      S.settings.randomStyleOnStart=false;
+      S.settings.randomThemeOnStartEnabled=randomDesiredV28;
+      save();
+
+      if(typeof applyTheme==='function')applyTheme();
+
+      if(k==='???')pickUnknownFontV28();
+      else clearUnknownFontV28();
+
+      if(k==='RandomBasic'){
+        try{window.__SWQ_RANDOM_BASIC_SESSION_COLOR__=false}catch(e){}
+        try{if(typeof applyRandomBasic==='function')applyRandomBasic()}catch(e){}
+        setTimeout(()=>{try{if(typeof startDice==='function')startDice()}catch(e){}},70);
+      }else{
+        try{if(typeof stopDice==='function')stopDice()}catch(e){}
+      }
+
+      if(close)closeModal();
+      if(typeof render==='function')render();
+      return true;
+    }catch(e){
+      console.warn('SWQ V28 apply style',e);
+      return false;
+    }
+  }
+
+  function styleOptionsV28(select){
+    if(!select)return;
+    select.innerHTML='';
+    ownedStylesV28().forEach(k=>{
+      const option=document.createElement('option');
+      option.value=k;
+      option.textContent=(THEMES[k]?.emoji||'🎨')+' '+styleNameV28(k);
+      option.selected=S.settings?.theme===k;
+      select.appendChild(option);
+    });
+  }
+
+  /*
+    Selector pequeño y discreto, exactamente como el selector de tema de Ajustes:
+    un <select> nativo, sin cuadrícula de botones.
+  */
+  function openStyleModalV28(){
+    try{
+      const options=ownedStylesV28().map(k=>
+        '<option value="'+esc(k)+'" '+(S.settings?.theme===k?'selected':'')+'>'+
+        esc(THEMES[k]?.emoji||'🎨')+' '+esc(styleNameV28(k))+
+        '</option>'
+      ).join('');
+
+      modal(
+        '<div class="kicker">🎨 ESTILO</div>'+
+        '<h2 style="margin-bottom:8px">Cambiar estilo</h2>'+
+        '<div class="field">'+
+          '<label>Estilo visual equipado</label>'+
+          '<select id="swqV28StyleSelect" style="width:100%">'+options+'</select>'+
+        '</div>'+
+        '<label class="checkrow" style="margin:9px 0">'+
+          '<input id="swqV28RandomStyle" type="checkbox" '+(randomDesiredV28?'checked':'')+'>'+
+          ' 🎲 Estilo aleatorio cada vez que entras'+
+        '</label>'+
+        '<button type="button" id="swqV28StyleApply" class="btn primary" style="margin-top:8px">Aplicar estilo</button>'+
+        '<button type="button" id="swqV28StyleClose" class="btn secondary" style="margin-top:8px">Cerrar</button>'
+      );
+
+      document.getElementById('swqV28RandomStyle')?.addEventListener('change',e=>{
+        setRandomV28(!!e.target.checked,true);
+      });
+      document.getElementById('swqV28StyleApply')?.addEventListener('click',()=>{
+        applyStyleV28(document.getElementById('swqV28StyleSelect')?.value||'Aqua',true);
+      });
+      document.getElementById('swqV28StyleClose')?.addEventListener('click',closeModal);
+    }catch(e){
+      console.warn('SWQ V28 style modal',e);
+    }
+  }
+
+  function ownedMusicV28(){
+    const out=[];
+    try{
+      Object.entries(MUSIC_TRACKS||{}).forEach(([k,v])=>{
+        const owned=
+          k==='aqua'||
+          (k==='marea'&&!!S.purchases?.music1)||
+          (k==='cosmos'&&!!S.purchases?.music2)||
+          (k==='pixel'&&!!S.purchases?.music3)||
+          (k==='frecuenciaPerdida'&&!!S.purchases?.music4);
+        if(owned)out.push([k,v]);
+      });
+    }catch(e){}
+    return out;
+  }
+
+  /* El selector de música queda separado: nunca contiene el ajuste de estilo aleatorio. */
+  function openMusicModalV28(){
+    try{
+      const options=ownedMusicV28().map(([k,v])=>
+        '<option value="'+esc(k)+'" '+(S.settings?.musicTrack===k?'selected':'')+'>'+
+        esc(v?.emoji||'🎵')+' '+esc(v?.name||k)+'</option>'
+      ).join('');
+
+      modal(
+        '<div class="kicker">🎵 MÚSICA</div>'+
+        '<h2 style="margin-bottom:8px">Música equipada</h2>'+
+        '<div class="field">'+
+          '<label>Música</label>'+
+          '<select id="swqV28MusicSelect" style="width:100%">'+options+'</select>'+
+        '</div>'+
+        '<label class="checkrow" style="margin:8px 0">'+
+          '<input id="swqV28MusicEnabled" type="checkbox" '+(S.settings?.music?'checked':'')+'>'+
+          ' 🎵 Música activa'+
+        '</label>'+
+        '<button type="button" id="swqV28MusicApply" class="btn primary" style="margin-top:8px">Aplicar música</button>'+
+        '<button type="button" id="swqV28MusicClose" class="btn secondary" style="margin-top:8px">Cerrar</button>'
+      );
+
+      document.getElementById('swqV28MusicApply')?.addEventListener('click',()=>{
+        const key=document.getElementById('swqV28MusicSelect')?.value||'aqua';
+        const enabled=!!document.getElementById('swqV28MusicEnabled')?.checked;
+        if(!ownedMusicV28().some(([k])=>k===key)){
+          toast('🔒 Esa música todavía no está desbloqueada.');
+          return;
+        }
+        S.settings.musicTrack=key;
+        S.settings.music=enabled;
+        save();
+        try{
+          if(enabled&&typeof restartAmbient==='function')restartAmbient();
+          if(!enabled&&typeof ambientStop==='function')ambientStop();
+        }catch(e){}
+        toast('🎵 Música actualizada.',1800);
+        closeModal();
+      });
+      document.getElementById('swqV28MusicClose')?.addEventListener('click',closeModal);
+    }catch(e){
+      console.warn('SWQ V28 music modal',e);
+    }
+  }
+
+  /*
+    Reemplaza el antiguo bloque Estilo/Música del Perfil.
+    Se conserva el botón de música, pero el estilo pasa a ser un selector nativo
+    pequeño, igual al de Ajustes.
+  */
+  try{
+    if(typeof profile==='function'&&!window.__SWQ_V28_PROFILE_STYLE__){
+      const baseProfileV28=profile;
+      profile=function(){
+        let html='';
+        try{html=String(baseProfileV28.apply(this,arguments)||'')}catch(e){html=''}
+        try{
+          const holder=document.createElement('div');
+          holder.innerHTML=html;
+
+          holder.querySelectorAll('.swq-theme-music-card,.swq-theme-entry').forEach(el=>el.remove());
+          holder.querySelectorAll('#swqQuickThemeButton,#swqQuickMusicButton').forEach(el=>{
+            el.closest('.swq-theme-music-card,.swq-theme-entry')?.remove();
+          });
+
+          const options=ownedStylesV28().map(k=>
+            '<option value="'+esc(k)+'" '+(S.settings?.theme===k?'selected':'')+'>'+
+            esc(THEMES[k]?.emoji||'🎨')+' '+esc(styleNameV28(k))+
+            '</option>'
+          ).join('');
+
+          const card=document.createElement('div');
+          card.className='list-item swq-v28-style-card';
+          card.style.cssText='margin-top:10px';
+          card.innerHTML=
+            '<div class="row" style="align-items:flex-start;gap:10px">'+
+              '<span style="flex:1;min-width:0"><b>🎨 Estilo</b><div class="sub">Elige directamente un estilo que ya tengas desbloqueado.</div></span>'+
+              '<select id="swqV28ProfileStyle" class="btn secondary" style="width:auto;max-width:54%;min-height:40px;padding:7px 30px 7px 10px" aria-label="Estilo visual equipado">'+
+                options+
+              '</select>'+
+            '</div>'+
+            '<label class="checkrow" style="margin-top:9px">'+
+              '<input id="swqV28ProfileRandom" type="checkbox" '+(randomDesiredV28?'checked':'')+'>'+
+              ' 🎲 Estilo aleatorio al entrar'+
+            '</label>'+
+            '<button type="button" id="swqV28ProfileMusic" class="btn secondary" style="margin-top:8px">🎵 Cambiar música</button>';
+
+          const select=card.querySelector('#swqV28ProfileStyle');
+          select?.addEventListener('change',()=>{
+            applyStyleV28(select.value,true);
+          });
+          card.querySelector('#swqV28ProfileRandom')?.addEventListener('change',e=>{
+            setRandomV28(!!e.target.checked,true);
+          });
+          card.querySelector('#swqV28ProfileMusic')?.addEventListener('click',e=>{
+            e.preventDefault();
+            e.stopPropagation();
+            openMusicModalV28();
+          });
+
+          holder.insertBefore(card,holder.firstChild);
+          return holder.innerHTML;
+        }catch(e){
+          console.warn('SWQ V28 profile style UI',e);
+          return html;
+        }
+      };
+      window.__SWQ_V28_PROFILE_STYLE__=true;
+    }
+  }catch(e){console.warn('SWQ V28 profile wrapper',e)}
+
+  /*
+    Las llamadas externas a swqQuickTheme siguen funcionando, pero ahora abren
+    el selector limpio. La música queda completamente separada.
+  */
+  window.swqQuickTheme=openStyleModalV28;
+  window.swqQuickMusic=openMusicModalV28;
+  window.swqApplyQuickTheme=applyStyleV28;
+  window.equipTheme=applyStyleV28;
+  try{equipTheme=applyStyleV28}catch(e){}
+
+  /*
+    Los controles antiguos se ocultan por CSS, no se eliminan con observadores,
+    evitando ciclos de DOM y conservando la lógica antigua sin mostrarla.
+  */
+  try{
+    if(!document.getElementById('swq-v28-clean-old-controls')){
+      const st=document.createElement('style');
+      st.id='swq-v28-clean-old-controls';
+      st.textContent=
+        '#swqQuickThemeButton{display:none!important}'+
+        '.swq-theme-music-card,.swq-theme-entry{display:none!important}'+
+        '#swqRandomStyleToggle,#swqRandomStyleSettingsToggle,#swqRandomThemeToggle,#swqRandomThemeSettingsToggle,'+
+        '#swqRandomThemeSwitch,#swqRandomThemeSettingsRow,#swqRandomThemeToggleV20,#swqRandomThemeSettingsToggleV20,'+
+        '#swqRandomThemeSwitchV20,#swqRandomThemeSettingsRowV20,#swqSimpleRandomStyleToggle,#swqSimpleRandomStyleSettingsToggle,'+
+        '#swqSimpleRandomStyleV21,#swqRandomEntrySettingsToggleV21,#swqRandomEntrySettingsV21,#swqRandomEntryStyleSettingsButton{display:none!important}';
+      document.head.appendChild(st);
+    }
+  }catch(e){}
+
+  /*
+    Evita que saveSettings o la sincronización remota vuelvan a pisar el estado
+    persistente durante/tras el arranque.
+  */
+  try{
+    if(typeof saveSettings==='function'&&!window.__SWQ_V28_SAVE_SETTINGS__){
+      const baseSaveSettingsV28=saveSettings;
+      saveSettings=function(){
+        const out=baseSaveSettingsV28.apply(this,arguments);
+        randomDesiredV28=!!randomDesiredV28;
+        syncRandomAfterEntryV28();
+        return out;
+      };
+      window.__SWQ_V28_SAVE_SETTINGS__=true;
+    }
+  }catch(e){}
+
+  try{
+    if(typeof applyCloudGameState==='function'&&!window.__SWQ_V28_CLOUD_RANDOM__){
+      const baseCloudV28=applyCloudGameState;
+      applyCloudGameState=function(gs){
+        const out=baseCloudV28.apply(this,arguments);
+        if(!entryFinishedV28||Date.now()<entryLockUntilV28){
+          syncRandomAfterEntryV28();
+        }else{
+          forceRandomStateV28(randomDesiredV28);
+        }
+        return out;
+      };
+      window.__SWQ_V28_CLOUD_RANDOM__=true;
+    }
+  }catch(e){}
+
+  /*
+    Arranque: los parches antiguos tienen varios temporizadores de entrada.
+    Durante los primeros 8 s el campo interno queda bloqueado para que ninguno
+    de ellos pueda ejecutar un segundo cambio. V28 hace el único cambio.
+  */
+  function applyRandomEntryV28(){
+    if(entryFinishedV28)return true;
+    if(!randomDesiredV28){
+      entryFinishedV28=true;
+      return true;
+    }
+
+    const owned=ownedStylesV28();
+    if(owned.length<2){
+      entryFinishedV28=true;
+      return true;
+    }
+
+    const current=String(S.settings?.theme||'Aqua');
+    const options=owned.filter(k=>k!==current);
+    if(!options.length){
+      entryFinishedV28=true;
+      return true;
+    }
+
+    const next=options[Math.floor(Math.random()*options.length)];
+    S.settings.theme=next;
+    try{save()}catch(e){}
+    try{if(typeof applyTheme==='function')applyTheme()}catch(e){}
+
+    if(next==='???')pickUnknownFontV28();
+    else clearUnknownFontV28();
+
+    if(next==='RandomBasic'){
+      try{if(typeof applyRandomBasic==='function')applyRandomBasic()}catch(e){}
+      setTimeout(()=>{try{if(typeof startDice==='function')startDice()}catch(e){}},70);
+    }else{
+      try{if(typeof stopDice==='function')stopDice()}catch(e){}
+    }
+
+    entryFinishedV28=true;
+    return true;
+  }
+
+  function tryEntryV28(){
+    try{
+      if(!entryFinishedV28){
+        if(S.profile)applyRandomEntryV28();
+      }
+    }catch(e){console.warn('SWQ V28 random entry',e)}
+    finally{
+      if(Date.now()>=entryLockUntilV28){
+        entryLockV28=false;
+        syncRandomAfterEntryV28();
+      }else{
+        /* Mantén a los parches antiguos apagados mientras terminan sus reintentos. */
+        if(!S.settings)S.settings={};
+        S.settings.randomThemeOnStartEnabled=false;
+        S.settings.randomThemeOnStart=false;
+        S.settings.randomStyleOnStart=false;
+        setTimeout(tryEntryV28,450);
+      }
+    }
+  }
+
+  /* Impide inmediatamente que los timers antiguos actúen antes de V28. */
+  try{
+    S.settings.randomThemeOnStartEnabled=false;
+    S.settings.randomThemeOnStart=false;
+    S.settings.randomStyleOnStart=false;
+  }catch(e){}
+
+  setTimeout(tryEntryV28,260);
+
+  /* Después del periodo de supresión se conserva el ajuste real. */
+  setTimeout(()=>{
+    try{
+      entryLockV28=false;
+      syncRandomAfterEntryV28();
+    }catch(e){}
+  },8200);
+
+  /* Actualiza inmediatamente el Perfil a la nueva interfaz. */
+  try{
+    if(S.profile&&typeof render==='function'){
+      setTimeout(()=>{try{render()}catch(e){}},0);
+    }
+  }catch(e){}
+})();
