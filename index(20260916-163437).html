@@ -1710,13 +1710,13 @@ function removeSeries(i){syncDraft();draft.splice(i,1);render();tone("click")}
 function countTrainingsOnDate(date,excludeId=""){return S.trainings.filter(x=>x.date===date&&x.id!==excludeId).length}
 function suspiciousRecordSeries(series){return (series||[]).some(s=>s.time&&s.distance===50&&s.reps===1&&s.intensity==="intenso"&&Number(s.time)>0&&Number(s.time)<19)}
 function showRecordSanityModal(){tone("clown");modal('<div style="text-align:center"><div style="font-size:62px;line-height:1">🤡</div><h2>¿Seguro que ese es tu récord?</h2><p class="sub">Ese tiempo es extremadamente bajo. Revisa la marca antes de guardar el entrenamiento.</p><button class="btn primary" style="margin-top:12px" onclick="closeModal()">No, revisar mi récord</button></div>')}
-function showDailyLimitModal(){tone("clown");modal('<div style="text-align:center"><div style="font-size:62px;line-height:1">🤡</div><h2>¿Más de 3 entrenamientos?</h2><p class="sub">Swim Quest permite como máximo 3 entrenamientos registrados en el mismo día.</p><button class="btn primary" style="margin-top:12px" onclick="closeModal()">No, revisar</button></div>')}
+function showDailyLimitModal(){tone("clown");modal('<div style="text-align:center"><div style="font-size:62px;line-height:1">🤡</div><h2>¿Más de 5 entrenamientos?</h2><p class="sub">Swim Quest permite como máximo 5 entrenamientos registrados en el mismo día.</p><button class="btn primary" style="margin-top:12px" onclick="closeModal()">No, revisar</button></div>')}
 function showImpossibleDistanceModal(){tone("clown");modal('<div style="text-align:center"><div style="font-size:62px;line-height:1">🤡</div><h2>¿70.000 m en una práctica?</h2><p class="sub">Eso no parece un entrenamiento normal. Revisa la distancia antes de guardar.</p><button class="btn primary" style="margin-top:12px" onclick="closeModal()">No, revisar</button></div>')}
 
 function saveTraining(){
  syncDraft();if(!draftMeters()){toast("Añade al menos una distancia válida.");return}
  const targetDate=$("tDate").value||today();
- if(countTrainingsOnDate(targetDate)>=3){showDailyLimitModal();return}
+ if(countTrainingsOnDate(targetDate)>=5){showDailyLimitModal();return}
  if(draftMeters()>70000){showImpossibleDistanceModal();return}
  if(suspiciousRecordSeries(draft)){showRecordSanityModal();return}
  const e={id:"e_"+Date.now()+"_"+Math.random().toString(36).slice(2),date:$("tDate").value||today(),durationMin:draftDuration,series:JSON.parse(JSON.stringify(draft)),theme:S.settings.theme};
@@ -1765,7 +1765,7 @@ function commitEdit(id){
   const g=row.querySelectorAll(".ed"),s={distance:+g[0].value||0,reps:+g[1].value||1,style:g[2].value,intensity:g[3].value,time:+g[4].value||0,exercise:g[5].value,corrective:g[5].value==="correctivo"};return s;
  }).filter(s=>s.distance>0);
  const newDate=$("edDate").value;
- if(countTrainingsOnDate(newDate,id)>=3){showDailyLimitModal();return}
+ if(countTrainingsOnDate(newDate,id)>=5){showDailyLimitModal();return}
  if(arr.reduce((a,s)=>a+(+s.distance||0)*(+s.reps||0),0)>70000){showImpossibleDistanceModal();return}
  if(suspiciousRecordSeries(arr)){showRecordSanityModal();return}
  e.date=newDate;e.name=(document.getElementById("edName")?.value||"").trim();e.durationMin=+(document.getElementById("edDur")?.value||0);e.series=arr;e.difficulty=difficultyInfo(e,S?.profile?.avgMeters).key;rebuildProfile();
