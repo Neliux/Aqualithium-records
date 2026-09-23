@@ -7344,8 +7344,9 @@ body.theme-carretera .app{position:relative;z-index:2}
     Las llamadas externas a swqQuickTheme siguen funcionando, pero ahora abren
     el selector limpio. La música queda completamente separada.
   */
-  window.swqQuickTheme=openStyleModalV28;
-  window.swqQuickMusic=openMusicModalV28;
+  /* Los accesos antiguos de Perfil ya no cambian estilo/música: llevan a Ajustes. */
+  window.swqQuickTheme=()=>{try{settings()}catch(e){}};
+  window.swqQuickMusic=()=>{try{settings()}catch(e){}};
   window.swqApplyQuickTheme=applyStyleV28;
   window.equipTheme=applyStyleV28;
   try{equipTheme=applyStyleV28}catch(e){}
