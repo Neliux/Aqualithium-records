@@ -1292,7 +1292,7 @@ function seriesXP(s){
  const correct=(normalizeExercise(s)==="correctivo")?1.14:1, timed=s.time?1.10:1, reps=s.reps>=4?1.08:1;
  return Math.max(4,Math.round(meters*.48*sm*im*correct*timed*reps*2.2));
 }
-function trainingXP(e,state=null){const purchases=(state&&state.purchases)||((typeof S!=="undefined"&&S&&S.purchases)?S.purchases:{});const base=Math.max(50,e.series.reduce((a,s)=>a+seriesXP(s),0)+Math.round((e.durationMin||0)*.3));return Math.round(base*(purchases.ketchup?1.10:1)*.85)}
+function trainingXP(e,state=null){const purchases=(state&&state.purchases)||((typeof S!=="undefined"&&S&&S.purchases)?S.purchases:{});const base=Math.max(50,e.series.reduce((a,s)=>a+seriesXP(s),0));return Math.round(base*(purchases.ketchup?1.10:1)*.85)}
 function coinMultiplier(){return S.purchases.talismanMarea?1.15:1}
 function trainingCoinMultiplier(){return coinMultiplier()*(S.purchases.mustard?1.05:1)}
 function trainingCoins(e){return Math.max(25,Math.round(trainingXP(e)*.132*trainingCoinMultiplier()))}
@@ -1675,7 +1675,7 @@ function home(){
 function train(){
  if(!draft.length)draft=[{distance:50,reps:1,style:"crol",intensity:"normal",time:"",exercise:"ninguno",corrective:false}];
  return `<div class="card"><div class="kicker">🏊 ENTRENAMIENTO</div><h2>Registra lo que hiciste</h2><p class="sub">Ejemplo: 4 × 50 m Crol. Puedes poner intensidad distinta en cada serie.</p>
- <div class="grid g2"><div class="field"><label>Nombre del entrenamiento (opcional)</label><input id="tName" maxlength="50" value="${esc(window.currentTrainingName||"")}" placeholder="Ej. Series de velocidad"></div><div class="field"><label>Fecha</label><input id="tDate" type="date" value="${today()}"></div><div class="field"><label>Duración total (min, opcional)</label><input id="tDur" type="number" min="0" value="${draftDuration||""}" placeholder="120"></div></div>
+ <div class="grid g2"><div class="field"><label>Nombre del entrenamiento (opcional)</label><input id="tName" maxlength="50" value="${esc(window.currentTrainingName||"")}" placeholder="Ej. Series de velocidad"></div><div class="field"><label>Fecha</label><input id="tDate" type="date" value="${today()}"></div><div class="field"><label>Duración total (min, opcional)</label><input id="tDur" type="number" min="0" max="1440" value="${draftDuration||""}" placeholder="120"></div></div>
  <div id="series">${draft.map(seriesCard).join("")}</div>
  <div class="row wrap"><button class="btn secondary" onclick="addSeries()">＋ Añadir serie</button><span class="pill">TOTAL · <b id="draftMeters">${fmt(draftMeters())} m</b></span></div>
  <div class="card" style="margin-top:10px;background:#081625"><div class="row"><b>Recompensa</b><span class="pill">⭐ <b id="draftXP">${fmt(draftXP())}</b> XP · 🪙 <b id="draftCoins">${fmt(draftCoins())}</b></span></div><div class="sub" style="margin-top:8px">Tipo de entrenamiento: <span id="draftDifficulty" class="difficulty-pill difficulty-${difficultyInfo({series:draft,durationMin:draftDuration,xp:draftXP()},S?.profile?.avgMeters).key}">${difficultyLabel({series:draft,durationMin:draftDuration,xp:draftXP()})}</span></div></div>
@@ -1703,7 +1703,7 @@ function syncDraft(){
  }
 }
 function draftMeters(){return draft.reduce((a,s)=>a+(+s.distance||0)*(+s.reps||0),0)}
-function draftXP(){const base=Math.max(60,draft.reduce((a,s)=>a+seriesXP(s),0)+Math.round(draftDuration*.4));return Math.round(base*(S.purchases.ketchup?1.10:1)*.85*(S.consumables?.cloroPremium>0?1.20:1))}
+function draftXP(){const base=Math.max(60,draft.reduce((a,s)=>a+seriesXP(s),0));return Math.round(base*(S.purchases.ketchup?1.10:1)*.85*(S.consumables?.cloroPremium>0?1.20:1))}
 function draftCoins(){return Math.max(25,Math.round(draftXP()*.132*trainingCoinMultiplier()))}
 function addSeries(){syncDraft();draft.push({distance:50,reps:1,style:"crol",intensity:"normal",time:"",exercise:"ninguno",corrective:false});render();tone("click")}
 function removeSeries(i){syncDraft();draft.splice(i,1);render();tone("click")}
@@ -1754,7 +1754,7 @@ function historyRow(e){
 function editTraining(id){
  const e=S.trainings.find(x=>x.id===id);if(!e)return;
  modal(`<div class="kicker">✏️ EDITAR ENTRENAMIENTO</div><h2>#${fmt(e.number||0)} · ${esc(e.name||labelDate(e.date))}</h2>
- <div class="grid g2"><div class="field"><label>Nombre</label><input id="edName" maxlength="50" value="${esc(e.name||"")}"></div><div class="field"><label>Fecha</label><input id="edDate" type="date" value="${e.date}"></div><div class="field"><label>Duración (min)</label><input id="edDur" type="number" value="${e.durationMin||0}"></div></div>
+ <div class="grid g2"><div class="field"><label>Nombre</label><input id="edName" maxlength="50" value="${esc(e.name||"")}"></div><div class="field"><label>Fecha</label><input id="edDate" type="date" value="${e.date}"></div><div class="field"><label>Duración (min)</label><input id="edDur" type="number" min="0" max="1440" value="${e.durationMin||0}"></div></div>
  <div id="editSeries">${e.series.map((s,i)=>editSeries(s,i)).join("")}</div><button class="btn secondary" onclick="editAdd()">＋ Añadir serie</button><button class="btn primary" style="margin-top:10px" onclick="commitEdit('${id}')">Guardar cambios</button>`);
 }
 function editSeries(s,i){const ex=normalizeExercise(s);return `<div class="series"><div class="series-grid"><input class="ed" data-i="${i}" data-k="distance" type="number" value="${s.distance}"><input class="ed" data-i="${i}" data-k="reps" type="number" value="${s.reps}"><select class="ed" data-i="${i}" data-k="style">${Object.entries(STYLE).map(([k,v])=>`<option value="${k}" ${s.style===k?"selected":""}>${v.name}</option>`).join("")}</select><select class="ed" data-i="${i}" data-k="intensity">${Object.entries(INT).map(([k,v])=>`<option value="${k}" ${s.intensity===k?"selected":""}>${v.name}</option>`).join("")}</select><input class="ed" data-i="${i}" data-k="time" type="number" value="${s.time||""}" placeholder="seg"><select class="ed" data-i="${i}" data-k="exercise">${EXERCISE_TYPES.map(x=>`<option value="${x.key}" ${ex===x.key?"selected":""}>${x.icon} ${x.name}</option>`).join("")}</select></div></div>`}
