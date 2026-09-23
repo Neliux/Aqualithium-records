@@ -5833,3 +5833,485 @@ body.theme-carretera .app{position:relative;z-index:2}
   try{if(S.settings.theme==='Mystery')setTimeout(()=>applyTheme(),30)}catch(e){}
 })();
 
+
+
+/* === SWQ AUTHORITATIVE SIMPLE STYLE + RANDOM ENTRY + UNKNOWN STYLE 2026-09-22 v21 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_SIMPLE_STYLE_UNKNOWN_V21__)return;
+  window.__SWQ_SIMPLE_STYLE_UNKNOWN_V21__=true;
+
+  /* ===== RECOMPENSAS DE RANGO: corregir el cursor sin borrar progreso ===== */
+  try{
+    if(!Number.isFinite(Number(S.__swqRankRewardHighWater))){
+      S.__swqRankRewardHighWater=Math.max(0,currentRank().i);
+    }
+    /*
+      Algunos parches anteriores adelantaban el cursor hasta el rango NUEVO
+      antes de que rankReveal cobrara la recompensa. Conservamos el cursor
+      anterior durante gainXP para que el sistema existente pueda cobrar
+      únicamente los rangos recién cruzados.
+    */
+    if(typeof gainXP==='function'&&!window.__swqGainXPCursorV21){
+      const baseGainXPV21=gainXP;
+      gainXP=function(amount){
+        const beforeCursor=Number.isFinite(Number(S.__swqRankRewardHighWater))
+          ?Math.max(-1,Number(S.__swqRankRewardHighWater))
+          :Math.max(0,currentRank().i);
+        const out=baseGainXPV21.apply(this,arguments);
+        try{
+          const nowIdx=Math.max(0,currentRank().i);
+          if(nowIdx>beforeCursor){
+            S.__swqRankRewardHighWater=beforeCursor;
+            save();
+          }else{
+            S.__swqRankRewardHighWater=beforeCursor;
+          }
+        }catch(e){}
+        return out;
+      };
+      window.__swqGainXPCursorV21=true;
+    }
+  }catch(e){console.warn('SWQ rank cursor v21',e)}
+
+  /* ===== ESTILO ??? ===== */
+  try{
+    if(!S.purchases)S.purchases={};
+    if(!S.settings)S.settings={};
+
+    THEMES['???']={
+      a:'#ff35c8',
+      b:'#35e7ff',
+      emoji:'❓',
+      desc:'Un estilo experimental e impredecible. Colores mutantes, emojis aleatorios y mensajes que no siempre parecen tener sentido.'
+    };
+
+    if(typeof SHOP!=='undefined'&&!SHOP.some(x=>x.id==='theme_???')){
+      SHOP.push({
+        id:'theme_???',
+        icon:'❓',
+        name:'???',
+        price:9999,
+        desc:'Estilo secreto y experimental. Cambia lentamente de ambiente, altera la tipografía, mueve los colores de los botones y deja caer emojis completamente aleatorios.',
+        buy:()=>{S.purchases['theme_???']=true;}
+      });
+    }
+
+    /* ??? nunca recibe descuento ni premio gratis de ruletas. */
+    if(typeof discountedPrice==='function'&&!window.__swqUnknownPriceV21){
+      const baseDiscountedPriceV21=discountedPrice;
+      discountedPrice=function(it){
+        if(it?.id==='theme_???')return 9999;
+        return baseDiscountedPriceV21.apply(this,arguments);
+      };
+      window.__swqUnknownPriceV21=true;
+    }
+
+    if(typeof nonAchievementThemesForRoulette==='function'&&!window.__swqUnknownRouletteV21){
+      const baseRouletteStylesV21=nonAchievementThemesForRoulette;
+      nonAchievementThemesForRoulette=function(){
+        return baseRouletteStylesV21.apply(this,arguments).filter(k=>k!=='???');
+      };
+      window.__swqUnknownRouletteV21=true;
+    }
+
+    const unknownCSS=document.createElement('style');
+    unknownCSS.id='swq-unknown-style-v21-css';
+    unknownCSS.textContent=
+      '[class~="theme-???"]{font-family:"Courier New","Lucida Console",monospace!important;background:#07151c!important;transition:background-color 5.5s ease,color 5.5s ease}'+
+      '[class~="theme-???"] .app{position:relative!important;z-index:2!important}'+
+      '[class~="theme-???"] #themeParticles{z-index:1!important}'+
+      '[class~="theme-???"] .card,[class~="theme-???"] .hero,[class~="theme-???"] .list-item,[class~="theme-???"] .series,[class~="theme-???"] .shop-item,[class~="theme-???"] .stat{border-color:color-mix(in srgb,var(--u-border,#35e7ff) 40%,transparent)!important;box-shadow:0 0 28px color-mix(in srgb,var(--u-border,#35e7ff) 9%,transparent),inset 0 0 18px rgba(255,255,255,.025)!important}'+
+      '[class~="theme-???"] .btn:not(.danger){background:linear-gradient(135deg,var(--u-btn1,#ff35c8),var(--u-btn2,#35e7ff))!important;color:#071116!important;border-color:rgba(255,255,255,.58)!important;box-shadow:0 7px 22px color-mix(in srgb,var(--u-btn1,#ff35c8) 18%,transparent)!important;transition:background 2.4s ease,border-color 2.4s ease,box-shadow 2.4s ease,transform .18s ease!important;font-family:inherit!important}'+
+      '[class~="theme-???"] .btn.secondary{filter:saturate(1.08)}'+
+      '[class~="theme-???"] .nav button,[class~="theme-???"] .pill{font-family:inherit!important}'+
+      '[class~="theme-???"] input,[class~="theme-???"] select,[class~="theme-???"] textarea{font-family:inherit!important;border-color:color-mix(in srgb,var(--u-border,#35e7ff) 40%,transparent)!important}'+
+      '[class~="theme-???"] h1,[class~="theme-???"] h2,[class~="theme-???"] h3{letter-spacing:.02em!important;text-shadow:2px 2px 0 rgba(0,0,0,.28),0 0 15px color-mix(in srgb,var(--u-border,#35e7ff) 22%,transparent)!important}'+
+      '.swq-unknown-backdrop{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;background:linear-gradient(120deg,var(--u-bg1,#081c2a),var(--u-bg2,#24102d));transition:background 6.5s ease}'+
+      '.swq-unknown-backdrop:before{content:"";position:absolute;width:78%;height:140%;left:-62%;top:-18%;border-radius:46%;background:radial-gradient(circle at 35% 45%,var(--u-conquer1,#ff35c8) 0 18%,transparent 58%),linear-gradient(120deg,transparent 10%,color-mix(in srgb,var(--u-conquer1,#ff35c8) 32%,transparent) 48%,transparent 82%);filter:blur(28px);opacity:.54;animation:swqUnknownConquer 17s ease-in-out infinite alternate}'+
+      '.swq-unknown-backdrop:after{content:"";position:absolute;width:74%;height:150%;right:-58%;top:-22%;border-radius:50%;background:radial-gradient(circle at 60% 50%,var(--u-conquer2,#35e7ff) 0 15%,transparent 60%);filter:blur(34px);opacity:.43;animation:swqUnknownConquer2 21s ease-in-out infinite alternate}'+
+      '@keyframes swqUnknownConquer{0%{transform:translateX(0) rotate(-7deg)}100%{transform:translateX(125%) rotate(8deg)}}'+
+      '@keyframes swqUnknownConquer2{0%{transform:translateX(0) rotate(5deg)}100%{transform:translateX(-118%) rotate(-8deg)}}'+
+      '.swq-unknown-emoji{position:absolute;top:-70px;font-size:var(--u-size,38px);line-height:1;filter:drop-shadow(0 3px 9px rgba(0,0,0,.45));animation:swqUnknownEmojiFall var(--u-dur,7s) linear forwards;will-change:transform,opacity;user-select:none}'+
+      '@keyframes swqUnknownEmojiFall{0%{opacity:0;transform:translate3d(0,-80px,0) rotate(0deg) scale(.65)}10%{opacity:.95}50%{opacity:1}100%{opacity:0;transform:translate3d(var(--u-dx,0px),116vh,0) rotate(var(--u-rot,420deg)) scale(1.12)}}'+
+      '.swq-unknown-message{position:fixed;right:10px;bottom:76px;z-index:4;max-width:min(360px,62vw);padding:6px 9px;border:1px solid color-mix(in srgb,var(--u-border,#35e7ff) 35%,transparent);border-radius:10px;background:rgba(4,13,20,.42);backdrop-filter:blur(5px);color:#eefcff;font:700 10px/1.35 "Courier New",monospace;letter-spacing:.05em;text-align:right;pointer-events:none;opacity:.72;transition:color 2.5s ease,border-color 2.5s ease}'+
+      '@media(max-width:560px){.swq-unknown-message{max-width:68vw;font-size:9px;bottom:70px}.swq-unknown-emoji{font-size:var(--u-size,34px)}}';
+    document.head.appendChild(unknownCSS);
+
+    const unknownPalettes=[
+      {bg1:'#071a25',bg2:'#271028',c1:'#ff35c8',c2:'#35e7ff',btn1:'#ff35c8',btn2:'#35e7ff'},
+      {bg1:'#101f0b',bg2:'#28150b',c1:'#9cff35',c2:'#ff9f35',btn1:'#9cff35',btn2:'#ff5a35'},
+      {bg1:'#180b2b',bg2:'#08242b',c1:'#b035ff',c2:'#35ffd0',btn1:'#b035ff',btn2:'#35ffd0'},
+      {bg1:'#25120a',bg2:'#0a1929',c1:'#ffcf35',c2:'#357dff',btn1:'#ffcf35',btn2:'#357dff'},
+      {bg1:'#120d2c',bg2:'#29100f',c1:'#7d5cff',c2:'#ff4a75',btn1:'#7d5cff',btn2:'#ff4a75'}
+    ];
+    const unknownMessages=[
+      '??? no tiene instrucciones.',
+      'La pantalla también decidió nadar.',
+      'Este color estaba aquí primero.',
+      'No sabemos quién eligió este botón.',
+      'Algo cambió. Probablemente.',
+      '🐟 dijo que esto era normal.',
+      'La Pera pidió no involucrarse.',
+      'No busques una explicación perfecta.',
+      '¿Este estilo te está mirando a ti?',
+      'Error: todo parece funcionar.',
+      'La piscina tiene otra opinión.',
+      '???'
+    ];
+    const unknownEmojiPool=[
+      '🦆','🐟','🐸','🦀','🪼','🦑','🐙','🐝','🦋','🐳','🦈','🐢',
+      '🍉','🍕','🍩','🥨','🍔','🌮','🍋','🍓','🍿','🥑','🌶️',
+      '👁️','🤖','👻','👽','🤡','😺','😵','😎','💀','🤯','🫠',
+      '⭐','🌈','🔥','❄️','⚡','💎','🎲','🎵','❓','‼️','🫧','☄️'
+    ];
+
+    function unknownSetPalette(p){
+      const root=document.documentElement;
+      root.style.setProperty('--u-bg1',p.bg1);
+      root.style.setProperty('--u-bg2',p.bg2);
+      root.style.setProperty('--u-conquer1',p.c1);
+      root.style.setProperty('--u-conquer2',p.c2);
+      root.style.setProperty('--u-btn1',p.btn1);
+      root.style.setProperty('--u-btn2',p.btn2);
+      root.style.setProperty('--u-border',p.c2);
+    }
+
+    function unknownEnsureBackdrop(){
+      let bg=document.getElementById('swqUnknownBackdrop');
+      if(!bg){
+        bg=document.createElement('div');
+        bg.id='swqUnknownBackdrop';
+        bg.className='swq-unknown-backdrop';
+        document.body.appendChild(bg);
+      }
+      return bg;
+    }
+
+    function unknownEnsureMessage(){
+      let m=document.getElementById('swqUnknownMessage');
+      if(!m){
+        m=document.createElement('div');
+        m.id='swqUnknownMessage';
+        document.body.appendChild(m);
+      }
+      return m;
+    }
+
+    function unknownSpawnParticle(){
+      const host=document.getElementById('themeParticles');
+      if(!host||S.settings.theme!=='???')return;
+      if(host.querySelectorAll('.swq-unknown-emoji').length>=12)return;
+      const el=document.createElement('span');
+      el.className='swq-unknown-emoji';
+      el.textContent=unknownEmojiPool[Math.floor(Math.random()*unknownEmojiPool.length)];
+      el.style.left=(2+Math.random()*94)+'%';
+      el.style.setProperty('--u-size',(30+Math.random()*21)+'px');
+      el.style.setProperty('--u-dur',(5.8+Math.random()*3.4)+'s');
+      el.style.setProperty('--u-dx',(-90+Math.random()*180)+'px');
+      el.style.setProperty('--u-rot',(-420+Math.random()*840)+'deg');
+      el.style.animationDelay=(Math.random()*.22)+'s';
+      host.appendChild(el);
+      setTimeout(()=>el.remove(),10000);
+    }
+
+    function unknownSyncSurface(){
+      const active=S.settings.theme==='???';
+      if(!active){
+        document.getElementById('swqUnknownBackdrop')?.remove();
+        document.getElementById('swqUnknownMessage')?.remove();
+        return;
+      }
+      unknownEnsureBackdrop();
+      const m=unknownEnsureMessage();
+      m.textContent=unknownMessages[Math.floor(Math.random()*unknownMessages.length)];
+    }
+
+    let unknownPaletteIndex=Math.floor(Math.random()*unknownPalettes.length);
+    let unknownMessageAt=0,unknownPaletteAt=0,unknownButtonsAt=0;
+    let randomButtonIndex=Math.floor(Math.random()*unknownPalettes.length);
+
+    function unknownTick(){
+      if(S.settings.theme!=='???'){
+        unknownSyncSurface();
+        return;
+      }
+      unknownSyncSurface();
+      const now=Date.now();
+      if(now-unknownPaletteAt>7000){
+        unknownPaletteAt=now;
+        unknownPaletteIndex=(unknownPaletteIndex+1+Math.floor(Math.random()*(unknownPalettes.length-1)))%unknownPalettes.length;
+        unknownSetPalette(unknownPalettes[unknownPaletteIndex]);
+      }
+      if(now-unknownMessageAt>5200){
+        unknownMessageAt=now;
+        const m=document.getElementById('swqUnknownMessage');
+        if(m)m.textContent=unknownMessages[Math.floor(Math.random()*unknownMessages.length)];
+      }
+      if(now-unknownButtonsAt>3200){
+        unknownButtonsAt=now;
+        randomButtonIndex=(randomButtonIndex+1+Math.floor(Math.random()*(unknownPalettes.length-1)))%unknownPalettes.length;
+        const p=unknownPalettes[randomButtonIndex];
+        document.documentElement.style.setProperty('--u-btn1',p.btn1);
+        document.documentElement.style.setProperty('--u-btn2',p.btn2);
+      }
+      if(Math.random()<.45)unknownSpawnParticle();
+    }
+
+    /* Hook into the existing particle engine instead of creating another permanent
+       high-frequency particle loop. */
+    try{
+      if(typeof spawnThemeParticle==='function'&&!window.__swqUnknownParticleV21){
+        const baseSpawnUnknownV21=spawnThemeParticle;
+        spawnThemeParticle=function(){
+          if(S.settings.theme==='???'){
+            unknownSpawnParticle();
+            return;
+          }
+          return baseSpawnUnknownV21.apply(this,arguments);
+        };
+        window.__swqUnknownParticleV21=true;
+      }
+    }catch(e){}
+
+    unknownSetPalette(unknownPalettes[unknownPaletteIndex]);
+    setInterval(unknownTick,850);
+
+    /* ===== ESTILO ALEATORIO AL ENTRAR ===== */
+    const legacyRandom=!!S.settings.randomThemeOnStart;
+    const storedRandom=typeof S.settings.randomThemeOnStartEnabled==='boolean'
+      ?S.settings.randomThemeOnStartEnabled
+      :legacyRandom;
+    S.settings.randomThemeOnStartEnabled=storedRandom;
+    /*
+      Desactiva las implementaciones antiguas durante esta carga. El estado real
+      queda en randomThemeOnStartEnabled para que los timers antiguos no cambien
+      el estilo dos veces.
+    */
+    S.settings.randomThemeOnStart=false;
+    S.settings.randomStyleOnStart=false;
+    save();
+
+    function purchasedThemeKeys(){
+      const out=['Aqua'];
+      try{
+        Object.keys(THEMES||{}).forEach(k=>{
+          if(k!=='Aqua'&&S.purchases?.['theme_'+k]===true)out.push(k);
+        });
+      }catch(e){}
+      return [...new Set(out)].filter(k=>THEMES?.[k]);
+    }
+
+    function setRandomStyleEnabledV21(enabled,notify=true){
+      S.settings.randomThemeOnStartEnabled=!!enabled;
+      S.settings.randomThemeOnStart=false;
+      S.settings.randomStyleOnStart=false;
+      save();
+      if(notify)toast(enabled?'🎲 Estilo aleatorio al entrar activado.':'🎨 Estilo aleatorio al entrar desactivado.',2400);
+    }
+
+    function applyRandomPurchasedOnEntryV21(){
+      try{
+        if(!S.settings.randomThemeOnStartEnabled)return false;
+        const owned=purchasedThemeKeys();
+        if(owned.length<2)return false;
+        const current=String(S.settings.theme||'Aqua');
+        const choices=owned.filter(k=>k!==current);
+        if(!choices.length)return false;
+        const next=choices[Math.floor(Math.random()*choices.length)];
+        S.settings.theme=next;
+        save();
+        if(typeof applyTheme==='function')applyTheme();
+        if(next==='RandomBasic'){
+          try{if(typeof applyRandomBasic==='function')applyRandomBasic();}catch(e){}
+          setTimeout(()=>{try{if(typeof startDice==='function')startDice();}catch(e){}},80);
+        }else{
+          try{if(typeof stopDice==='function')stopDice();}catch(e){}
+        }
+        return true;
+      }catch(e){console.warn('SWQ random purchased entry v21',e);return false}
+    }
+
+    /* ===== SELECTOR SIMPLE, MISMO PATRÓN QUE MÚSICA ===== */
+    function ownedStyleKeysV21(){
+      return purchasedThemeKeys();
+    }
+    function safeThemeNameV21(k){
+      if(k==='???')return '???';
+      try{return typeof swqThemeName==='function'?swqThemeName(k):k}catch(e){return k}
+    }
+    function applyStyleV21(k){
+      try{
+        if(!THEMES?.[k])return;
+        if(k!=='Aqua'&&!S.purchases?.['theme_'+k]){
+          toast('🔒 Ese estilo todavía no está comprado.');
+          return;
+        }
+        S.settings.theme=k;
+        S.settings.randomStyleOnStart=false;
+        save();
+        if(typeof applyTheme==='function')applyTheme();
+        if(k==='RandomBasic'){
+          window.__SWQ_RANDOM_BASIC_SESSION_COLOR__=false;
+          try{if(typeof applyRandomBasic==='function')applyRandomBasic();}catch(e){}
+          setTimeout(()=>{try{if(typeof startDice==='function')startDice();}catch(e){}},70);
+        }else{
+          try{if(typeof stopDice==='function')stopDice();}catch(e){}
+        }
+        closeModal();
+        render();
+      }catch(e){console.warn('SWQ simple style apply v21',e)}
+    }
+
+    window.swqQuickTheme=function(){
+      try{
+        const opts=ownedStyleKeysV21().map(k=>
+          '<option value="'+esc(k)+'" '+(S.settings.theme===k?'selected':'')+'>'+
+          esc(THEMES[k]?.emoji||'🎨')+' '+esc(safeThemeNameV21(k))+
+          '</option>'
+        ).join('');
+        modal(
+          '<div class="kicker">🎨 ESTILO</div>'+
+          '<h2>Elegir estilo</h2>'+
+          '<div class="field" style="margin-top:10px"><select id="swqSimpleStyleSelectV21" style="width:100%">'+opts+'</select></div>'+
+          '<label class="checkrow" style="margin:8px 0;font-size:11px;opacity:.9"><input id="swqSimpleRandomStyleV21" type="checkbox" '+(S.settings.randomThemeOnStartEnabled?'checked':'')+'> 🎲 Aleatorio al entrar</label>'+
+          '<button type="button" id="swqSimpleStyleApplyV21" class="btn primary" style="margin-top:8px">Usar estilo</button>'+
+          '<button type="button" class="btn secondary" style="margin-top:8px" onclick="closeModal()">Cerrar</button>'
+        );
+        document.getElementById('swqSimpleStyleApplyV21')?.addEventListener('click',()=>{
+          applyStyleV21(document.getElementById('swqSimpleStyleSelectV21')?.value||'Aqua');
+        });
+        document.getElementById('swqSimpleRandomStyleV21')?.addEventListener('change',e=>{
+          setRandomStyleEnabledV21(!!e.target.checked);
+        });
+      }catch(e){console.warn('SWQ simple style modal v21',e)}
+    };
+    window.swqApplyQuickTheme=applyStyleV21;
+    window.equipTheme=applyStyleV21;
+    try{equipTheme=applyStyleV21}catch(e){}
+
+    function rebindSimpleStyleButtonV21(){
+      try{
+        const old=document.getElementById('swqQuickThemeButton');
+        if(!old)return;
+        if(old.dataset.swqSimpleBoundV21==='1')return;
+        const b=old.cloneNode(true);
+        b.dataset.swqSimpleBoundV21='1';
+        b.removeAttribute('data-old-style-handler');
+        b.removeAttribute('onclick');
+        b.onclick=function(ev){
+          ev?.preventDefault?.();
+          ev?.stopPropagation?.();
+          window.swqQuickTheme();
+        };
+        b.textContent='🎨 Cambiar estilo';
+        old.replaceWith(b);
+      }catch(e){}
+    }
+    rebindSimpleStyleButtonV21();
+    setInterval(rebindSimpleStyleButtonV21,650);
+
+    /* ===== ALEATORIO TAMBIÉN EN AJUSTES ===== */
+    function hideOldRandomControlsV21(){
+      [
+        '#swqRandomStyleToggle','#swqRandomStyleSettingsToggle',
+        '#swqRandomThemeToggle','#swqRandomThemeSettingsToggle',
+        '#swqRandomThemeSwitch','#swqRandomThemeSettingsRow',
+        '#swqRandomThemeToggleV20','#swqRandomThemeSettingsToggleV20',
+        '#swqRandomThemeSwitchV20','#swqRandomThemeSettingsRowV20',
+        '#swqSimpleRandomStyleToggle','#swqSimpleRandomStyleSettingsToggle'
+      ].forEach(sel=>{
+        document.querySelectorAll(sel).forEach(el=>{
+          const host=el.closest('label')||el;
+          host.style.display='none';
+        });
+      });
+    }
+
+    function injectSettingsToggleV21(){
+      try{
+        hideOldRandomControlsV21();
+        const modalRoot=document.querySelector('#modal .modal');
+        if(!modalRoot)return;
+        if(modalRoot.querySelector('#swqRandomEntrySettingsV21'))return;
+        const saveBtn=[...modalRoot.querySelectorAll('button')].find(b=>b.textContent.trim()==='Guardar');
+        if(!saveBtn)return;
+        const row=document.createElement('label');
+        row.id='swqRandomEntrySettingsV21';
+        row.className='checkrow';
+        row.style.cssText='display:flex;align-items:center;gap:7px;margin:9px 0;padding:8px 10px;border:1px solid rgba(126,232,255,.16);border-radius:11px;font-size:11px;font-weight:800;cursor:pointer';
+        row.innerHTML='<input id="swqRandomEntrySettingsToggleV21" type="checkbox" style="width:auto;flex:0 0 auto;margin:0" '+(S.settings.randomThemeOnStartEnabled?'checked':'')+'><span>🎲 Estilo aleatorio al entrar<small style="display:block;opacity:.62;font-weight:500;margin-top:2px">Usa solamente estilos comprados y cambia al abrir el juego.</small></span>';
+        saveBtn.parentNode.insertBefore(row,saveBtn);
+        row.querySelector('#swqRandomEntrySettingsToggleV21')?.addEventListener('change',e=>{
+          setRandomStyleEnabledV21(!!e.target.checked,false);
+        });
+      }catch(e){}
+    }
+
+    if(typeof settings==='function'&&!window.__swqSimpleSettingsV21){
+      const baseSettingsV21=settings;
+      settings=function(){
+        const out=baseSettingsV21.apply(this,arguments);
+        setTimeout(injectSettingsToggleV21,0);
+        return out;
+      };
+      window.__swqSimpleSettingsV21=true;
+    }
+
+    if(typeof saveSettings==='function'&&!window.__swqSimpleSaveSettingsV21){
+      const baseSaveSettingsV21=saveSettings;
+      saveSettings=function(){
+        const toggle=document.getElementById('swqRandomEntrySettingsToggleV21');
+        if(toggle)S.settings.randomThemeOnStartEnabled=!!toggle.checked;
+        S.settings.randomThemeOnStart=false;
+        S.settings.randomStyleOnStart=false;
+        const out=baseSaveSettingsV21.apply(this,arguments);
+        S.settings.randomThemeOnStart=false;
+        S.settings.randomStyleOnStart=false;
+        save();
+        return out;
+      };
+      window.__swqSimpleSaveSettingsV21=true;
+    }
+
+    hideOldRandomControlsV21();
+
+    /* Si una sincronización remota trae el campo antiguo/nuevo, se migra sin
+       reactivar los timers antiguos. */
+    if(typeof applyCloudGameState==='function'&&!window.__swqSimpleCloudRandomV21){
+      const baseCloudV21=applyCloudGameState;
+      applyCloudGameState=function(gs){
+        const localBefore=!!S.settings.randomThemeOnStartEnabled;
+        const remoteValue=typeof gs?.settings?.randomThemeOnStartEnabled==='boolean'
+          ?gs.settings.randomThemeOnStartEnabled
+          :(typeof gs?.settings?.randomThemeOnStart==='boolean'?gs.settings.randomThemeOnStart:localBefore);
+        const out=baseCloudV21.apply(this,arguments);
+        S.settings.randomThemeOnStartEnabled=remoteValue;
+        S.settings.randomThemeOnStart=false;
+        S.settings.randomStyleOnStart=false;
+        save();
+        return out;
+      };
+      window.__swqSimpleCloudRandomV21=true;
+    }
+
+    /* Un único cambio por apertura, siempre excluyendo el estilo actual. */
+    let appliedOnThisLoad=false;
+    function applyEntryOnceV21(){
+      if(appliedOnThisLoad)return;
+      appliedOnThisLoad=true;
+      applyRandomPurchasedOnEntryV21();
+    }
+    setTimeout(applyEntryOnceV21,360);
+
+    /* Si el perfil termina de sincronizar después, permite una sola aplicación
+       adicional solo cuando todavía no se pudo hacer por falta de estado. */
+    let cloudRetryUsed=false;
+    setTimeout(()=>{
+      if(cloudRetryUsed||appliedOnThisLoad&&S.settings.theme!=='')return;
+      cloudRetryUsed=true;
+      applyEntryOnceV21();
+    },1250);
+
+  }catch(e){console.warn('SWQ ??? / simple style v21',e)}
+})();
