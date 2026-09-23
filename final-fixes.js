@@ -7792,3 +7792,205 @@ body.theme-carretera .app{position:relative;z-index:2}
     save();
   }catch(e){console.warn('SWQ V29 coach achievement removal',e)}
 })();
+
+
+/* === SWQ FINAL V30: TRAINING BALANCE + SETTINGS RANDOM + MUSIC FIX 2026-09-23 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_FINAL_V30_TRAINING_BALANCE__)return;
+  window.__SWQ_FINAL_V30_TRAINING_BALANCE__=true;
+
+  /* -----------------------------------------------------------
+     1) Random style: one real toggle button, only in Settings.
+     The same localStorage key is used by V28/V29 at next launch.
+  ----------------------------------------------------------- */
+  const RANDOM_KEY_V30='SWQ_RANDOM_STYLE_ENTRY_V28';
+
+  function randomEnabledV30(){
+    try{
+      const raw=localStorage.getItem(RANDOM_KEY_V30);
+      if(raw==='1')return true;
+      if(raw==='0')return false;
+    }catch(e){}
+    return !!S.settings?.randomThemeOnStartEnabled;
+  }
+
+  function setRandomEnabledV30(value){
+    const enabled=!!value;
+    try{localStorage.setItem(RANDOM_KEY_V30,enabled?'1':'0')}catch(e){}
+    S.settings=S.settings||{};
+    S.settings.randomThemeOnStartEnabled=enabled;
+    S.settings.randomThemeOnStart=false;
+    S.settings.randomStyleOnStart=false;
+    try{save()}catch(e){}
+    updateRandomButtonV30();
+    try{
+      toast(enabled?'🎲 Estilo aleatorio al entrar activado.':'🎨 Estilo aleatorio al entrar desactivado.',2200);
+    }catch(e){}
+  }
+
+  function updateRandomButtonV30(){
+    const btn=document.getElementById('swqV30RandomStyleButton');
+    if(!btn)return;
+    const enabled=randomEnabledV30();
+    btn.textContent=enabled?'🎲 Estilo aleatorio: ACTIVADO':'🎲 Estilo aleatorio: DESACTIVADO';
+    btn.setAttribute('aria-pressed',enabled?'true':'false');
+  }
+
+  function mountSettingsFixesV30(){
+    try{
+      const root=document.querySelector('#modal .modal');
+      if(!root)return;
+
+      /* Absolute Cinema: si music5 está comprado, nunca debe aparecer bloqueado. */
+      const cinemaOption=root.querySelector('#sMusicTrack option[value="absoluteCinema"]');
+      if(cinemaOption){
+        cinemaOption.disabled=!S.purchases?.music5;
+        if(S.purchases?.music5){
+          cinemaOption.textContent='🎬 Absolute Cinema';
+        }
+      }
+
+      /*
+        El control random de versiones anteriores se sustituye por un solo
+        botón. No se toca ningún otro ajuste.
+      */
+      root.querySelectorAll(
+        '#swqV29RandomStyleSetting,#swqV28RandomStyle,#swqV29RandomStyleToggle,'+
+        '#swqRandomStyleToggle,#swqRandomStyleSettingsToggle,#swqRandomThemeToggle,#swqRandomThemeSettingsToggle,'+
+        '#swqRandomThemeSwitch,#swqRandomThemeSettingsRow,#swqRandomThemeToggleV20,#swqRandomThemeSettingsToggleV20,'+
+        '#swqRandomThemeSwitchV20,#swqRandomThemeSettingsRowV20,#swqSimpleRandomStyleToggle,#swqSimpleRandomStyleSettingsToggle,'+
+        '#swqSimpleRandomStyleV21,#swqRandomEntrySettingsToggleV21,#swqRandomEntrySettingsV21,#swqRandomEntryStyleSettingsButton'
+      ).forEach(el=>{
+        try{(el.closest('label')||el.parentElement||el).remove()}catch(e){}
+      });
+
+      let btn=root.querySelector('#swqV30RandomStyleButton');
+      if(!btn){
+        btn=document.createElement('button');
+        btn.type='button';
+        btn.id='swqV30RandomStyleButton';
+        btn.className='btn secondary';
+        btn.style.cssText='width:100%;margin-top:8px;text-align:left';
+        btn.onclick=()=>setRandomEnabledV30(!randomEnabledV30());
+
+        const themeField=root.querySelector('#sTheme')?.closest('.field');
+        const musicField=root.querySelector('#sMusic')?.closest('.checkrow');
+        const saveBtn=[...root.querySelectorAll('button')].find(b=>(b.textContent||'').trim()==='Guardar');
+
+        if(musicField?.parentNode)musicField.parentNode.insertBefore(btn,musicField);
+        else if(themeField?.parentNode)themeField.parentNode.insertBefore(btn,themeField.nextSibling);
+        else if(saveBtn?.parentNode)saveBtn.parentNode.insertBefore(btn,saveBtn);
+        else root.appendChild(btn);
+      }
+      updateRandomButtonV30();
+    }catch(e){console.warn('SWQ V30 settings fixes',e)}
+  }
+
+  try{
+    if(typeof settings==='function'&&!window.__SWQ_V30_SETTINGS__){
+      const baseSettingsV30=settings;
+      settings=function(){
+        const out=baseSettingsV30.apply(this,arguments);
+        setTimeout(mountSettingsFixesV30,0);
+        setTimeout(mountSettingsFixesV30,100);
+        setTimeout(mountSettingsFixesV30,350);
+        return out;
+      };
+      window.__SWQ_V30_SETTINGS__=true;
+    }
+  }catch(e){console.warn('SWQ V30 settings wrapper',e)}
+
+  /* -----------------------------------------------------------
+     2) Absolute Cinema: also make the current track valid after
+        Settings saves, without requiring another reload.
+  ----------------------------------------------------------- */
+  try{
+    if(typeof saveSettings==='function'&&!window.__SWQ_V30_SAVE_SETTINGS__){
+      const baseSaveSettingsV30=saveSettings;
+      saveSettings=function(){
+        const out=baseSaveSettingsV30.apply(this,arguments);
+        if(S.purchases?.music5&&S.settings?.musicTrack==='absoluteCinema'){
+          S.settings.musicTrack='absoluteCinema';
+        }
+        try{save()}catch(e){}
+        return out;
+      };
+      window.__SWQ_V30_SAVE_SETTINGS__=true;
+    }
+  }catch(e){}
+
+  /* -----------------------------------------------------------
+     3) Difficulty: total duration now affects the same difficulty
+        calculation used by the live UI and saved trainings.
+        No duration => factor 1, so old behavior remains unchanged.
+  ----------------------------------------------------------- */
+  try{
+    if(typeof difficultyInfo==='function'&&!window.__SWQ_V30_DURATION_DIFFICULTY__){
+      const baseDifficultyV30=difficultyInfo;
+      difficultyInfo=function(e,avgMetersOverride){
+        const base=baseDifficultyV30.apply(this,arguments);
+        const minutes=Math.max(0,Number(e?.durationMin)||0);
+        if(!minutes||!Array.isArray(DIFFICULTIES)||!DIFFICULTIES.length)return base;
+
+        const meters=(e?.series||[]).reduce((sum,s)=>sum+
+          Math.max(0,Number(s?.distance)||0)*Math.max(0,Number(s?.reps)||0),0);
+
+        if(!meters)return base;
+
+        /*
+          30 min = neutral.
+          Menos tiempo reduce un poco el factor; más tiempo lo aumenta.
+          120+ min llega al máximo de 1.60x.
+        */
+        const durationFactor=Math.max(0.80,Math.min(1.60,0.80+(minutes/150)));
+        const avg=Math.max(100,Number(avgMetersOverride)||Number(S.profile?.avgMeters)||1000);
+        const adjustedPercent=(meters/avg)*100*durationFactor;
+
+        let key='facil';
+        if(adjustedPercent<=19)key='facil';
+        else if(adjustedPercent<=49)key='normal';
+        else if(adjustedPercent<=110)key='brutal';
+        else if(adjustedPercent<450)key='demoniaco';
+        else key='masoquista';
+
+        const d=DIFFICULTIES.find(x=>x.key===key)||base||DIFFICULTIES[0];
+        return {...d,points:Math.round((Number(base.points)||meters)*durationFactor),durationFactor,adjustedPercent};
+      };
+      if(typeof difficultyLabel==='function'){
+        /* difficultyLabel already calls difficultyInfo, so no second UI API is needed. */
+      }
+      window.__SWQ_V30_DURATION_DIFFICULTY__=true;
+    }
+  }catch(e){console.warn('SWQ V30 duration difficulty',e)}
+
+  /* -----------------------------------------------------------
+     4) Coins: 0 m through 49 m = 0 coins. Starting at 50 m,
+        the existing reward formula is used unchanged.
+  ----------------------------------------------------------- */
+  try{
+    if(typeof trainingCoins==='function'&&!window.__SWQ_V30_COIN_FLOOR__){
+      const baseTrainingCoinsV30=trainingCoins;
+      trainingCoins=function(e){
+        const meters=(e?.series||[]).reduce((sum,s)=>sum+
+          Math.max(0,Number(s?.distance)||0)*Math.max(0,Number(s?.reps)||0),0);
+        if(meters<50)return 0;
+        return Math.max(0,Number(baseTrainingCoinsV30.apply(this,arguments))||0);
+      };
+
+      if(typeof draftCoins==='function'){
+        const baseDraftCoinsV30=draftCoins;
+        draftCoins=function(){
+          const meters=typeof draftMeters==='function'?Number(draftMeters())||0:0;
+          if(meters<50)return 0;
+          return Math.max(0,Number(baseDraftCoinsV30.apply(this,arguments))||0);
+        };
+      }
+
+      window.__SWQ_V30_COIN_FLOOR__=true;
+    }
+  }catch(e){console.warn('SWQ V30 coin floor',e)}
+
+  /* Keep the Settings button available when a modal was just rebuilt. */
+  setTimeout(mountSettingsFixesV30,500);
+})();
