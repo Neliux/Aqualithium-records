@@ -6559,82 +6559,7 @@ body.theme-carretera .app{position:relative;z-index:2}
     setInterval(bindV25,900);
   }catch(e){console.warn('SWQ V25 style selector',e)}
 
-  /* ---------- Random font each time the app is entered again ---------- */
-  try{
-    if(!document.getElementById('swq-random-font-v25-css')){
-      const st=document.createElement('style');
-      st.id='swq-random-font-v25-css';
-      st.textContent=
-        'body.swq-font-junta,body.swq-font-junta *{font-family:"Arial Narrow","Roboto Condensed","Helvetica Neue",Arial,sans-serif!important;letter-spacing:-.025em!important}'+
-        'body.swq-font-pixel,body.swq-font-pixel *{font-family:"Courier New","Lucida Console",monospace!important}'+
-        'body.swq-font-bonita,body.swq-font-bonita *{font-family:"Trebuchet MS","Segoe UI",sans-serif!important;letter-spacing:.008em!important}'+
-        'body.swq-font-normal,body.swq-font-normal *{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif!important;letter-spacing:normal!important}'+
-        'body.swq-font-mayuscula,body.swq-font-mayuscula *{font-family:Impact,"Arial Black",Arial,sans-serif!important;letter-spacing:.018em!important;text-transform:uppercase!important}'+
-        'body.swq-font-mayuscula input,body.swq-font-mayuscula textarea,body.swq-font-mayuscula select{font-family:inherit!important;text-transform:none!important}'+
-        'body.swq-font-serif,body.swq-font-serif *{font-family:Georgia,"Times New Roman",serif!important;letter-spacing:.006em!important}';
-      document.head.appendChild(st);
-    }
-    const modes=['junta','pixel','bonita','normal','mayuscula','serif'];
-    const storageKey='swq_random_font_mode_v25';
-    let currentFontMode='';
-    function clearFontV25(){
-      if(!document.body)return;
-      modes.forEach(x=>document.body.classList.remove('swq-font-'+x));
-      currentFontMode='';
-    }
-    function applyFontModeV25(mode){
-      if(!document.body)return;
-      if(S.settings?.theme!=='???'){
-        clearFontV25();
-        return;
-      }
-      if(!modes.includes(mode))return;
-      currentFontMode=mode;
-      document.body.classList.remove(...modes.map(x=>'swq-font-'+x));
-      document.body.classList.add('swq-font-'+mode);
-      try{localStorage.setItem(storageKey,mode)}catch(e){}
-    }
-    function pickFontV25(){
-      if(S.settings?.theme!=='???'){
-        clearFontV25();
-        return;
-      }
-      let last='';
-      try{last=localStorage.getItem(storageKey)||''}catch(e){}
-      let choices=modes.filter(x=>x!==last);
-      if(!choices.length)choices=modes.slice();
-      const mode=choices[Math.floor(Math.random()*choices.length)];
-      applyFontModeV25(mode);
-    }
-    pickFontV25();
-
-    /* Theme changes rewrite body.className in some older patches; keep the selected font. */
-    try{
-      const fontObserver=new MutationObserver(()=>{
-        if(S.settings?.theme==='???'){
-          if(currentFontMode&&document.body&&!document.body.classList.contains('swq-font-'+currentFontMode)){
-            document.body.classList.add('swq-font-'+currentFontMode);
-          }
-        }else{
-          clearFontV25();
-        }
-      });
-      fontObserver.observe(document.body,{attributes:true,attributeFilter:['class']});
-      window.__SWQ_FONT_OBSERVER_V25=fontObserver;
-    }catch(e){}
-
-    let hiddenAt=0;
-    document.addEventListener('visibilitychange',()=>{
-      if(document.visibilityState==='hidden'){
-        hiddenAt=Date.now();
-      }else if(hiddenAt&&Date.now()-hiddenAt>=5000){
-        pickFontV25();
-      }
-    });
-    window.addEventListener('pageshow',e=>{
-      if(e?.persisted)pickFontV25();
-    });
-  }catch(e){console.warn('SWQ V25 random font',e)}
+  /* Random font logic is owned by V26 below and is restricted to ??? only. */
 
   try{save()}catch(e){}
 })();
@@ -6769,7 +6694,7 @@ body.theme-carretera .app{position:relative;z-index:2}
     }
 
     rebindStyleButtonV26();
-    setInterval(rebindStyleButtonV26,250);
+    setInterval(rebindStyleButtonV26,800);
 
     try{
       if(typeof render==='function'&&!window.__SWQ_STYLE_BUTTON_RENDER_V26){
@@ -6837,7 +6762,7 @@ body.theme-carretera .app{position:relative;z-index:2}
         'body.swq-v26-font-mayuscula,body.swq-v26-font-mayuscula *{font-family:Impact,"Arial Black",Arial,sans-serif!important;letter-spacing:.018em!important;text-transform:uppercase!important}'+
         'body.swq-v26-font-mayuscula input,body.swq-v26-font-mayuscula textarea,body.swq-v26-font-mayuscula select{font-family:inherit!important;text-transform:none!important}'+
         'body.swq-v26-font-serif,body.swq-v26-font-serif *{font-family:Georgia,"Times New Roman",serif!important;letter-spacing:.006em!important}'+
-        'body.theme-???{font-family:inherit!important}body.theme-??? *{font-family:inherit!important}';
+        '';
       document.head.appendChild(st);
     }
     let currentFontV26='',wasHidden=false;
