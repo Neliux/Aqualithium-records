@@ -7994,3 +7994,109 @@ body.theme-carretera .app{position:relative;z-index:2}
   /* Keep the Settings button available when a modal was just rebuilt. */
   setTimeout(mountSettingsFixesV30,500);
 })();
+
+
+/* === SWQ FINAL V31: DURATION CAP + DIFFICULTY-ONLY 2026-09-23 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_FINAL_V31_DURATION_RULES__)return;
+  window.__SWQ_FINAL_V31_DURATION_RULES__=true;
+
+  const MAX_DURATION_MIN_V31=1440;
+
+  function durationFromElementV31(id,fallback){
+    try{
+      const el=document.getElementById(id);
+      const raw=el?el.value:fallback;
+      const n=Number(raw);
+      return Number.isFinite(n)&&n>=0?n:0;
+    }catch(e){return 0}
+  }
+
+  function rejectInvalidDurationV31(id,fallback){
+    const minutes=durationFromElementV31(id,fallback);
+    if(minutes>MAX_DURATION_MIN_V31){
+      try{toast('⛔ Duración inválida: un entrenamiento no puede superar 1440 minutos (24 horas).',3000)}catch(e){}
+      return true;
+    }
+    return false;
+  }
+
+  /* El límite también se aplica fuera de la interfaz HTML: no basta con max="1440". */
+  try{
+    if(typeof saveTraining==='function'&&!window.__SWQ_V31_SAVE_GUARD__){
+      const baseSaveTrainingV31=saveTraining;
+      saveTraining=function(){
+        if(rejectInvalidDurationV31('tDur',typeof draftDuration!=='undefined'?draftDuration:0))return;
+        return baseSaveTrainingV31.apply(this,arguments);
+      };
+      window.__SWQ_V31_SAVE_GUARD__=true;
+    }
+  }catch(e){console.warn('SWQ V31 save duration guard',e)}
+
+  try{
+    if(typeof commitEdit==='function'&&!window.__SWQ_V31_EDIT_GUARD__){
+      const baseCommitEditV31=commitEdit;
+      commitEdit=function(){
+        if(rejectInvalidDurationV31('edDur',0))return;
+        return baseCommitEditV31.apply(this,arguments);
+      };
+      window.__SWQ_V31_EDIT_GUARD__=true;
+    }
+  }catch(e){console.warn('SWQ V31 edit duration guard',e)}
+
+  /*
+     Tiempo = dificultad, nunca recompensa:
+     - 30 min o más: factor 1.00 (comportamiento normal).
+     - Menos de 30 min: el mismo volumen cuenta como más exigente.
+     - Sin duración: se conserva el comportamiento normal de siempre.
+  */
+  try{
+    if(typeof difficultyInfo==='function'&&!window.__SWQ_V31_DIFFICULTY__){
+      const baseDifficultyV31=difficultyInfo;
+      difficultyInfo=function(e,avgMetersOverride){
+        const base=baseDifficultyV31.apply(this,arguments);
+        const minutes=Math.max(0,Number(e?.durationMin)||0);
+        if(!minutes||!Array.isArray(DIFFICULTIES)||!DIFFICULTIES.length)return base;
+
+        const meters=(e?.series||[]).reduce((sum,s)=>sum+
+          Math.max(0,Number(s?.distance)||0)*Math.max(0,Number(s?.reps)||0),0);
+        if(!meters)return base;
+
+        /* 30 min = neutral. Solo la falta de tiempo eleva la dificultad. */
+        const durationFactor=Math.max(1,Math.min(1.60,1+(Math.max(0,30-minutes)/50)));
+        const avg=Math.max(100,Number(avgMetersOverride)||Number(S.profile?.avgMeters)||1000);
+        const adjustedPercent=(meters/avg)*100*durationFactor;
+
+        let key='facil';
+        if(adjustedPercent<=19)key='facil';
+        else if(adjustedPercent<=49)key='normal';
+        else if(adjustedPercent<=110)key='brutal';
+        else if(adjustedPercent<450)key='demoniaco';
+        else key='masoquista';
+
+        const d=DIFFICULTIES.find(x=>x.key===key)||base||DIFFICULTIES[0];
+        return {...d,points:Math.round((Number(base.points)||meters)*durationFactor),durationFactor,adjustedPercent};
+      };
+      window.__SWQ_V31_DIFFICULTY__=true;
+    }
+  }catch(e){console.warn('SWQ V31 difficulty duration rule',e)}
+
+  /* Refuerzo visual para inputs reconstruidos por la vista de entrenamiento. */
+  function enforceDurationMaxV31(){
+    try{
+      const ids=['tDur','edDur'];
+      ids.forEach(id=>{
+        const el=document.getElementById(id);
+        if(!el)return;
+        el.max=String(MAX_DURATION_MIN_V31);
+        el.min='0';
+        el.setAttribute('max',String(MAX_DURATION_MIN_V31));
+        el.setAttribute('min','0');
+      });
+    }catch(e){}
+  }
+  setTimeout(enforceDurationMaxV31,0);
+  setTimeout(enforceDurationMaxV31,300);
+  setTimeout(enforceDurationMaxV31,1000);
+})();
