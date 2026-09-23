@@ -5695,146 +5695,6 @@ body.theme-carretera .app{position:relative;z-index:2}
 })();
 
 
-/* === SWQ FINAL V22: SINGLE RANK REWARD + ??? STYLE + SIMPLE THEME SELECTOR === */
-(function(){
-  'use strict';
-  if(window.__SWQ_FINAL_V22__)return;
-  window.__SWQ_FINAL_V22__=true;
-
-  try{
-    S.purchases=S.purchases||{};
-    THEMES.Mystery={a:'#7b61ff',b:'#19e6bd',emoji:'❓',desc:'??? · colores cambiantes, mensajes extraños y lluvia de emojis.'};
-    const data={id:'theme_Mystery',icon:'❓',name:'???',price:9999,desc:'Estilo experimental y elaborado: colores que se conquistan lentamente, tipografía diferente, mensajes cambiantes, botones impredecibles y emojis random cayendo.',buy:()=>{S.purchases.theme_Mystery=true;}};
-    const old=SHOP.find(x=>x.id==='theme_Mystery');
-    if(old)Object.assign(old,data);else SHOP.push(data);
-  }catch(e){console.warn('SWQ Mystery setup',e)}
-
-  try{
-    if(!document.getElementById('swq-mystery-v22-css')){
-      const st=document.createElement('style');
-      st.id='swq-mystery-v22-css';
-      st.textContent=[
-        "body.theme-mystery{background:#07101d!important;color:#f7fbff!important;font-family:'Trebuchet MS',system-ui,sans-serif!important;overflow-x:hidden!important}",
-        "body.theme-mystery::before{content:'';position:fixed;inset:-22%;z-index:-4;pointer-events:none;background:radial-gradient(circle at 12% 40%,rgba(119,79,255,.78),transparent 34%),radial-gradient(circle at 88% 64%,rgba(20,235,187,.76),transparent 37%),linear-gradient(120deg,#0a1020,#5424a5,#0d8f78);background-size:160% 160%,160% 160%,230% 230%;animation:swqMysteryConquer 20s ease-in-out infinite alternate}",
-        "body.theme-mystery::after{content:'';position:fixed;inset:-16%;z-index:-3;pointer-events:none;background:linear-gradient(115deg,rgba(255,75,166,.18),rgba(255,195,60,.18),rgba(26,230,190,.20),rgba(122,95,255,.20));background-size:300% 300%;mix-blend-mode:screen;animation:swqMysteryConquer2 14s ease-in-out infinite alternate}",
-        "@keyframes swqMysteryConquer{0%{background-position:0% 50%,100% 40%,0% 50%;transform:scale(1.08) translateX(-3%)}50%{background-position:45% 55%,55% 45%,50% 50%;transform:scale(1.13)}100%{background-position:100% 50%,0% 60%,100% 50%;transform:scale(1.1) translateX(4%)}}",
-        "@keyframes swqMysteryConquer2{0%{background-position:0% 50%;filter:hue-rotate(0deg)}50%{background-position:100% 50%;filter:hue-rotate(16deg)}100%{background-position:35% 50%;filter:hue-rotate(-12deg)}}",
-        "body.theme-mystery .card,body.theme-mystery .hero,body.theme-mystery .list-item,body.theme-mystery .series,body.theme-mystery .shop-item,body.theme-mystery .stat{background:linear-gradient(145deg,rgba(19,24,48,.94),rgba(8,31,37,.94))!important;border-color:rgba(173,255,241,.20)!important;box-shadow:0 16px 48px rgba(0,0,0,.28),inset 0 0 30px rgba(124,98,255,.05)!important}",
-        "body.theme-mystery h1,body.theme-mystery h2,body.theme-mystery h3,body.theme-mystery .kicker{font-family:ui-monospace,Consolas,monospace!important;letter-spacing:.02em}",
-        "body.theme-mystery .btn:not(.danger){background:linear-gradient(135deg,#20e7bc,#745cff,#ff5fa5)!important;color:#071018!important;border-color:rgba(255,255,255,.42)!important;animation:swqMysteryButtons 9s steps(1,end) infinite!important}",
-        "@keyframes swqMysteryButtons{0%,65%{background:linear-gradient(135deg,#20e7bc,#745cff)!important}66%,74%{background:linear-gradient(135deg,#ff5fa5,#ffbf47)!important}75%,84%{background:linear-gradient(135deg,#9dff3c,#1ae4d0)!important}85%,92%{background:linear-gradient(135deg,#7b61ff,#38d8ff)!important}93%,100%{background:linear-gradient(135deg,#ff75d2,#8c5dff)!important}}",
-        "body.theme-mystery .nav{background:linear-gradient(120deg,rgba(7,14,29,.95),rgba(31,10,54,.95),rgba(6,46,39,.95))!important}",
-        "body.theme-mystery .wallet{background:linear-gradient(135deg,#ffbf47,#ff5fa5,#7b61ff)!important;color:#13091a!important}",
-        ".swq-mystery-particle{position:absolute!important;top:-12vh!important;z-index:3!important;pointer-events:none!important;font-size:40px;line-height:1;animation:swqMysteryFall var(--mDur,6s) linear forwards!important;filter:drop-shadow(0 0 9px rgba(255,255,255,.4))}",
-        "@keyframes swqMysteryFall{0%{opacity:0;transform:translate3d(0,-8vh,0) rotate(0) scale(.7)}10%{opacity:.96}100%{opacity:0;transform:translate3d(var(--mDx),116vh,0) rotate(var(--mRot)) scale(1)}}",
-        "#swqRandomThemeSwitchV20,#swqRandomThemeSettingsRowV20,#swqRandomThemeSwitch,#swqRandomThemeSettingsRow,#swqRandomStyleToggle,#swqRandomStyleSettingsToggle{display:none!important}"
-      ].join('');
-      document.head.appendChild(st);
-    }
-  }catch(e){console.warn('SWQ Mystery CSS',e)}
-
-  const chaos=['🐟','🐠','🪼','🦈','🐙','🦑','🐡','🐬','🦀','🦐','🍐','🍌','🍕','🧩','🎲','🎈','🧊','🔥','⭐','💿','🛸','👾','🌈','🧠','🗿','🕹️','🎭','🪐','☄️','💥','🧃','🪿','🦆','🐸','🐝','🍀','🍉','🥶','👁️','❓'];
-
-  try{
-    const baseSpawn=spawnThemeParticle;
-    if(typeof baseSpawn==='function'&&!window.__SWQ_MYSTERY_PARTICLES_V22){
-      window.spawnThemeParticle=function(){
-        if(S.settings.theme==='Mystery'){
-          const host=document.getElementById('themeParticles');if(!host)return;
-          if(host.querySelectorAll('.swq-mystery-particle').length>=10)return;
-          const el=document.createElement('span');el.className='swq-mystery-particle';
-          el.textContent=chaos[Math.floor(Math.random()*chaos.length)];
-          el.style.left=(2+Math.random()*94)+'%';
-          el.style.fontSize=(28+Math.random()*22)+'px';
-          el.style.setProperty('--mDx',((Math.random()-.5)*190)+'px');
-          el.style.setProperty('--mRot',((Math.random()<.5?-1:1)*(240+Math.random()*600))+'deg');
-          el.style.setProperty('--mDur',(5+Math.random()*4)+'s');
-          host.appendChild(el);setTimeout(()=>el.remove(),10000);return;
-        }
-        return baseSpawn.apply(this,arguments);
-      };
-      window.__SWQ_MYSTERY_PARTICLES_V22=true;
-    }
-  }catch(e){}
-
-  try{
-    const msgs=['Tu natación convertida en algo... diferente.','No preguntes por qué cambió el botón.','El pez no aprobó esta interfaz.','Modo ???: oficialmente sin explicaciones.','Todo parece normal. Probablemente.','Swim Quest.exe sigue funcionando. Creemos.','Hay estilos. Hay ???. Y ya.'];
-    const normal='Tu natación convertida en videojuego.';
-    function mysteryText(){
-      const el=document.querySelector('.brand .sub');if(!el)return;
-      if(S.settings.theme==='Mystery'){el.textContent=msgs[Math.floor(Math.random()*msgs.length)];document.title='Swim Quest · ???';}
-      else{el.textContent=normal;document.title='Swim Quest';}
-    }
-    setTimeout(mysteryText,500);setInterval(mysteryText,6500);
-  }catch(e){}
-
-  function ownedThemesV22(){
-    const out=['Aqua'];
-    Object.keys(THEMES||{}).forEach(k=>{if(k!=='Aqua'&&S.purchases?.['theme_'+k]===true)out.push(k)});
-    return [...new Set(out)];
-  }
-  function labelThemeV22(k){
-    const item=SHOP?.find?.(x=>x.id==='theme_'+k);
-    return (THEMES[k]?.emoji||'🎨')+' '+(item?.name||(k==='Mystery'?'???':k));
-  }
-  function toggleRandomV22(btn){
-    S.settings.randomThemeOnStart=!S.settings.randomThemeOnStart;
-    S.settings.randomStyleOnStart=false;
-    save();
-    if(btn)btn.textContent='🎲 Aleatorio al entrar: '+(S.settings.randomThemeOnStart?'ACTIVO':'OFF');
-    toast(S.settings.randomThemeOnStart?'🎲 Estilo aleatorio activado.':'🎨 Estilo aleatorio desactivado.',2200);
-  }
-
-  window.swqQuickTheme=function(){
-    try{
-      const opts=ownedThemesV22().map(k=>'<option value="'+esc(k)+'" '+(S.settings.theme===k?'selected':'')+'>'+esc(labelThemeV22(k))+'</option>').join('');
-      modal(
-        '<div class="kicker">🎨 ESTILO</div><h2>Elegir estilo</h2>'+
-        '<div class="field" style="margin-top:10px"><label>Estilo equipado</label><select id="swqMysteryThemeSelect">'+opts+'</select></div>'+
-        '<button type="button" class="btn primary" id="swqMysteryThemeApply" style="margin-top:8px">Usar estilo</button>'+
-        '<button type="button" class="btn secondary" id="swqRandomEntryStyleButton" style="margin-top:8px">🎲 Aleatorio al entrar: '+(S.settings.randomThemeOnStart?'ACTIVO':'OFF')+'</button>'+
-        '<button type="button" class="btn secondary" id="swqMysteryMusicButton" style="margin-top:8px">🎵 Elegir música</button>'+
-        '<button type="button" class="btn secondary" id="swqMysteryThemeClose" style="margin-top:8px">Cerrar</button>'
-      );
-      document.getElementById('swqMysteryThemeApply')?.addEventListener('click',()=>{
-        const k=document.getElementById('swqMysteryThemeSelect')?.value||'Aqua';
-        if(k!=='Aqua'&&!S.purchases?.['theme_'+k]){toast('🔒 Ese estilo todavía no está comprado.');return;}
-        S.settings.theme=k;save();applyTheme();closeModal();render();
-      });
-      document.getElementById('swqRandomEntryStyleButton')?.addEventListener('click',function(){toggleRandomV22(this)});
-      document.getElementById('swqMysteryMusicButton')?.addEventListener('click',()=>window.swqQuickMusic?.());
-      document.getElementById('swqMysteryThemeClose')?.addEventListener('click',closeModal);
-    }catch(e){console.warn('SWQ simple style selector V22',e)}
-  };
-
-  function injectSettingsRandomV22(){
-    try{
-      const root=document.querySelector('#modal .modal');if(!root)return;
-      const saveBtn=[...root.querySelectorAll('button')].find(b=>b.textContent.trim()==='Guardar');if(!saveBtn)return;
-      let btn=root.querySelector('#swqRandomEntryStyleSettingsButton');
-      if(!btn){
-        btn=document.createElement('button');btn.type='button';btn.id='swqRandomEntryStyleSettingsButton';btn.className='btn secondary';
-        btn.style.cssText='width:100%;min-height:38px;margin-top:8px;font-size:11px;';
-        btn.onclick=function(){toggleRandomV22(this)};
-        saveBtn.parentNode.insertBefore(btn,saveBtn);
-      }
-      btn.textContent='🎲 Aleatorio al entrar: '+(S.settings.randomThemeOnStart?'ACTIVO':'OFF');
-    }catch(e){}
-  }
-  try{
-    if(typeof window.settings==='function'&&!window.__SWQ_MYSTERY_SETTINGS_V22){
-      const baseSettings=window.settings;
-      window.settings=function(){const out=baseSettings.apply(this,arguments);setTimeout(injectSettingsRandomV22,0);setTimeout(injectSettingsRandomV22,90);return out};
-      window.__SWQ_MYSTERY_SETTINGS_V22=true;
-    }
-    setInterval(injectSettingsRandomV22,900);
-  }catch(e){}
-
-  try{if(S.settings.theme==='Mystery')setTimeout(()=>applyTheme(),30)}catch(e){}
-})();
-
-
-
 /* === SWQ AUTHORITATIVE SIMPLE STYLE + RANDOM ENTRY + UNKNOWN STYLE 2026-09-22 v21 === */
 (function(){
   'use strict';
@@ -6366,15 +6226,20 @@ body.theme-carretera .app{position:relative;z-index:2}
     if(!S.purchases)S.purchases={};
     if(!S.settings)S.settings={};
 
-    /* Migración segura del nombre interno intermedio Mystery -> ??? */
-    if(S.purchases.theme_Mystery)S.purchases['theme_???']=true;
-    if(S.settings.theme==='Mystery')S.settings.theme='???';
-    const legacy=SHOP?.find?.(x=>x.id==='theme_Mystery');
-    if(legacy){
-      legacy.name='???';
-      legacy.icon='❓';
-      legacy.id='__swq_hidden_mystery__';
+    /* Migración segura: Mystery queda eliminado y cualquier progreso previo se conserva como ???. */
+    if(S.purchases?.theme_Mystery){
+      S.purchases['theme_???']=true;
+      delete S.purchases.theme_Mystery;
     }
+    if(S.settings?.theme==='Mystery')S.settings.theme='???';
+    try{
+      if(typeof THEMES!=='undefined'&&THEMES.Mystery)delete THEMES.Mystery;
+      if(typeof SHOP!=='undefined'&&Array.isArray(SHOP)){
+        for(let i=SHOP.length-1;i>=0;i--){
+          if(SHOP[i]?.id==='theme_Mystery')SHOP.splice(i,1);
+        }
+      }
+    }catch(e){}
 
     function ownedStyles(){
       const out=['Aqua'];
@@ -6436,13 +6301,10 @@ body.theme-carretera .app{position:relative;z-index:2}
         modal(
           '<div class="kicker">🎨 ESTILO</div>'+
           '<h2>Cambiar estilo</h2>'+
-          '<div class="field" style="margin-top:10px"><label>Estilo equipado</label>'+
-          '<select id="swqV24StyleSelect" style="width:100%">'+opts+'</select></div>'+
-          '<button type="button" id="swqV24RandomButton" class="btn secondary" style="margin-top:8px;min-height:36px;font-size:11px">🎲 Aleatorio al entrar: '+(S.settings.randomThemeOnStartEnabled?'ACTIVO':'OFF')+'</button>'+
+          '<div class="field" style="margin-top:10px"><select id="swqV24StyleSelect" style="width:100%">'+opts+'</select></div>'+
           '<button type="button" id="swqV24StyleApply" class="btn primary" style="margin-top:8px">Usar estilo</button>'+
           '<button type="button" id="swqV24StyleClose" class="btn secondary" style="margin-top:8px">Cerrar</button>'
         );
-        document.getElementById('swqV24RandomButton')?.addEventListener('click',function(){toggleRandom(this)});
         document.getElementById('swqV24StyleApply')?.addEventListener('click',()=>{
           applyStyle(document.getElementById('swqV24StyleSelect')?.value||'Aqua');
         });
@@ -6540,4 +6402,238 @@ body.theme-carretera .app{position:relative;z-index:2}
     setTimeout(applyEntryOnce,520);
     setTimeout(applyEntryOnce,1500);
   }catch(e){console.warn('SWQ V24 random entry',e)}
+})();
+
+/* === SWQ FINAL V25: MYSTERY REMOVED + ??? PERFORMANCE + RANDOM FONT 2026-09-22 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_FINAL_V25__)return;
+  window.__SWQ_FINAL_V25__=true;
+
+  /* ---------- Mystery is gone; preserve any old ownership as ??? ---------- */
+  try{
+    S.purchases=S.purchases||{};
+    S.settings=S.settings||{};
+    if(S.purchases.theme_Mystery){
+      S.purchases['theme_???']=true;
+      delete S.purchases.theme_Mystery;
+    }
+    if(S.settings.theme==='Mystery')S.settings.theme='???';
+    if(typeof THEMES!=='undefined'&&THEMES.Mystery)delete THEMES.Mystery;
+    if(typeof SHOP!=='undefined'&&Array.isArray(SHOP)){
+      for(let i=SHOP.length-1;i>=0;i--){
+        if(SHOP[i]?.id==='theme_Mystery')SHOP.splice(i,1);
+      }
+    }
+  }catch(e){console.warn('SWQ V25 Mystery cleanup',e)}
+
+  /* ---------- ??? is the only surviving secret style ---------- */
+  try{
+    if(typeof THEMES!=='undefined'){
+      THEMES['???']=THEMES['???']||{
+        a:'#ff35c8',
+        b:'#35e7ff',
+        emoji:'❓',
+        desc:'Un estilo experimental e impredecible. Colores mutantes, emojis aleatorios y mensajes que no siempre parecen tener sentido.'
+      };
+    }
+    if(typeof SHOP!=='undefined'&&Array.isArray(SHOP)){
+      let it=SHOP.find(x=>x?.id==='theme_???');
+      if(!it){
+        it={
+          id:'theme_???',
+          icon:'❓',
+          name:'???',
+          price:999,
+          desc:'Estilo secreto y experimental. Cambia la tipografía, los colores y deja caer emojis aleatorios sin explicación.',
+          buy:()=>{S.purchases['theme_???']=true;}
+        };
+        SHOP.push(it);
+      }else{
+        it.icon='❓';
+        it.name='???';
+        it.price=999;
+        it.desc='Estilo secreto y experimental. Cambia la tipografía, los colores y deja caer emojis aleatorios sin explicación.';
+        it.buy=()=>{S.purchases['theme_???']=true;};
+      }
+    }
+    if(typeof nonAchievementThemesForRoulette==='function'&&!window.__swqUnknownRouletteV25){
+      const baseRouletteV25=nonAchievementThemesForRoulette;
+      nonAchievementThemesForRoulette=function(){
+        return baseRouletteV25.apply(this,arguments).filter(k=>k!=='???'&&k!=='Mystery');
+      };
+      window.__swqUnknownRouletteV25=true;
+    }
+  }catch(e){console.warn('SWQ V25 ??? economy',e)}
+
+  /* ??? NEVER participates in the global +10% price adjustment. */
+  try{
+    if(typeof swqInflateShopPrices==='function'&&!window.__swqUnknownInflationV25){
+      const baseInflateV25=swqInflateShopPrices;
+      swqInflateShopPrices=function(){
+        const out=baseInflateV25.apply(this,arguments);
+        try{
+          const it=SHOP?.find?.(x=>x?.id==='theme_???');
+          if(it)it.price=999;
+        }catch(e){}
+        return out;
+      };
+      window.__swqUnknownInflationV25=true;
+    }
+    const unknownItem=SHOP?.find?.(x=>x?.id==='theme_???');
+    if(unknownItem)unknownItem.price=999;
+
+    if(typeof discountedPrice==='function'&&!window.__swqUnknownDiscountV25){
+      const baseDiscountedV25=discountedPrice;
+      discountedPrice=function(it){
+        if(it?.id==='theme_???')return 999;
+        return baseDiscountedV25.apply(this,arguments);
+      };
+      window.__swqUnknownDiscountV25=true;
+    }
+  }catch(e){console.warn('SWQ V25 ??? price guard',e)}
+
+  /* ---------- Low-cost rendering for ??? ---------- */
+  try{
+    if(!document.getElementById('swq-unknown-performance-v25-css')){
+      const st=document.createElement('style');
+      st.id='swq-unknown-performance-v25-css';
+      st.textContent=
+        '.swq-unknown-backdrop{background:linear-gradient(125deg,var(--u-bg1,#081c2a),var(--u-bg2,#24102d))!important;filter:none!important;box-shadow:none!important}'+
+        '.swq-unknown-backdrop:before,.swq-unknown-backdrop:after{display:none!important;animation:none!important;filter:none!important;content:none!important}'+
+        '.swq-unknown-message{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:none!important;filter:none!important}'+
+        '.swq-unknown-emoji{filter:none!important;will-change:auto!important;animation:swqUnknownEmojiFallLite var(--u-dur,8s) linear forwards!important}'+
+        '@keyframes swqUnknownEmojiFallLite{0%{opacity:0;transform:translateY(-40px) rotate(0deg)}12%{opacity:.9}100%{opacity:0;transform:translate3d(var(--u-dx,0px),108vh,0) rotate(var(--u-rot,420deg))}}'+
+        'body.theme-???{will-change:auto!important;transform:none!important}';
+      document.head.appendChild(st);
+    }
+  }catch(e){}
+
+  /* ---------- Simplest possible style selector, matching music ---------- */
+  try{
+    function ownedV25(){
+      const out=['Aqua'];
+      try{
+        Object.keys(THEMES||{}).forEach(k=>{
+          if(k==='Aqua'||k==='Mystery')return;
+          if(S.purchases?.['theme_'+k]===true)out.push(k);
+        });
+      }catch(e){}
+      return [...new Set(out)].filter(k=>THEMES?.[k]);
+    }
+    function nameV25(k){
+      if(k==='???')return '???';
+      try{
+        const it=SHOP?.find?.(x=>x?.id==='theme_'+k);
+        return it?.name||(typeof swqThemeName==='function'?swqThemeName(k):k);
+      }catch(e){return k}
+    }
+    function applyV25(k){
+      try{
+        if(!THEMES?.[k])return;
+        if(k!=='Aqua'&&!S.purchases?.['theme_'+k]){
+          toast('🔒 Ese estilo todavía no está comprado.');
+          return;
+        }
+        S.settings.theme=k;
+        S.settings.randomThemeOnStart=false;
+        S.settings.randomStyleOnStart=false;
+        save();
+        if(typeof applyTheme==='function')applyTheme();
+        if(k==='RandomBasic'){
+          try{window.__SWQ_RANDOM_BASIC_SESSION_COLOR__=false}catch(e){}
+          try{if(typeof applyRandomBasic==='function')applyRandomBasic()}catch(e){}
+          setTimeout(()=>{try{if(typeof startDice==='function')startDice()}catch(e){}},70);
+        }else{
+          try{if(typeof stopDice==='function')stopDice()}catch(e){}
+        }
+        closeModal();
+        render();
+      }catch(e){console.warn('SWQ V25 apply style',e)}
+    }
+
+    window.swqQuickTheme=function(){
+      try{
+        const opts=ownedV25().map(k=>
+          '<option value="'+esc(k)+'" '+(S.settings.theme===k?'selected':'')+'>'+
+          esc(THEMES[k]?.emoji||'🎨')+' '+esc(nameV25(k))+
+          '</option>'
+        ).join('');
+        modal(
+          '<div class="kicker">🎨 ESTILO</div>'+
+          '<h2>Cambiar estilo</h2>'+
+          '<div class="field" style="margin-top:10px"><select id="swqV25StyleSelect" style="width:100%">'+opts+'</select></div>'+
+          '<button type="button" id="swqV25StyleApply" class="btn primary" style="margin-top:8px">Usar estilo</button>'+
+          '<button type="button" class="btn secondary" style="margin-top:8px" onclick="closeModal()">Cerrar</button>'
+        );
+        document.getElementById('swqV25StyleApply')?.addEventListener('click',()=>{
+          applyV25(document.getElementById('swqV25StyleSelect')?.value||'Aqua');
+        });
+      }catch(e){console.warn('SWQ V25 style modal',e)}
+    };
+    window.swqApplyQuickTheme=applyV25;
+    window.equipTheme=applyV25;
+    try{equipTheme=applyV25}catch(e){}
+
+    function bindV25(){
+      const b=document.getElementById('swqQuickThemeButton');
+      if(!b||b.dataset.swqV25Style==='1')return;
+      b.dataset.swqV25Style='1';
+      b.removeAttribute('onclick');
+      b.onclick=function(ev){
+        ev?.preventDefault?.();
+        ev?.stopPropagation?.();
+        window.swqQuickTheme();
+      };
+      b.textContent='🎨 Cambiar estilo';
+    }
+    bindV25();
+    setInterval(bindV25,900);
+  }catch(e){console.warn('SWQ V25 style selector',e)}
+
+  /* ---------- Random font each time the app is entered again ---------- */
+  try{
+    if(!document.getElementById('swq-random-font-v25-css')){
+      const st=document.createElement('style');
+      st.id='swq-random-font-v25-css';
+      st.textContent=
+        'body.swq-font-junta,body.swq-font-junta *{font-family:"Arial Narrow","Roboto Condensed","Helvetica Neue",Arial,sans-serif!important;letter-spacing:-.025em!important}'+
+        'body.swq-font-pixel,body.swq-font-pixel *{font-family:"Courier New","Lucida Console",monospace!important}'+
+        'body.swq-font-bonita,body.swq-font-bonita *{font-family:"Trebuchet MS","Segoe UI",sans-serif!important;letter-spacing:.008em!important}'+
+        'body.swq-font-normal,body.swq-font-normal *{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif!important;letter-spacing:normal!important}'+
+        'body.swq-font-mayuscula,body.swq-font-mayuscula *{font-family:Impact,"Arial Black",Arial,sans-serif!important;letter-spacing:.018em!important;text-transform:uppercase!important}'+
+        'body.swq-font-mayuscula input,body.swq-font-mayuscula textarea,body.swq-font-mayuscula select{font-family:inherit!important;text-transform:none!important}'+
+        'body.swq-font-serif,body.swq-font-serif *{font-family:Georgia,"Times New Roman",serif!important;letter-spacing:.006em!important}';
+      document.head.appendChild(st);
+    }
+    const modes=['junta','pixel','bonita','normal','mayuscula','serif'];
+    const storageKey='swq_random_font_mode_v25';
+    function pickFontV25(){
+      let last='';
+      try{last=localStorage.getItem(storageKey)||''}catch(e){}
+      let choices=modes.filter(x=>x!==last);
+      if(!choices.length)choices=modes.slice();
+      const mode=choices[Math.floor(Math.random()*choices.length)];
+      document.body.className=document.body.className
+        .split(/\s+/)
+        .filter(c=>!/^swq-font-/.test(c))
+        .concat('swq-font-'+mode)
+        .join(' ')
+        .trim();
+      try{localStorage.setItem(storageKey,mode)}catch(e){}
+    }
+    pickFontV25();
+
+    let hiddenAt=0;
+    document.addEventListener('visibilitychange',()=>{
+      if(document.visibilityState==='hidden'){
+        hiddenAt=Date.now();
+      }else if(hiddenAt&&Date.now()-hiddenAt>=5000){
+        pickFontV25();
+      }
+    });
+    window.addEventListener('pageshow',pickFontV25);
+  }catch(e){console.warn('SWQ V25 random font',e)}
+
+  try{save()}catch(e){}
 })();
