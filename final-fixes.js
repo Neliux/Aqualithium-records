@@ -6698,10 +6698,19 @@ body.theme-carretera .app{position:relative;z-index:2}
     try{equipTheme=applyStyleV26}catch(e){}
     function rebindStyleButtonV26(){
       try{
-        const old=document.getElementById('swqQuickThemeButton');
-        if(!old)return;
-        if(old.dataset.swqV26StyleButton==='1')return;
-        const b=old.cloneNode(true);
+        const current=document.getElementById('swqQuickThemeButton');
+        if(!current)return;
+        if(current.dataset.swqV26StyleButton==='1'){
+          current.removeAttribute('onclick');
+          current.onclick=function(ev){
+            ev?.preventDefault?.();
+            ev?.stopPropagation?.();
+            openStylePickerV26();
+          };
+          current.textContent='🎨 Cambiar estilo';
+          return;
+        }
+        const b=current.cloneNode(true);
         b.dataset.swqV26StyleButton='1';
         b.removeAttribute('onclick');
         b.onclick=function(ev){
@@ -6710,11 +6719,29 @@ body.theme-carretera .app{position:relative;z-index:2}
           openStylePickerV26();
         };
         b.textContent='🎨 Cambiar estilo';
-        old.replaceWith(b);
+        current.replaceWith(b);
       }catch(e){}
     }
+
+    function bindAfterRenderV26(){
+      setTimeout(rebindStyleButtonV26,0);
+      setTimeout(rebindStyleButtonV26,80);
+    }
+
     rebindStyleButtonV26();
-    setInterval(rebindStyleButtonV26,600);
+    setInterval(rebindStyleButtonV26,250);
+
+    try{
+      if(typeof render==='function'&&!window.__SWQ_STYLE_BUTTON_RENDER_V26){
+        const baseRenderStyleV26=render;
+        render=function(){
+          const out=baseRenderStyleV26.apply(this,arguments);
+          bindAfterRenderV26();
+          return out;
+        };
+        window.__SWQ_STYLE_BUTTON_RENDER_V26=true;
+      }
+    }catch(e){}
   }catch(e){console.warn('SWQ V26 style picker setup',e)}
 
   try{
