@@ -6312,3 +6312,46 @@ body.theme-carretera .app{position:relative;z-index:2}
 
   }catch(e){console.warn('SWQ ??? / simple style v21',e)}
 })();
+
+
+/* === SWQ V24 REWARD GUARD === */
+(function(){
+  'use strict';
+  if(window.__SWQ_FINAL_V24_REWARD__)return;
+  window.__SWQ_FINAL_V24_REWARD__=true;
+  try{
+    if(!Array.isArray(S.rankRewardsClaimed))S.rankRewardsClaimed=[];
+    function rankIdx(){try{return Math.max(0,currentRank().i)}catch(e){return 0}}
+    function markReached(idx){
+      try{
+        if(typeof SWQ_RANK_REWARDS==='undefined'||typeof RANKS==='undefined')return;
+        const set=new Set(S.rankRewardsClaimed);
+        SWQ_RANK_REWARDS.forEach(reward=>{
+          const ri=RANKS.findIndex(r=>r.c===reward.c);
+          if(ri>=0&&ri<=idx)set.add(reward.c);
+        });
+        S.rankRewardsClaimed=[...set];
+      }catch(e){}
+    }
+    if(typeof gainXP==='function'&&!window.__swqSingleRankGainV24){
+      const base=gainXP;
+      gainXP=function(amount){
+        const before=rankIdx();
+        markReached(before);
+        S.__swqRankRewardHighWater=before;
+        const out=base.apply(this,arguments);
+        try{
+          const after=rankIdx();
+          markReached(after);
+          S.__swqRankRewardHighWater=after;
+          save();
+        }catch(e){}
+        return out;
+      };
+      window.__swqSingleRankGainV24=true;
+    }
+    markReached(rankIdx());
+    S.__swqRankRewardHighWater=rankIdx();
+    save();
+  }catch(e){console.warn('SWQ V24 reward guard',e)}
+})();
