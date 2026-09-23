@@ -8100,3 +8100,51 @@ body.theme-carretera .app{position:relative;z-index:2}
   setTimeout(enforceDurationMaxV31,300);
   setTimeout(enforceDurationMaxV31,1000);
 })();
+
+
+/* === SWQ FINAL V32: ACHIEVEMENTS SCOPE 2026-09-23 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_FINAL_V32_ACHIEVEMENTS_SCOPE__)return;
+  window.__SWQ_FINAL_V32_ACHIEVEMENTS_SCOPE__=true;
+
+  /*
+     El logro de Abeja solo cuenta una serie REAL de 200 m mariposa:
+     distancia exacta 200 m, una sola repetición y una marca de tiempo válida.
+     No cuentan 2x100, 4x50, 2x200 ni otras sumas que den 200 m.
+  */
+  try{
+    const bee=ACHIEVEMENTS.find(a=>a.id==='whoLeftThis');
+    if(bee){
+      bee.title='¿Quién dejó esto aquí?';
+      bee.desc='Registra una marca de tiempo en una sola serie de 200 m mariposa.';
+      bee.reward={...(bee.reward||{}),theme:'Bee',coins:500,xp:900};
+      bee.ok=()=>S.trainings.some(e=>(e.series||[]).some(s=>
+        String(s?.style||'')==='mariposa'&&
+        Number(s?.distance)===200&&
+        Number(s?.reps)===1&&
+        Number.isFinite(Number(s?.time))&&
+        Number(s?.time)>0
+      ));
+    }
+  }catch(e){console.warn('SWQ V32 achievement scope',e)}
+
+  /*
+     counter2 ya fue sustituido en la fuente base por "El mar empieza aquí".
+     Este guard solo reafirma su condición para que ningún parche anterior
+     pueda devolverlo a una suma acumulada de metros.
+  */
+  try{
+    const solo1000=ACHIEVEMENTS.find(a=>a.id==='counter2');
+    if(solo1000){
+      solo1000.title='El mar empieza aquí';
+      solo1000.desc='Nada 1.000 m de crol de seguido en una sola serie.';
+      solo1000.reward={...(solo1000.reward||{}),coins:180,xp:750};
+      solo1000.ok=()=>S.trainings.some(e=>(e.series||[]).some(s=>
+        String(s?.style||'')==='crol'&&
+        Number(s?.distance)===1000&&
+        Number(s?.reps)===1
+      ));
+    }
+  }catch(e){console.warn('SWQ V32 counter2 scope',e)}
+})();
