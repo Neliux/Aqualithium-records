@@ -6355,3 +6355,189 @@ body.theme-carretera .app{position:relative;z-index:2}
     save();
   }catch(e){console.warn('SWQ V24 reward guard',e)}
 })();
+
+/* === SWQ V24 SIMPLE STYLE SELECTOR + RANDOM ENTRY === */
+(function(){
+  'use strict';
+  if(window.__SWQ_FINAL_V24_STYLE__)return;
+  window.__SWQ_FINAL_V24_STYLE__=true;
+
+  try{
+    if(!S.purchases)S.purchases={};
+    if(!S.settings)S.settings={};
+
+    /* Migración segura del nombre interno intermedio Mystery -> ??? */
+    if(S.purchases.theme_Mystery)S.purchases['theme_???']=true;
+    if(S.settings.theme==='Mystery')S.settings.theme='???';
+    const legacy=SHOP?.find?.(x=>x.id==='theme_Mystery');
+    if(legacy){
+      legacy.name='???';
+      legacy.icon='❓';
+      legacy.id='__swq_hidden_mystery__';
+    }
+
+    function ownedStyles(){
+      const out=['Aqua'];
+      try{
+        Object.keys(THEMES||{}).forEach(k=>{
+          if(k==='Mystery')return;
+          if(k!=='Aqua'&&S.purchases?.['theme_'+k]===true)out.push(k);
+        });
+      }catch(e){}
+      return [...new Set(out)].filter(k=>THEMES?.[k]);
+    }
+
+    function styleName(k){
+      if(k==='???')return '???';
+      try{
+        const it=SHOP?.find?.(x=>x.id==='theme_'+k);
+        return it?.name||k.replace(/([a-z])([A-Z])/g,'$1 $2');
+      }catch(e){return k}
+    }
+
+    function applyStyle(k){
+      try{
+        if(!THEMES?.[k])return;
+        if(k!=='Aqua'&&!S.purchases?.['theme_'+k]){
+          toast('🔒 Ese estilo todavía no está comprado.');
+          return;
+        }
+        S.settings.theme=k;
+        S.settings.randomThemeOnStart=false;
+        S.settings.randomStyleOnStart=false;
+        save();
+        if(typeof applyTheme==='function')applyTheme();
+        if(k==='RandomBasic'){
+          try{window.__SWQ_RANDOM_BASIC_SESSION_COLOR__=false}catch(e){}
+          try{if(typeof applyRandomBasic==='function')applyRandomBasic()}catch(e){}
+          setTimeout(()=>{try{if(typeof startDice==='function')startDice()}catch(e){}},70);
+        }else{
+          try{if(typeof stopDice==='function')stopDice()}catch(e){}
+        }
+        closeModal();
+        render();
+      }catch(e){console.warn('SWQ V24 apply style',e)}
+    }
+
+    function toggleRandom(btn){
+      S.settings.randomThemeOnStartEnabled=!S.settings.randomThemeOnStartEnabled;
+      S.settings.randomThemeOnStart=false;
+      S.settings.randomStyleOnStart=false;
+      save();
+      if(btn)btn.textContent='🎲 Aleatorio al entrar: '+(S.settings.randomThemeOnStartEnabled?'ACTIVO':'OFF');
+    }
+
+    window.swqQuickTheme=function(){
+      try{
+        const opts=ownedStyles().map(k=>
+          '<option value="'+esc(k)+'" '+(S.settings.theme===k?'selected':'')+'>'+
+          esc(THEMES[k]?.emoji||'🎨')+' '+esc(styleName(k))+'</option>'
+        ).join('');
+        modal(
+          '<div class="kicker">🎨 ESTILO</div>'+
+          '<h2>Cambiar estilo</h2>'+
+          '<div class="field" style="margin-top:10px"><label>Estilo equipado</label>'+
+          '<select id="swqV24StyleSelect" style="width:100%">'+opts+'</select></div>'+
+          '<button type="button" id="swqV24RandomButton" class="btn secondary" style="margin-top:8px;min-height:36px;font-size:11px">🎲 Aleatorio al entrar: '+(S.settings.randomThemeOnStartEnabled?'ACTIVO':'OFF')+'</button>'+
+          '<button type="button" id="swqV24StyleApply" class="btn primary" style="margin-top:8px">Usar estilo</button>'+
+          '<button type="button" id="swqV24StyleClose" class="btn secondary" style="margin-top:8px">Cerrar</button>'
+        );
+        document.getElementById('swqV24RandomButton')?.addEventListener('click',function(){toggleRandom(this)});
+        document.getElementById('swqV24StyleApply')?.addEventListener('click',()=>{
+          applyStyle(document.getElementById('swqV24StyleSelect')?.value||'Aqua');
+        });
+        document.getElementById('swqV24StyleClose')?.addEventListener('click',closeModal);
+      }catch(e){console.warn('SWQ V24 style modal',e)}
+    };
+
+    window.swqApplyQuickTheme=applyStyle;
+    window.equipTheme=applyStyle;
+    try{equipTheme=applyStyle}catch(e){}
+
+    function hideOldRandom(){
+      [
+        '#swqRandomEntrySettingsV21','#swqRandomEntryStyleSettingsButton',
+        '#swqRandomStyleToggle','#swqRandomStyleSettingsToggle',
+        '#swqRandomThemeToggle','#swqRandomThemeSettingsToggle',
+        '#swqRandomThemeSwitch','#swqRandomThemeSettingsRow',
+        '#swqRandomThemeToggleV20','#swqRandomThemeSettingsToggleV20',
+        '#swqRandomThemeSwitchV20','#swqRandomThemeSettingsRowV20',
+        '#swqSimpleRandomStyleToggle','#swqSimpleRandomStyleSettingsToggle'
+      ].forEach(sel=>document.querySelectorAll(sel).forEach(el=>(el.closest('label')||el).remove()));
+    }
+
+    function bindButton(){
+      const b=document.getElementById('swqQuickThemeButton');
+      if(!b||b.dataset.swqV24Style==='1')return;
+      b.dataset.swqV24Style='1';
+      b.removeAttribute('onclick');
+      b.onclick=function(e){
+        e?.preventDefault?.();
+        e?.stopPropagation?.();
+        window.swqQuickTheme();
+      };
+      b.textContent='🎨 Cambiar estilo';
+    }
+
+    if(typeof S.settings.randomThemeOnStartEnabled!=='boolean'){
+      S.settings.randomThemeOnStartEnabled=!!(S.settings.randomThemeOnStart||S.settings.randomStyleOnStart);
+      save();
+    }
+    S.settings.randomThemeOnStart=false;
+    S.settings.randomStyleOnStart=false;
+    hideOldRandom();
+    bindButton();
+    setInterval(()=>{try{hideOldRandom();bindButton()}catch(e){}},700);
+  }catch(e){console.warn('SWQ V24 simple style',e)}
+
+  try{
+    const entryStartTheme=String(S.settings?.theme||'Aqua');
+
+    function purchasedStyles(){
+      const out=['Aqua'];
+      try{
+        Object.keys(THEMES||{}).forEach(k=>{
+          if(k==='Mystery')return;
+          if(k!=='Aqua'&&S.purchases?.['theme_'+k]===true)out.push(k);
+        });
+      }catch(e){}
+      return [...new Set(out)].filter(k=>THEMES?.[k]);
+    }
+
+    function applyEntryOnce(){
+      if(S.__swqRandomEntryAppliedV24)return true;
+      if(!S.settings.randomThemeOnStartEnabled)return false;
+
+      /* Si V21 ya hizo el cambio de entrada, no volvemos a cambiarlo. */
+      if(String(S.settings.theme||'Aqua')!==entryStartTheme){
+        S.__swqRandomEntryAppliedV24=true;
+        return true;
+      }
+
+      const owned=purchasedStyles();
+      if(owned.length<2)return false;
+
+      const current=String(S.settings.theme||'Aqua');
+      const choices=owned.filter(k=>k!==current);
+      if(!choices.length)return false;
+
+      const next=choices[Math.floor(Math.random()*choices.length)];
+      S.settings.theme=next;
+      S.settings.randomThemeOnStart=false;
+      S.settings.randomStyleOnStart=false;
+      save();
+      if(typeof applyTheme==='function')applyTheme();
+      if(next==='RandomBasic'){
+        try{if(typeof applyRandomBasic==='function')applyRandomBasic()}catch(e){}
+        setTimeout(()=>{try{if(typeof startDice==='function')startDice()}catch(e){}},70);
+      }else{
+        try{if(typeof stopDice==='function')stopDice()}catch(e){}
+      }
+      S.__swqRandomEntryAppliedV24=true;
+      return true;
+    }
+
+    setTimeout(applyEntryOnce,520);
+    setTimeout(applyEntryOnce,1500);
+  }catch(e){console.warn('SWQ V24 random entry',e)}
+})();
