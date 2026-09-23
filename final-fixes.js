@@ -7640,12 +7640,71 @@ body.theme-carretera .app{position:relative;z-index:2}
     }
   }
 
+  function cleanLegacyRandomControlsV29(root){
+    try{
+      (root||document).querySelectorAll(
+        '#swqRandomStyleToggle,#swqRandomStyleSettingsToggle,#swqRandomThemeToggle,#swqRandomThemeSettingsToggle,'+
+        '#swqRandomThemeSwitch,#swqRandomThemeSettingsRow,#swqRandomThemeToggleV20,#swqRandomThemeSettingsToggleV20,'+
+        '#swqRandomThemeSwitchV20,#swqRandomThemeSettingsRowV20,#swqSimpleRandomStyleToggle,#swqSimpleRandomStyleSettingsToggle,'+
+        '#swqSimpleRandomStyleV21,#swqRandomEntrySettingsToggleV21,#swqRandomEntrySettingsV21,#swqRandomEntryStyleSettingsButton,'+
+        '#swqV28RandomStyle'
+      ).forEach(el=>{
+        try{(el.closest('label')||el.parentElement||el).remove()}catch(e){}
+      });
+    }catch(e){}
+  }
+
+  function mountRandomSettingV29(){
+    try{
+      const modalRoot=document.querySelector('#modal .modal');
+      if(!modalRoot)return false;
+
+      cleanLegacyRandomControlsV29(modalRoot);
+
+      let row=modalRoot.querySelector('#swqV29RandomStyleSetting');
+      if(!row){
+        row=document.createElement('label');
+        row.id='swqV29RandomStyleSetting';
+        row.className='checkrow';
+        row.style.cssText='margin:9px 0;display:block';
+        row.innerHTML=
+          '<input id="swqV29RandomStyleToggle" type="checkbox" '+
+          (currentRandomV29()?'checked':'')+
+          '> 🎲 Estilo aleatorio al entrar'+
+          '<span style="display:block;font-size:11px;opacity:.65;margin:3px 0 0 24px">'+
+          'Cada vez que abras Swim Quest elegirá otro estilo de tu biblioteca de estilos desbloqueados.'+
+          '</span>';
+
+        const themeField=modalRoot.querySelector('#sTheme')?.closest('.field');
+        const musicField=modalRoot.querySelector('#sMusic')?.closest('.checkrow');
+        const saveBtn=[...modalRoot.querySelectorAll('button')].find(b=>(b.textContent||'').trim()==='Guardar');
+
+        if(themeField?.parentNode){
+          themeField.parentNode.insertBefore(row,musicField||themeField.nextSibling);
+        }else if(saveBtn?.parentNode){
+          saveBtn.parentNode.insertBefore(row,saveBtn);
+        }else{
+          modalRoot.appendChild(row);
+        }
+      }
+
+      bindSettingsRandomV29();
+      return true;
+    }catch(e){
+      console.warn('SWQ V29 mount random setting',e);
+      return false;
+    }
+  }
+
   try{
     if(typeof settings==='function'&&!window.__SWQ_V29_SETTINGS_UI__){
       const baseSettingsV29=settings;
       settings=function(){
-        const html=baseSettingsV29.apply(this,arguments);
-        return addRandomSettingToSettingsHtmlV29(html);
+        const out=baseSettingsV29.apply(this,arguments);
+        setTimeout(mountRandomSettingV29,0);
+        setTimeout(mountRandomSettingV29,80);
+        setTimeout(mountRandomSettingV29,300);
+        return out;
       };
       window.__SWQ_V29_SETTINGS_UI__=true;
     }
