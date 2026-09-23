@@ -6826,3 +6826,185 @@ body.theme-carretera .app{position:relative;z-index:2}
     }
   }catch(e){}
 })();
+
+
+/* === SWQ FINAL V27: AUTHORITATIVE STYLE + RANDOM UI 2026-09-23 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_FINAL_V27_STYLE_RANDOM__)return;
+  window.__SWQ_FINAL_V27_STYLE_RANDOM__=true;
+
+  /*
+    Una sola opción de aleatorio:
+    - Estado canónico: randomThemeOnStartEnabled
+    - Los campos antiguos se mantienen falsos para impedir sistemas duplicados.
+  */
+  try{
+    if(!S.settings)S.settings={};
+    if(typeof S.settings.randomThemeOnStartEnabled!=='boolean'){
+      S.settings.randomThemeOnStartEnabled=!!(
+        S.settings.randomThemeOnStart ||
+        S.settings.randomStyleOnStart
+      );
+    }
+    S.settings.randomThemeOnStart=false;
+    S.settings.randomStyleOnStart=false;
+    save();
+  }catch(e){}
+
+  /* ??? cuesta exactamente 9999 y no entra en la ruleta. */
+  try{
+    const unknown=SHOP?.find?.(x=>x?.id==='theme_???');
+    if(unknown)unknown.price=9999;
+
+    if(typeof discountedPrice==='function'&&!window.__SWQ_V27_UNKNOWN_PRICE_GUARD__){
+      const baseDiscountedV27=discountedPrice;
+      discountedPrice=function(it){
+        if(it?.id==='theme_???')return 9999;
+        return baseDiscountedV27.apply(this,arguments);
+      };
+      window.__SWQ_V27_UNKNOWN_PRICE_GUARD__=true;
+    }
+
+    if(typeof swqInflateShopPrices==='function'&&!window.__SWQ_V27_UNKNOWN_INFLATION_GUARD__){
+      const baseInflateV27=swqInflateShopPrices;
+      swqInflateShopPrices=function(){
+        const out=baseInflateV27.apply(this,arguments);
+        try{
+          const it=SHOP?.find?.(x=>x?.id==='theme_???');
+          if(it)it.price=9999;
+        }catch(e){}
+        return out;
+      };
+      window.__SWQ_V27_UNKNOWN_INFLATION_GUARD__=true;
+    }
+
+    if(typeof nonAchievementThemesForRoulette==='function'){
+      if(!window.__SWQ_V27_UNKNOWN_ROULETTE_GUARD__){
+        const baseRouletteV27=nonAchievementThemesForRoulette;
+        nonAchievementThemesForRoulette=function(){
+          return baseRouletteV27.apply(this,arguments).filter(k=>k!=='???');
+        };
+        window.__SWQ_V27_UNKNOWN_ROULETTE_GUARD__=true;
+      }
+    }
+  }catch(e){}
+
+  /*
+    El DOM puede ser reconstruido por ajustes, música, ruletas y otros modales.
+    Solo se eliminan los controles antiguos de aleatorio. El V26 actual
+    (#swqV26RandomStyle) queda intacto y es el único permitido.
+  */
+  function removeLegacyRandomUI(){
+    const ids=[
+      'swqRandomStyleToggle',
+      'swqRandomStyleSettingsToggle',
+      'swqRandomThemeToggle',
+      'swqRandomThemeSettingsToggle',
+      'swqRandomThemeSwitch',
+      'swqRandomThemeSettingsRow',
+      'swqRandomThemeToggleV20',
+      'swqRandomThemeSettingsToggleV20',
+      'swqRandomThemeSwitchV20',
+      'swqRandomThemeSettingsRowV20',
+      'swqSimpleRandomStyleToggle',
+      'swqSimpleRandomStyleSettingsToggle',
+      'swqSimpleRandomStyleV21',
+      'swqRandomEntrySettingsToggleV21',
+      'swqRandomEntrySettingsV21',
+      'swqRandomEntryStyleSettingsButton'
+    ];
+
+    ids.forEach(id=>{
+      const el=document.getElementById(id);
+      if(!el)return;
+      const row=
+        el.closest('label')||
+        el.closest('#swqRandomThemeSwitchV20')||
+        el.closest('#swqRandomThemeSettingsRowV20')||
+        el.closest('#swqRandomThemeSwitch')||
+        el.closest('#swqRandomThemeSettingsRow')||
+        el.parentElement||
+        el;
+      try{row.remove()}catch(e){}
+    });
+
+    /* Algunos parches antiguos podían recrear el contenedor sin conservar su id. */
+    document.querySelectorAll('input[type="checkbox"]').forEach(cb=>{
+      if(cb.id==='swqV26RandomStyle')return;
+      const label=cb.closest('label');
+      if(!label)return;
+      const txt=(label.textContent||'').toLowerCase();
+      if(txt.includes('estilo aleatorio al entrar')||txt.includes('aleatorio al entrar')){
+        try{label.remove()}catch(e){}
+      }
+    });
+  }
+
+  /*
+    El botón de perfil queda protegido en fase de captura. Así ningún onclick/
+    listener antiguo puede abrir el selector viejo antes que el selector simple.
+  */
+  function onStyleButtonCapture(ev){
+    try{
+      const target=ev.target?.closest?.('#swqQuickThemeButton');
+      if(!target)return;
+      ev.preventDefault();
+      ev.stopPropagation();
+      ev.stopImmediatePropagation();
+
+      removeLegacyRandomUI();
+      if(typeof window.swqQuickTheme==='function'){
+        window.swqQuickTheme();
+      }
+      setTimeout(removeLegacyRandomUI,0);
+      setTimeout(removeLegacyRandomUI,80);
+    }catch(e){}
+  }
+
+  try{
+    document.addEventListener('click',onStyleButtonCapture,true);
+  }catch(e){}
+
+  /*
+    Eliminar interruptores erróneos después de cualquier modal/render.
+    Se usa un intervalo ligero como respaldo, sin MutationObserver sobre todo
+    el documento para no introducir carga innecesaria.
+  */
+  try{
+    if(typeof window.modal==='function'&&!window.__SWQ_V27_MODAL_CLEANUP__){
+      const baseModalV27=window.modal;
+      window.modal=function(){
+        const out=baseModalV27.apply(this,arguments);
+        setTimeout(removeLegacyRandomUI,0);
+        setTimeout(removeLegacyRandomUI,100);
+        return out;
+      };
+      window.__SWQ_V27_MODAL_CLEANUP__=true;
+    }
+  }catch(e){}
+
+  try{
+    if(typeof window.render==='function'&&!window.__SWQ_V27_RENDER_CLEANUP__){
+      const baseRenderV27=window.render;
+      window.render=function(){
+        const out=baseRenderV27.apply(this,arguments);
+        setTimeout(removeLegacyRandomUI,0);
+        return out;
+      };
+      window.__SWQ_V27_RENDER_CLEANUP__=true;
+    }
+  }catch(e){}
+
+  removeLegacyRandomUI();
+  setInterval(removeLegacyRandomUI,1200);
+
+  /* Reafirma que la única fuente visible del ajuste está en el selector actual. */
+  try{
+    const legacyState=!!S.settings.randomThemeOnStartEnabled;
+    S.settings.randomThemeOnStart= false;
+    S.settings.randomStyleOnStart= false;
+    S.settings.randomThemeOnStartEnabled=legacyState;
+    save();
+  }catch(e){}
+})();
