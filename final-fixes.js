@@ -6608,21 +6608,34 @@ body.theme-carretera .app{position:relative;z-index:2}
     }
     const modes=['junta','pixel','bonita','normal','mayuscula','serif'];
     const storageKey='swq_random_font_mode_v25';
+    let currentFontMode='';
+    function applyFontModeV25(mode){
+      if(!document.body||!modes.includes(mode))return;
+      currentFontMode=mode;
+      document.body.classList.remove(...modes.map(x=>'swq-font-'+x));
+      document.body.classList.add('swq-font-'+mode);
+      try{localStorage.setItem(storageKey,mode)}catch(e){}
+    }
     function pickFontV25(){
       let last='';
       try{last=localStorage.getItem(storageKey)||''}catch(e){}
       let choices=modes.filter(x=>x!==last);
       if(!choices.length)choices=modes.slice();
       const mode=choices[Math.floor(Math.random()*choices.length)];
-      document.body.className=document.body.className
-        .split(/\s+/)
-        .filter(c=>!/^swq-font-/.test(c))
-        .concat('swq-font-'+mode)
-        .join(' ')
-        .trim();
-      try{localStorage.setItem(storageKey,mode)}catch(e){}
+      applyFontModeV25(mode);
     }
     pickFontV25();
+
+    /* Theme changes rewrite body.className in some older patches; keep the selected font. */
+    try{
+      const fontObserver=new MutationObserver(()=>{
+        if(currentFontMode&&document.body&&!document.body.classList.contains('swq-font-'+currentFontMode)){
+          document.body.classList.add('swq-font-'+currentFontMode);
+        }
+      });
+      fontObserver.observe(document.body,{attributes:true,attributeFilter:['class']});
+      window.__SWQ_FONT_OBSERVER_V25=fontObserver;
+    }catch(e){}
 
     let hiddenAt=0;
     document.addEventListener('visibilitychange',()=>{
@@ -6632,7 +6645,9 @@ body.theme-carretera .app{position:relative;z-index:2}
         pickFontV25();
       }
     });
-    window.addEventListener('pageshow',pickFontV25);
+    window.addEventListener('pageshow',e=>{
+      if(e?.persisted)pickFontV25();
+    });
   }catch(e){console.warn('SWQ V25 random font',e)}
 
   try{save()}catch(e){}
