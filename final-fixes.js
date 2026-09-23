@@ -7577,7 +7577,7 @@ body.theme-carretera .app{position:relative;z-index:2}
             btn.id='swqHomeSettingsV29';
             btn.className='btn secondary';
             btn.textContent='⚙️ Ajustes';
-            btn.onclick=()=>settings();
+            btn.setAttribute('onclick','settings()');
             firstActions.appendChild(btn);
           }
           html=holder.innerHTML;
@@ -7664,6 +7664,17 @@ body.theme-carretera .app{position:relative;z-index:2}
       try{toast(cb.checked?'🎲 Estilo aleatorio al entrar activado.':'🎨 Estilo aleatorio al entrar desactivado.',2200)}catch(e){}
     });
   }
+
+  try{
+    if(!window.__SWQ_V29_RANDOM_CHANGE_DELEGATE__){
+      document.addEventListener('change',ev=>{
+        if(ev.target?.id==='swqV29RandomStyleToggle'){
+          persistRandomV29(!!ev.target.checked);
+        }
+      });
+      window.__SWQ_V29_RANDOM_CHANGE_DELEGATE__=true;
+    }
+  }catch(e){}
 
   /*
     Guardar en Ajustes no puede desactivar accidentalmente el interruptor.
