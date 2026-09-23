@@ -6296,22 +6296,19 @@ body.theme-carretera .app{position:relative;z-index:2}
     }
 
     /* Un único cambio por apertura, siempre excluyendo el estilo actual. */
-    let appliedOnThisLoad=false;
+    let appliedOnThisLoad=false,entryTriesV21=0;
     function applyEntryOnceV21(){
-      if(appliedOnThisLoad)return;
-      appliedOnThisLoad=true;
-      applyRandomPurchasedOnEntryV21();
+      if(appliedOnThisLoad)return true;
+      entryTriesV21++;
+      const ok=applyRandomPurchasedOnEntryV21();
+      if(ok)appliedOnThisLoad=true;
+      return ok;
     }
-    setTimeout(applyEntryOnceV21,360);
-
-    /* Si el perfil termina de sincronizar después, permite una sola aplicación
-       adicional solo cuando todavía no se pudo hacer por falta de estado. */
-    let cloudRetryUsed=false;
-    setTimeout(()=>{
-      if(cloudRetryUsed||appliedOnThisLoad&&S.settings.theme!=='')return;
-      cloudRetryUsed=true;
+    setTimeout(function retryRandomEntryV21(){
+      if(appliedOnThisLoad)return;
+      if(entryTriesV21<16)setTimeout(retryRandomEntryV21,450);
       applyEntryOnceV21();
-    },1250);
+    },360);
 
   }catch(e){console.warn('SWQ ??? / simple style v21',e)}
 })();
