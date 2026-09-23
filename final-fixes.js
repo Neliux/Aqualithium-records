@@ -7078,7 +7078,8 @@ body.theme-carretera .app{position:relative;z-index:2}
     randomDesiredV28=!!enabled;
     try{localStorage.setItem(RANDOM_KEY_V28,randomDesiredV28?'1':'0')}catch(e){}
     if(!S.settings)S.settings={};
-    S.settings.randomThemeOnStartEnabled=randomDesiredV28;
+    const entryStillLocked=!entryFinishedV28&&Date.now()<entryLockUntilV28;
+    S.settings.randomThemeOnStartEnabled=entryStillLocked?false:randomDesiredV28;
     S.settings.randomThemeOnStart=false;
     S.settings.randomStyleOnStart=false;
     try{save()}catch(e){}
