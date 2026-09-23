@@ -6673,25 +6673,42 @@ body.theme-carretera .app{position:relative;z-index:2}
       try{
         document.getElementById('swqSimpleThemeOverlay')?.remove();
         const keys=ownedStylesV26();
-        const buttons=keys.map(k=>{
-          const active=S.settings.theme===k;
-          return '<button type="button" class="btn '+(active?'primary':'secondary')+' swq-v26-theme-choice" data-theme-key="'+esc(k)+'" style="width:100%;min-height:52px;text-align:left">'+
-            esc(THEMES[k]?.emoji||'🎨')+' '+esc(themeLabelV26(k))+(active?' · ACTUAL':'')+
-          '</button>';
-        }).join('');
+        const opts=keys.map(k=>
+          '<option value="'+esc(k)+'" '+(S.settings.theme===k?'selected':'')+'>'+
+          esc(THEMES[k]?.emoji||'🎨')+' '+esc(themeLabelV26(k))+
+          '</option>'
+        ).join('');
+
         modal(
           '<div class="kicker">🎨 ESTILO</div>'+
           '<h2>Cambiar estilo</h2>'+
-          '<div class="sub" style="margin:5px 0 10px">Elige uno de tus estilos.</div>'+
-          '<div style="display:grid;grid-template-columns:1fr;gap:8px;max-height:68vh;overflow:auto">'+buttons+'</div>'+
-          '<button type="button" id="swqV26StyleClose" class="btn secondary" style="margin-top:10px;width:100%">Cerrar</button>'
+          '<div class="field" style="margin-top:10px">'+
+            '<label>Estilo que quieres usar</label>'+
+            '<select id="swqV26StyleSelect" style="width:100%;min-height:44px">'+opts+'</select>'+
+          '</div>'+
+          '<label class="checkrow" style="margin:9px 0;font-size:11px">'+
+            '<input id="swqV26RandomStyle" type="checkbox" '+(!!S.settings.randomThemeOnStartEnabled?'checked':'')+'>'+
+            ' 🎲 Estilo aleatorio cada vez que entras'+
+          '</label>'+
+          '<button type="button" id="swqV26StyleApply" class="btn primary" style="margin-top:8px">Aplicar estilo</button>'+
+          '<button type="button" id="swqV26StyleClose" class="btn secondary" style="margin-top:8px">Cerrar</button>'
         );
-        document.querySelectorAll('.swq-v26-theme-choice').forEach(btn=>{
-          btn.addEventListener('click',()=>applyStyleV26(btn.dataset.themeKey||'Aqua'));
+
+        document.getElementById('swqV26RandomStyle')?.addEventListener('change',e=>{
+          S.settings.randomThemeOnStartEnabled=!!e.target.checked;
+          S.settings.randomThemeOnStart=false;
+          S.settings.randomStyleOnStart=false;
+          save();
+          toast(e.target.checked?'🎲 Estilo aleatorio al entrar activado.':'🎨 Estilo aleatorio al entrar desactivado.',2200);
+        });
+
+        document.getElementById('swqV26StyleApply')?.addEventListener('click',()=>{
+          applyStyleV26(document.getElementById('swqV26StyleSelect')?.value||'Aqua');
         });
         document.getElementById('swqV26StyleClose')?.addEventListener('click',closeModal);
       }catch(e){console.warn('SWQ V26 style picker',e)}
     }
+
     window.swqQuickTheme=openStylePickerV26;
     window.swqApplyQuickTheme=applyStyleV26;
     window.equipTheme=applyStyleV26;
