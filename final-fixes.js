@@ -7491,3 +7491,233 @@ body.theme-carretera .app{position:relative;z-index:2}
     }
   }catch(e){}
 })();
+
+
+/* === SWQ FINAL V29: SETTINGS-ONLY STYLE MUSIC + RANDOM ENTRY 2026-09-23 === */
+(function(){
+  'use strict';
+  if(window.__SWQ_FINAL_V29_SETTINGS_ONLY__)return;
+  window.__SWQ_FINAL_V29_SETTINGS_ONLY__=true;
+
+  const RANDOM_KEY_V29='SWQ_RANDOM_STYLE_ENTRY_V28';
+
+  function currentRandomV29(){
+    try{
+      const raw=localStorage.getItem(RANDOM_KEY_V29);
+      if(raw==='1')return true;
+      if(raw==='0')return false;
+    }catch(e){}
+    return !!S.settings?.randomThemeOnStartEnabled;
+  }
+
+  function persistRandomV29(enabled){
+    const value=!!enabled;
+    try{localStorage.setItem(RANDOM_KEY_V29,value?'1':'0')}catch(e){}
+    S.settings=S.settings||{};
+    S.settings.randomThemeOnStartEnabled=value;
+    S.settings.randomThemeOnStart=false;
+    S.settings.randomStyleOnStart=false;
+    try{save()}catch(e){}
+    return value;
+  }
+
+  function removeProfilePersonalizationV29(html){
+    try{
+      const holder=document.createElement('div');
+      holder.innerHTML=String(html||'');
+
+      holder.querySelectorAll(
+        '.swq-v28-style-card,'+
+        '.swq-theme-music-card,'+
+        '.swq-theme-entry,'+
+        '#swqQuickThemeButton,'+
+        '#swqQuickMusicButton,'+
+        '#swqV28ProfileStyle,'+
+        '#swqV28ProfileRandom,'+
+        '#swqV28ProfileMusic'
+      ).forEach(el=>{
+        const parent=el.closest('.swq-v28-style-card,.swq-theme-music-card,.swq-theme-entry')||el;
+        try{parent.remove()}catch(e){}
+      });
+
+      return holder.innerHTML;
+    }catch(e){
+      return html;
+    }
+  }
+
+  /* Perfil: ningún control de estilo ni música. */
+  try{
+    if(typeof profile==='function'&&!window.__SWQ_V29_PROFILE_CLEAN__){
+      const baseProfileV29=profile;
+      profile=function(){
+        const html=baseProfileV29.apply(this,arguments);
+        return removeProfilePersonalizationV29(html);
+      };
+      window.__SWQ_V29_PROFILE_CLEAN__=true;
+    }
+  }catch(e){console.warn('SWQ V29 profile cleanup',e)}
+
+  /*
+    Inicio: acceso directo a Ajustes junto a Registrar y Perfil.
+    Se modifica solo la salida de home(), sin tocar su contenido interno.
+  */
+  try{
+    if(typeof home==='function'&&!window.__SWQ_V29_HOME_SETTINGS__){
+      const baseHomeV29=home;
+      home=function(){
+        let html=baseHomeV29.apply(this,arguments);
+        try{
+          const holder=document.createElement('div');
+          holder.innerHTML=String(html||'');
+          const firstActions=holder.querySelector('.hero .grid.g2');
+          if(firstActions&&!firstActions.querySelector('#swqHomeSettingsV29')){
+            const btn=document.createElement('button');
+            btn.type='button';
+            btn.id='swqHomeSettingsV29';
+            btn.className='btn secondary';
+            btn.textContent='⚙️ Ajustes';
+            btn.onclick=()=>settings();
+            firstActions.appendChild(btn);
+          }
+          html=holder.innerHTML;
+        }catch(e){console.warn('SWQ V29 home settings button',e)}
+        return html;
+      };
+      window.__SWQ_V29_HOME_SETTINGS__=true;
+    }
+  }catch(e){console.warn('SWQ V29 home wrapper',e)}
+
+  /*
+    Ajustes: este es el ÚNICO lugar desde el que se controla:
+    - estilo equipado
+    - música equipada
+    - estilo aleatorio al entrar
+  */
+  function addRandomSettingToSettingsHtmlV29(html){
+    try{
+      const holder=document.createElement('div');
+      holder.innerHTML=String(html||'');
+
+      holder.querySelectorAll(
+        '#swqRandomStyleToggle,#swqRandomStyleSettingsToggle,#swqRandomThemeToggle,#swqRandomThemeSettingsToggle,'+
+        '#swqRandomThemeSwitch,#swqRandomThemeSettingsRow,#swqRandomThemeToggleV20,#swqRandomThemeSettingsToggleV20,'+
+        '#swqRandomThemeSwitchV20,#swqRandomThemeSettingsRowV20,#swqSimpleRandomStyleToggle,#swqSimpleRandomStyleSettingsToggle,'+
+        '#swqSimpleRandomStyleV21,#swqRandomEntrySettingsToggleV21,#swqRandomEntrySettingsV21,#swqRandomEntryStyleSettingsButton,'+
+        '#swqV28RandomStyle'
+      ).forEach(el=>{
+        try{(el.closest('label')||el.parentElement||el).remove()}catch(e){}
+      });
+
+      if(!holder.querySelector('#swqV29RandomStyleSetting')){
+        const row=document.createElement('label');
+        row.id='swqV29RandomStyleSetting';
+        row.className='checkrow';
+        row.style.cssText='margin:8px 0';
+        row.innerHTML=
+          '<input id="swqV29RandomStyleToggle" type="checkbox" '+
+          (currentRandomV29()?'checked':'')+
+          '> 🎲 Estilo aleatorio al entrar'+
+          '<span style="display:block;font-size:11px;opacity:.65;margin:3px 0 0 24px">'+
+          'Cada vez que abras Swim Quest elegirá otro estilo de tu biblioteca de estilos desbloqueados.'+
+          '</span>';
+
+        const themeSub=[...holder.querySelectorAll('.sub')].find(el=>
+          (el.textContent||'').includes('Solo puedes equipar estilos que hayas desbloqueado')
+        );
+        if(themeSub)themeSub.parentNode.insertBefore(row,themeSub.nextSibling);
+        else{
+          const saveBtn=[...holder.querySelectorAll('button')].find(b=>(b.textContent||'').trim()==='Guardar');
+          if(saveBtn)saveBtn.parentNode.insertBefore(row,saveBtn);
+          else holder.appendChild(row);
+        }
+      }
+
+      return holder.innerHTML;
+    }catch(e){
+      console.warn('SWQ V29 settings random UI',e);
+      return html;
+    }
+  }
+
+  try{
+    if(typeof settings==='function'&&!window.__SWQ_V29_SETTINGS_UI__){
+      const baseSettingsV29=settings;
+      settings=function(){
+        const html=baseSettingsV29.apply(this,arguments);
+        return addRandomSettingToSettingsHtmlV29(html);
+      };
+      window.__SWQ_V29_SETTINGS_UI__=true;
+    }
+  }catch(e){console.warn('SWQ V29 settings wrapper',e)}
+
+  function bindSettingsRandomV29(){
+    const cb=document.getElementById('swqV29RandomStyleToggle');
+    if(!cb)return;
+    const desired=currentRandomV29();
+    if(cb.checked!==desired)cb.checked=desired;
+    if(cb.dataset.swqV29Bound==='1')return;
+
+    cb.dataset.swqV29Bound='1';
+    cb.addEventListener('change',()=>{
+      persistRandomV29(cb.checked);
+      try{toast(cb.checked?'🎲 Estilo aleatorio al entrar activado.':'🎨 Estilo aleatorio al entrar desactivado.',2200)}catch(e){}
+    });
+  }
+
+  /*
+    Guardar en Ajustes no puede desactivar accidentalmente el interruptor.
+    Primero se captura su valor; después de la implementación antigua de
+    saveSettings se vuelve a reafirmar el valor elegido.
+  */
+  try{
+    if(typeof saveSettings==='function'&&!window.__SWQ_V29_SAVE_SETTINGS__){
+      const baseSaveSettingsV29=saveSettings;
+      saveSettings=function(){
+        const cb=document.getElementById('swqV29RandomStyleToggle');
+        const desired=cb?!!cb.checked:currentRandomV29();
+
+        const out=baseSaveSettingsV29.apply(this,arguments);
+
+        persistRandomV29(desired);
+        setTimeout(bindSettingsRandomV29,0);
+        return out;
+      };
+      window.__SWQ_V29_SAVE_SETTINGS__=true;
+    }
+  }catch(e){console.warn('SWQ V29 save settings wrapper',e)}
+
+  /*
+    El valor debe sobrevivir incluso si un parche antiguo intenta restaurar
+    randomThemeOnStart/randomStyleOnStart durante la carga.
+  */
+  persistRandomV29(currentRandomV29());
+  setTimeout(()=>{
+    try{
+      bindSettingsRandomV29();
+      if(typeof render==='function')render();
+    }catch(e){}
+  },0);
+  setTimeout(()=>{
+    try{
+      persistRandomV29(currentRandomV29());
+      bindSettingsRandomV29();
+    }catch(e){}
+  },8500);
+
+  /*
+    El logro imposible de tirar al coach de la piscina ya no forma parte del
+    juego. También se limpia un posible ID antiguo del progreso.
+  */
+  try{
+    if(Array.isArray(ACHIEVEMENTS)){
+      for(let i=ACHIEVEMENTS.length-1;i>=0;i--){
+        if(ACHIEVEMENTS[i]?.id==='coach_pool')ACHIEVEMENTS.splice(i,1);
+      }
+    }
+    if(Array.isArray(S.achievements)){
+      S.achievements=S.achievements.filter(id=>id!=='coach_pool');
+    }
+    save();
+  }catch(e){console.warn('SWQ V29 coach achievement removal',e)}
+})();
