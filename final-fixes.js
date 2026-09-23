@@ -6577,14 +6577,28 @@ body.theme-carretera .app{position:relative;z-index:2}
     const modes=['junta','pixel','bonita','normal','mayuscula','serif'];
     const storageKey='swq_random_font_mode_v25';
     let currentFontMode='';
+    function clearFontV25(){
+      if(!document.body)return;
+      modes.forEach(x=>document.body.classList.remove('swq-font-'+x));
+      currentFontMode='';
+    }
     function applyFontModeV25(mode){
-      if(!document.body||!modes.includes(mode))return;
+      if(!document.body)return;
+      if(S.settings?.theme!=='???'){
+        clearFontV25();
+        return;
+      }
+      if(!modes.includes(mode))return;
       currentFontMode=mode;
       document.body.classList.remove(...modes.map(x=>'swq-font-'+x));
       document.body.classList.add('swq-font-'+mode);
       try{localStorage.setItem(storageKey,mode)}catch(e){}
     }
     function pickFontV25(){
+      if(S.settings?.theme!=='???'){
+        clearFontV25();
+        return;
+      }
       let last='';
       try{last=localStorage.getItem(storageKey)||''}catch(e){}
       let choices=modes.filter(x=>x!==last);
@@ -6597,8 +6611,12 @@ body.theme-carretera .app{position:relative;z-index:2}
     /* Theme changes rewrite body.className in some older patches; keep the selected font. */
     try{
       const fontObserver=new MutationObserver(()=>{
-        if(currentFontMode&&document.body&&!document.body.classList.contains('swq-font-'+currentFontMode)){
-          document.body.classList.add('swq-font-'+currentFontMode);
+        if(S.settings?.theme==='???'){
+          if(currentFontMode&&document.body&&!document.body.classList.contains('swq-font-'+currentFontMode)){
+            document.body.classList.add('swq-font-'+currentFontMode);
+          }
+        }else{
+          clearFontV25();
         }
       });
       fontObserver.observe(document.body,{attributes:true,attributeFilter:['class']});
@@ -6657,6 +6675,11 @@ body.theme-carretera .app{position:relative;z-index:2}
         S.settings.randomStyleOnStart=false;
         save();
         if(typeof applyTheme==='function')applyTheme();
+        if(k==='???'){
+          try{window.__SWQ_PICK_UNKNOWN_FONT_V26?.()}catch(e){}
+        }else{
+          try{window.__SWQ_CLEAR_UNKNOWN_FONT_V26?.()}catch(e){}
+        }
         if(k==='RandomBasic'){
           try{window.__SWQ_RANDOM_BASIC_SESSION_COLOR__=false}catch(e){}
           try{if(typeof applyRandomBasic==='function')applyRandomBasic()}catch(e){}
@@ -6818,19 +6841,35 @@ body.theme-carretera .app{position:relative;z-index:2}
       document.head.appendChild(st);
     }
     let currentFontV26='',wasHidden=false;
+    function clearFontV26(){
+      if(!document.body)return;
+      modes.forEach(x=>document.body.classList.remove('swq-v26-font-'+x));
+      currentFontV26='';
+    }
     function setFontV26(mode){
-      if(!document.body||!modes.includes(mode))return;
+      if(!document.body)return;
+      if(S.settings?.theme!=='???'){
+        clearFontV26();
+        return;
+      }
+      if(!modes.includes(mode))return;
       currentFontV26=mode;
       modes.forEach(x=>document.body.classList.remove('swq-v26-font-'+x));
       document.body.classList.add('swq-v26-font-'+mode);
       try{localStorage.setItem(storageKey,mode)}catch(e){}
     }
     function pickFontV26(){
+      if(S.settings?.theme!=='???'){
+        clearFontV26();
+        return;
+      }
       let last='';
       try{last=localStorage.getItem(storageKey)||''}catch(e){}
       const choices=modes.filter(x=>x!==last);
       setFontV26(choices[Math.floor(Math.random()*choices.length)]);
     }
+    window.__SWQ_PICK_UNKNOWN_FONT_V26=pickFontV26;
+    window.__SWQ_CLEAR_UNKNOWN_FONT_V26=clearFontV26;
     pickFontV26();
     document.addEventListener('visibilitychange',()=>{
       if(document.visibilityState==='hidden')wasHidden=true;
