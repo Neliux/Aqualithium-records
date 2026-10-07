@@ -756,6 +756,8 @@ const EXERCISE_TYPES=[
  {key:"patada",name:"Patada",icon:"🦵",desc:"Trabajo específico de piernas."},
  {key:"brazada",name:"Brazada",icon:"💪",desc:"Trabajo específico de brazos y técnica."},
  {key:"sin_respirar",name:"Sin respirar",icon:"🌬️",desc:"Serie con restricción de respiración."},
+ {key:"respiracion_plus",name:"Respiración+",icon:"🫁",desc:"Trabajo específico de respiración y control respiratorio."},
+ {key:"giro",name:"Giro",icon:"🔄",desc:"Trabajo específico de giros y virajes."},
  {key:"correctivo",name:"Correctivo",icon:"🔧",desc:"Ejercicio destinado a corregir técnica."}
 ];
 function normalizeExercise(s){const raw=String(s?.exercise||"");if(EXERCISE_TYPES.some(x=>x.key===raw))return raw;return s?.corrective?"correctivo":"ninguno";}
