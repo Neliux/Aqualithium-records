@@ -1,4 +1,4 @@
-const CACHE='swim-quest-final-20261006-40';
+const CACHE='swim-quest-final-20261007-42';
 const ASSETS=[
   './',
   './index.html',
@@ -7,6 +7,7 @@ const ASSETS=[
   './swim-quest-icon-512.png',
   './workout-clan-fix.js',
   './final-fixes.js',
+  './sigma-rank-fix.js',
   './index(20260916-163437).html'
 ];
 
@@ -16,7 +17,7 @@ function patchGame(text){
   if(!out.includes('src="./final-fixes.js')){
     out=out.replace(
       '</body>',
-      '<script src="./workout-clan-fix.js?v=20260917-1"></script><script id="swq-sw-final-fixes" src="./final-fixes.js?v=20261006-40"></script></body>'
+      '<script src="./workout-clan-fix.js?v=20260917-1"></script><script id="swq-sw-final-fixes" src="./final-fixes.js?v=20261007-42"></script><script id="swq-sw-sigma-rank-fix" src="./sigma-rank-fix.js?v=20261007-42"></script></body>'
     );
   }
   return out;
