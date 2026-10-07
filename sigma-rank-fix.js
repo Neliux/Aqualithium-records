@@ -35,8 +35,8 @@
           id:'theme_Sigma',
           icon:'🗿',
           name:'Sigma',
-          price:750,
-          desc:'Lluvia de moáis y rayas horizontales rápidas.',
+          price:250,
+          desc:'Lluvia de moáis y rayas horizontales rápidas. Estilo accesible.',
           buy:()=>{ S.purchases=S.purchases||{}; S.purchases.theme_Sigma=true; }
         });
       }
