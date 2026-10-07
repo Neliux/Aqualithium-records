@@ -7,8 +7,8 @@
   /* Todos los rangos: requisito de NIVEL reducido un pequeño 5%.
      Se ejecuta una sola vez y conserva metros/entrenamientos/recompensas. */
   try{
-    if(Array.isArray(window.RANKS)){
-      window.RANKS.forEach(r=>{
+    if(typeof RANKS!=='undefined' && Array.isArray(RANKS)){
+      RANKS.forEach(r=>{
         const lv=Number(r?.lv);
         if(Number.isFinite(lv)&&lv>0&&!r.__sigmaLvBalanced){
           r.lv=Math.max(1,Math.floor(lv*0.95));
